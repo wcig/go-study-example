@@ -167,3 +167,42 @@ func create2() map[int]string {
 func create3() map[int]string {
 	return map[int]string{}
 }
+
+// map合并
+func TestMapMerge(t *testing.T) {
+	m1 := map[int]string{
+		1: "one",
+		2: "two",
+		3: "three",
+	}
+	m2 := map[int]string{
+		3: "three+",
+		4: "four",
+		5: "five",
+	}
+
+	m3 := merge(m1, m2, true)
+	fmt.Println("m3=", m3, ", len=", len(m3))
+
+	m4 := merge(m1, m2, false)
+	fmt.Println("m4=", m4, ", len=", len(m4))
+}
+
+func merge(m1 map[int]string, m2 map[int]string, isCovered bool) map[int]string {
+	res := map[int]string{}
+
+	for k, v := range m1 {
+		res[k] = v
+	}
+
+	for k, v := range m2 {
+		if _, exists := res[k]; exists {
+			if isCovered {
+				res[k] = v
+			}
+		} else {
+			res[k] = v
+		}
+	}
+	return res
+}
