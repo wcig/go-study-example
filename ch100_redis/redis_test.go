@@ -3,13 +3,14 @@ package ch100_redis
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/go-redis/redis"
 )
 
 var client *redis.Client
 
-func init() {
+func initRedis() {
 	client = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
@@ -20,22 +21,29 @@ func init() {
 }
 
 func TestString(t *testing.T) {
+	initRedis()
+
 	key, val := "hello", "world"
 	result, err := client.Set(key, val, -1).Result()
-	fmt.Println(result, err)
+	fmt.Println(result, err) // OK <nil>
 
 	result, err = client.Get(key).Result()
-	fmt.Println(result, err)
-	// assert.True(t, err == nil)
-	// assert.True(t, result == val)
+	fmt.Println(result, err) // world <nil>
+
+	num, err := client.Del(key).Result()
+	fmt.Println(num, err) // 1 <nil>
 }
 
 func TestMSet(t *testing.T) {
+	initRedis()
+
 	result, err := client.MSet("one", "1", "two", "2", "three", "3", "four", "4").Result()
 	fmt.Println(result, err) // OK <nil>
 }
 
 func TestMGet(t *testing.T) {
+	initRedis()
+
 	result, err := client.MGet("one", "two+", "three").Result()
 	fmt.Println(result, err) // [1 <nil> 3] <nil>
 
@@ -44,16 +52,16 @@ func TestMGet(t *testing.T) {
 	}
 }
 
-func TestMGetMSet(t *testing.T) {
-	// var pairs []interface{}
-	// pairs = append(pairs, "one", "1")
-	// pairs = append(pairs, "two", "2")
-	// pairs = append(pairs, "three", "3")
-	// pairs = append(pairs, "four", "4")
-	// result, err := client.MSet(pairs...).Result()
-	// fmt.Println(result, err)
+func TestExpire(t *testing.T) {
+	initRedis()
 
-	keys := []string{"one", "two", "three", "four"}
-	result, err := client.MGet(keys...).Result()
-	fmt.Println(result, err)
+	key, val := "hello", "world"
+	ok, err := client.Expire(key, time.Second*1000).Result()
+	fmt.Println(ok, err) // false <nil>
+
+	client.Set(key, val, -1)
+	ok, err = client.Expire(key, time.Second*1000).Result()
+	fmt.Println(ok, err) // true <nil>
+
+	client.Del(key)
 }
