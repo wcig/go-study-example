@@ -110,3 +110,69 @@ func TestWriterReadFromWhileFull(t *testing.T) {
 	w.Flush()
 	fmt.Println(buf.String()) // 0123456789abcdef
 }
+
+func TestScannerWithScanLines(t *testing.T) {
+	reader := strings.NewReader("hello world.\nit is ok\n666")
+	scanner := bufio.NewScanner(reader)
+
+	for scanner.Scan() {
+		text := scanner.Text()
+		fmt.Println(text)
+	}
+}
+
+// output:
+// hello world.
+// it is ok
+// 666
+
+func TestScannerWithScanWords(t *testing.T) {
+	reader := strings.NewReader("hello world. 666")
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanWords)
+
+	for scanner.Scan() {
+		text := scanner.Text()
+		fmt.Println(text)
+	}
+}
+
+// output:
+// hello
+// world.
+// 666
+
+func TestScannerWithScanBytes(t *testing.T) {
+	reader := strings.NewReader("hello")
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanBytes)
+
+	for scanner.Scan() {
+		text := scanner.Text()
+		fmt.Println(text)
+	}
+}
+
+// output:
+// h
+// e
+// l
+// l
+// o
+
+func TestScannerWithScanRunes(t *testing.T) {
+	reader := strings.NewReader("天气ok")
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanRunes)
+
+	for scanner.Scan() {
+		text := scanner.Text()
+		fmt.Println(text)
+	}
+}
+
+// output:
+// 天
+// 气
+// o
+// k
