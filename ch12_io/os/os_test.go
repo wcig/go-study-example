@@ -2,9 +2,11 @@ package os
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 // FileMode
@@ -57,4 +59,62 @@ func TestChmod(t *testing.T) {
 
 	fileInfo, _ = os.Stat(filename)
 	fmt.Println(fileInfo.Mode()) // -rwxrwxrwx
+}
+
+// Chtimes
+func TestChtimes(t *testing.T) {
+	filename := "temp"
+	os.Create(filename)
+	// defer os.Remove(filename)
+
+	mtime := time.Date(2006, time.February, 1, 3, 4, 5, 0, time.UTC)
+	atime := time.Date(2007, time.March, 2, 4, 5, 6, 0, time.UTC)
+	if err := os.Chtimes(filename, atime, mtime); err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Environ/Clearenv
+func TestEnv(t *testing.T) {
+	vals := os.Environ()
+	fmt.Println(len(vals), vals[len(vals)-1]) // 41 CGO_ENABLED=1
+
+	os.Clearenv()
+
+	fmt.Println(len(os.Environ())) // 0
+}
+
+// Expand
+func TestExpand(t *testing.T) {
+	mapper := func(placeholderName string) string {
+		switch placeholderName {
+		case "DAY_PART":
+			return "morning"
+		case "NAME":
+			return "Gopher"
+		}
+
+		return ""
+	}
+
+	fmt.Println(os.Expand("Good ${DAY_PART}, $NAME!", mapper)) // Good morning, Gopher!
+}
+
+// ExpandEnv
+func TestExpandEnv(t *testing.T) {
+	os.Setenv("NAME", "gopher")
+	os.Setenv("BURROW", "/usr/gopher")
+
+	fmt.Println(os.ExpandEnv("$NAME lives in ${BURROW}."))
+}
+
+// Get
+func TestGet(t *testing.T) {
+	fmt.Println(os.Geteuid(), os.Getuid()) // 501 501
+	fmt.Println(os.Getegid(), os.Getgid()) // 20 20
+	fmt.Println(os.Getgroups())            // [20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701] <nil>
+	fmt.Println(os.Getpagesize())          // 4096
+	fmt.Println(os.Getpid())               // 8785
+	fmt.Println(os.Getppid())              // 8784
+	fmt.Println(os.Getwd())                // /Users/yangbo/Documents/MyGithub/go-study-example/ch12_io/os <nil>
 }
