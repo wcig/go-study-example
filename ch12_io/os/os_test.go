@@ -108,6 +108,55 @@ func TestExpandEnv(t *testing.T) {
 	fmt.Println(os.ExpandEnv("$NAME lives in ${BURROW}."))
 }
 
+// LookupEnv
+func TestLookupEnv(t *testing.T) {
+	val, has := os.LookupEnv("GOROOT")
+	fmt.Println(val, has)
+
+	val, has = os.LookupEnv("GOROOT2")
+	fmt.Println(val, has)
+}
+
+// Unsetenv
+func TestUnsetenv(t *testing.T) {
+	os.Setenv("TMPDIR", "/my/tmp")
+	fmt.Println(os.Getenv("TMPDIR")) // /my/tmp
+
+	os.Unsetenv("TMPDIR")
+
+	fmt.Println(os.Getenv("TMPDIR")) //
+}
+
+// SameFile
+func TestSameFile(t *testing.T) {
+	f1, _ := os.Stat("/bin/bzcmp")
+	f2, _ := os.Stat("/bin/bzdiff")
+	fmt.Println(os.SameFile(f1, f2)) // true
+}
+
+// link
+func TestLinkAndSymlink(t *testing.T) {
+	f1, _ := os.Create("temp1")
+	os.Link("temp1", "temp2")
+	f1.Close()
+
+	f3, _ := os.Create("temp3")
+	os.Symlink("temp3", "temp4")
+	f3.Close()
+}
+
+// TempDir
+func TestTempDir(t *testing.T) {
+	fmt.Println(os.TempDir()) // tmp
+}
+
+// UserDir
+func TestUserDir(t *testing.T) {
+	fmt.Println(os.UserCacheDir())  // /home/yangbo/.cache <nil>
+	fmt.Println(os.UserConfigDir()) // /home/yangbo/.config <nil>
+	fmt.Println(os.UserHomeDir())   // /home/yangbo <nil>
+}
+
 // Get
 func TestGet(t *testing.T) {
 	fmt.Println(os.Geteuid(), os.Getuid()) // 501 501
@@ -117,4 +166,31 @@ func TestGet(t *testing.T) {
 	fmt.Println(os.Getpid())               // 8785
 	fmt.Println(os.Getppid())              // 8784
 	fmt.Println(os.Getwd())                // /Users/yangbo/Documents/MyGithub/go-study-example/ch12_io/os <nil>
+	fmt.Println(os.Hostname())             // ubuntu <nil>
+}
+
+// File
+func TestFile(t *testing.T) {
+	f1 := os.Stdin
+	fmt.Println(f1.Fd())
+	fmt.Println(f1.Name())
+
+	f2, _ := os.Create("temp")
+	fmt.Println(f2.Fd())
+	fmt.Println(f2.Name())
+
+	f2.Close()
+	os.Remove("temp")
+
+	f3, _ := os.Open("../../ch12_io")
+	f3Infos, _ := f3.Readdir(5)
+	for _, fileInfo := range f3Infos {
+		fmt.Println(fileInfo.Name())
+	}
+
+	f4, _ := os.Open("../../ch12_io")
+	f4Names, _ := f4.Readdirnames(-1)
+	for _, name := range f4Names {
+		fmt.Println(name)
+	}
 }
