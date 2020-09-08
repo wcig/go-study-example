@@ -29,6 +29,7 @@ func TestGetFileInfo(t *testing.T) {
 	os.Create(filename)
 	defer os.Remove(filename)
 
+	// 方式1: os.Stat()
 	fileInfo, err := os.Stat(filename)
 	if err != nil {
 		t.Fatal(err)
@@ -43,6 +44,14 @@ func TestGetFileInfo(t *testing.T) {
 	// 相对路径 -> 绝对路径
 	path, err := filepath.Abs(fileInfo.Name())
 	fmt.Println(path) // /home/yangbo/Documents/workspace/go-study-example/ch12_io/os/temp
+
+	// 方式2: file.Stat()
+	f, err := os.Open(filename)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fileInfo2, _ := f.Stat()
+	fmt.Println(fileInfo2.Name()) // temp
 }
 
 // Chmod
