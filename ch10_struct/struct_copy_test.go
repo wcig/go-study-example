@@ -1,4 +1,4 @@
-package ch20_copy
+package ch10_struct
 
 import (
 	"bytes"
