@@ -315,6 +315,22 @@ func TestGetTag(t *testing.T) {
 // tag: json:"name"
 // name
 
+// 校验类型是否实现了接口
+type MyError struct{}
+
+func (*MyError) Error() string {
+	return ""
+}
+
+func TestCheckImplements(t *testing.T) {
+	errType := reflect.TypeOf((*error)(nil)).Elem()
+	myErrType := reflect.TypeOf(MyError{})
+	myErrPtrType := reflect.TypeOf(&MyError{})
+
+	fmt.Println(myErrType.Implements(errType))    // false
+	fmt.Println(myErrPtrType.Implements(errType)) // true
+}
+
 // interface -> reflection object
 func TestReflectLaw1(t *testing.T) {
 	str := "hello"
