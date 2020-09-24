@@ -314,3 +314,34 @@ func TestGetTag(t *testing.T) {
 // id
 // tag: json:"name"
 // name
+
+// interface -> reflection object
+func TestReflectLaw1(t *testing.T) {
+	str := "hello"
+	fmt.Println("TypeOf str:", reflect.TypeOf(str))   // TypeOf str: string
+	fmt.Println("ValueOf str:", reflect.ValueOf(str)) // ValueOf str: hello
+}
+
+// reflection object -> interface
+func TestReflectLaw2(t *testing.T) {
+	str := "hello"
+	v := reflect.ValueOf(str)
+	val := v.Interface().(string)
+	fmt.Println("val:", val) // val: hello
+}
+
+// reflection object modify
+func TestReflectLaw3(t *testing.T) {
+	str1 := "hello"
+	v1 := reflect.ValueOf(&str1)
+	if v1.Kind() == reflect.Ptr && v1.Elem().CanSet() {
+		v1.Elem().SetString("ok")
+	}
+	fmt.Println(str1) // ok
+
+	str2 := "world"
+	v2 := reflect.ValueOf(str2)
+	fmt.Println(v2.Kind() == reflect.Ptr) // false
+	fmt.Println(v2.CanSet())              // false
+	// v2.SetString("ok")                 // panic: reflect: reflect.flag.mustBeAssignable using unaddressable value [recovered]
+}
