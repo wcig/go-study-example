@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 )
 
 // 函数定义和使用
@@ -170,7 +171,7 @@ func TestFuncDefer3(t *testing.T) {
 	fmt.Println("file operator...")
 }
 
-// defer匿名函数带参数时, 此时为该参数的拷贝
+// defer函数带参数时, 此时为该参数的拷贝
 func TestFuncDefer4(t *testing.T) {
 	n := 0
 	defer fmt.Println(n)
@@ -184,6 +185,32 @@ func TestFuncDefer4(t *testing.T) {
 // output:
 // &{jerry 11}
 // 0
+
+// defer函数与defer匿名函数区别
+func TestFuncDefer5(t *testing.T) {
+	n1 := 10
+	defer fmt.Println("n1:", n1)
+	n1 = 20
+
+	n2 := 10
+	defer func() {
+		fmt.Println("n2:", n2)
+	}()
+	n2 = 20
+}
+
+// output:
+// n2: 20
+// n1: 10
+
+// 使用defer统计函数耗时
+func TestFuncDefer6(t *testing.T) {
+	start := time.Now()
+	defer func() {
+		fmt.Println(time.Since(start)) // 1.001410423s
+	}()
+	time.Sleep(time.Second)
+}
 
 // 错误处理 panic/recover
 func TestFuncPanicRecover1(t *testing.T) {
