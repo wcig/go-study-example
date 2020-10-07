@@ -263,3 +263,102 @@ func TestSelect(t *testing.T) {
 	}
 	fmt.Println("over...")
 }
+
+// for-select + return
+func TestSelectReturn(t *testing.T) {
+	c := time.Tick(time.Second)
+	for {
+		select {
+		case tt := <-c:
+			fmt.Println(tt.Format("15:04:05"))
+			return
+			fmt.Println("continue...")
+		}
+		fmt.Println("for...")
+	}
+	fmt.Println("over...")
+}
+
+// output:
+// 21:28:14
+
+// for-select + break
+func TestSelectBreak1(t *testing.T) {
+	c := time.Tick(time.Second)
+	for {
+		select {
+		case tt := <-c:
+			fmt.Println(tt.Format("15:04:05"))
+			break
+			fmt.Println("continue...")
+		}
+		fmt.Println("for...")
+	}
+	fmt.Println("over...")
+}
+
+// output:
+// 21:44:15
+// for...
+// 21:44:16
+// for...
+// ...
+
+// for-select + break loop
+func TestSelectBreak2(t *testing.T) {
+	c := time.Tick(time.Second)
+Loop:
+	for {
+		select {
+		case tt := <-c:
+			fmt.Println(tt.Format("15:04:05"))
+			break Loop
+		}
+		fmt.Println("for...")
+	}
+	fmt.Println("over...")
+}
+
+// output:
+// 21:29:38
+// over...
+
+// for-select + break + goto
+func TestSelectBreak3(t *testing.T) {
+	c := time.Tick(time.Second)
+	for {
+		select {
+		case tt := <-c:
+			fmt.Println(tt.Format("15:04:05"))
+			goto End
+		}
+		fmt.Println("for...")
+	}
+End:
+	fmt.Println("over...")
+}
+
+// output:
+// 21:30:40
+// over...
+
+// for-select + continue
+func TestSelectContinue(t *testing.T) {
+	c := time.Tick(time.Second)
+	for {
+		select {
+		case tt := <-c:
+			fmt.Println(tt.Format("15:04:05"))
+			continue
+			fmt.Println("continue...")
+		}
+		fmt.Println("for...")
+	}
+	fmt.Println("over...")
+}
+
+// output:
+// 21:31:44
+// 21:31:45
+// 21:31:46
+// ...
