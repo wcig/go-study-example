@@ -8,5 +8,6 @@ require (
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sync v0.0.0-20200930132711-30421366ff76 // indirect
+	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
