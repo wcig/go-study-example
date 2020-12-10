@@ -91,6 +91,42 @@ func TestZapLog3(t *testing.T) {
 	logger.Error("err")
 }
 
+// 定制zap log4 (增加自定义参数)
+func TestZapLog4(t *testing.T) {
+	encoderCfg := zap.NewProductionEncoderConfig()
+	enc := zapcore.NewJSONEncoder(encoderCfg)
+	ws := zapcore.AddSync(os.Stdout)
+	level := zap.DebugLevel
+
+	core := zapcore.NewCore(enc, ws, level)
+	fields := []zap.Field{
+		zap.String("name", "service-001"),
+		zap.String("version", "001"),
+	}
+	addOption := zap.Fields(fields...)
+	zLogger := zap.New(core, addOption)
+	logger := zLogger.Sugar()
+	logger.Info("ok")
+}
+
+// 定制zap log5 (写入日志到多个目标)
+func TestZapLog5(t *testing.T) {
+	encoderCfg := zap.NewProductionEncoderConfig()
+	enc := zapcore.NewJSONEncoder(encoderCfg)
+	ws := zapcore.NewMultiWriteSyncer(os.Stdout, os.Stderr)
+	level := zap.DebugLevel
+
+	core := zapcore.NewCore(enc, ws, level)
+	fields := []zap.Field{
+		zap.String("name", "service-001"),
+		zap.String("version", "001"),
+	}
+	addOption := zap.Fields(fields...)
+	zLogger := zap.New(core, addOption)
+	logger := zLogger.Sugar()
+	logger.Info("ok")
+}
+
 // 使用Lumberjack日志归档
 func TestZapLogLumberjack(t *testing.T) {
 	encoderCfg := zap.NewProductionEncoderConfig()
@@ -111,7 +147,7 @@ func TestZapLogLumberjack(t *testing.T) {
 	core := zapcore.NewCore(enc, ws, level)
 	srcLogger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 	logger := srcLogger.Sugar()
-	logger.Info("ok")
+	logger.Info("ok") // {"level":"info","ts":1607570204.8173146,"msg":"ok","name":"service-001","version":"001"}
 }
 
 // zap log生产环境示例
