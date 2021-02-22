@@ -8,7 +8,8 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/oschwald/geoip2-golang v1.5.0
+	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
