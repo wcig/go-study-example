@@ -20,3 +20,6 @@ go-app
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Other
+GeoIP2-Country.mmdb
+GeoLite2-City.mmdb

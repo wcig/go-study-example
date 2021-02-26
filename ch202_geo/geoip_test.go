@@ -12,14 +12,14 @@ import (
 
 // geoip2解析
 func TestGeoIpQuickStart(t *testing.T) {
-	db, err := geoip2.Open("./GeoIP2-Country.mmdb")
+	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer reader.Close()
 
 	ip := net.ParseIP("81.2.69.142")
-	record, err := db.City(ip)
+	record, err := reader.City(ip)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,20 +34,21 @@ func TestGeoIpQuickStart(t *testing.T) {
 // {"City":{"GeoNameID":0,"Names":null},"Continent":{"Code":"EU","GeoNameID":6255148,"Names":{"de":"Europa","en":"Europe","es":"Europa","fr":"Europe","ja":"ヨーロッパ","pt-BR":"Europa","ru":"Европа","zh-CN":"欧洲"}},"Country":{"GeoNameID":2635167,"IsInEuropeanUnion":true,"IsoCode":"GB","Names":{"de":"Vereinigtes Königreich","en":"United Kingdom","es":"Reino Unido","fr":"Royaume-Uni","ja":"イギリス","pt-BR":"Reino Unido","ru":"Великобритания","zh-CN":"英国"}},"Location":{"AccuracyRadius":0,"Latitude":0,"Longitude":0,"MetroCode":0,"TimeZone":""},"Postal":{"Code":""},"RegisteredCountry":{"GeoNameID":2635167,"IsInEuropeanUnion":true,"IsoCode":"GB","Names":{"de":"Vereinigtes Königreich","en":"United Kingdom","es":"Reino Unido","fr":"Royaume-Uni","ja":"イギリス","pt-BR":"Reino Unido","ru":"Великобритания","zh-CN":"英国"}},"RepresentedCountry":{"GeoNameID":0,"IsInEuropeanUnion":false,"IsoCode":"","Names":null,"Type":""},"Subdivisions":null,"Traits":{"IsAnonymousProxy":false,"IsSatelliteProvider":false}}
 
 // 根据ip查询国家信息
-func TestGetCountryByIp(t *testing.T) {
-	db, err := geoip2.Open("./GeoIP2-Country.mmdb")
+func TestGetCountryByIP(t *testing.T) {
+	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer reader.Close()
 
-	ip := net.ParseIP("81.2.69.142")
-	record, err := db.City(ip)
+	// ip := net.ParseIP("81.2.69.142")
+	ip := net.ParseIP("102.221.64.25")
+	country, err := reader.Country(ip)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	countryInfo := record.Country
+	countryInfo := country.Country
 	countryName := countryInfo.Names
 	countryIsoCode := countryInfo.IsoCode
 	fmt.Println("country name:", countryName)
@@ -57,3 +58,25 @@ func TestGetCountryByIp(t *testing.T) {
 // output:
 // country name: map[de:Vereinigtes Königreich en:United Kingdom es:Reino Unido fr:Royaume-Uni ja:イギリス pt-BR:Reino Unido ru:Великобритания zh-CN:英国]
 // country iso code: GB
+
+// 根据ip查询国家信息+城市信息
+func TestGetCityByIP(t *testing.T) {
+	reader, err := geoip2.Open("./GeoLite2-City.mmdb")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer reader.Close()
+
+	ip := net.ParseIP("218.17.161.141")
+	city, err := reader.City(ip)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("city info:", city.City)
+	fmt.Println("country info:", city.Country)
+}
+
+// output:
+// city info: {1795565 map[de:Shenzhen en:Shenzhen es:Shenzhen fr:Shenzhen ja:深セン市 pt-BR:Shenzhen ru:Шэньчжэнь zh-CN:深圳市]}
+// country info: {1814991 false CN map[de:China en:China es:China fr:Chine ja:中国 pt-BR:China ru:Китай zh-CN:中国]}
