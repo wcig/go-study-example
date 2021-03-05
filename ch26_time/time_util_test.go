@@ -8,7 +8,7 @@ import (
 
 // test
 func TestUtil(t *testing.T) {
-	fmt.Println(GetNowUnixS())
+	fmt.Println(GetNowUnix())
 	fmt.Println(GetNowUnixMs())
 	fmt.Println(GetNowUnixNs())
 
@@ -42,7 +42,7 @@ const (
 )
 
 // 当前时间戳(秒)
-func GetNowUnixS() int64 {
+func GetNowUnix() int64 {
 	return time.Now().Unix()
 }
 
