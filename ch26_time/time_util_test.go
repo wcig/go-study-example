@@ -21,6 +21,8 @@ func TestUtil(t *testing.T) {
 	fmt.Println(GetTimeByStr("2021-03-05 01:02:03"))
 	fmt.Println(GetUnixSByStr("2021-03-05 01:02:03"))
 	fmt.Println(GetUnixMsByStr("2021-03-05 01:02:03.004"))
+
+	fmt.Println(GetStrByUnixMs(1616554593013))
 }
 
 // output:
@@ -72,7 +74,7 @@ func GetTodayBeginTime() time.Time {
 	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 }
 
-// 今天技术时间
+// 今天结束时间
 func GetTodayEndTime() time.Time {
 	now := time.Now()
 	return time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 1e9-1, now.Location())
@@ -99,4 +101,10 @@ func GetUnixMsByStr(val string) (ts int64, err error) {
 		return 0, err
 	}
 	return tt.UnixNano() / 1e6, nil
+}
+
+// 时间戳(毫秒)->字符串
+func GetStrByUnixMs(ts int64) string {
+	tt := time.Unix(0, ts*1e6)
+	return tt.Format(datetimeFormat)
 }
