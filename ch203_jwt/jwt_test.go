@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	verifyKey = "123456" // 秘钥
+	verifyKey = "123456" // 密钥
 	ttl       = 3600     // 失效时间1小时(单位秒)
 )
 
