@@ -2,7 +2,9 @@ package ch14_concurrent_pattern
 
 import (
 	"fmt"
+	"sync"
 	"testing"
+	"time"
 )
 
 // 素数筛
@@ -73,4 +75,27 @@ func PrimeFilter(in <-chan int, prime int) chan int {
 		}
 	}()
 	return out
+}
+
+func worker(wg *sync.WaitGroup, cannel chan bool, id int) {
+	defer wg.Done()
+	for {
+		select {
+		default:
+			fmt.Println("hello:", id)
+		case <-cannel:
+			return
+		}
+	}
+}
+func Test11(t *testing.T) {
+	cancel := make(chan bool)
+	var wg sync.WaitGroup
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go worker(&wg, cancel, i)
+	}
+	time.Sleep(time.Second)
+	close(cancel)
+	wg.Wait()
 }
