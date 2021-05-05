@@ -176,7 +176,7 @@ func TestJsonStringCompact(t *testing.T) {
 }
 
 // json字符串美化
-func Test(t *testing.T) {
+func TestJsonStringIndent(t *testing.T) {
 	var (
 		b   bytes.Buffer
 		err error
