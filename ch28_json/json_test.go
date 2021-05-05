@@ -1,4 +1,4 @@
-package ch26_json
+package ch28_json
 
 import (
 	"bytes"
@@ -43,10 +43,10 @@ func TestJsonStringToInterface(t *testing.T) {
 // 格式化输出json
 func TestPrettyJsonString(t *testing.T) {
 	u := &user{Id: 1, Name: "tom"}
-	bytes, err := json.MarshalIndent(u, "", "\t")
+	b, err := json.MarshalIndent(u, "", "\t")
 	assert.Nil(t, err)
 
-	jsonStr := string(bytes)
+	jsonStr := string(b)
 	fmt.Printf("pretty json str:\n%s\n", jsonStr)
 }
 
