@@ -5,14 +5,14 @@ import (
 )
 
 var (
-	host   = "10.200.50.18"
-	port   = "3306"
-	user   = "root"
-	passwd = "123456"
-	db     = "test"
+	host     = "localhost"
+	port     = "3306"
+	username = "root"
+	password = "123456"
+	dbname   = "test"
+	dir      = "out"
 )
 
 func TestAutoGen(t *testing.T) {
-	dir := "out"
-	AutoGen(user, passwd, host, port, db, dir)
+	AutoGen(username, password, host, port, dbname, dir)
 }

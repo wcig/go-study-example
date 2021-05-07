@@ -3,29 +3,33 @@ package xorm
 import (
 	"fmt"
 	"go/format"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"xorm.io/xorm/names"
-
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
+	"xorm.io/xorm/names"
 	"xorm.io/xorm/schemas"
 )
 
 const (
-	driverName  = "mysql"
-	saveDir     = "out"
-	packageName = "entity"
+	driverName     = "mysql"
+	packageName    = "entity"
+	tblColNameFile = "ConstTableInfo.go"
 )
 
-// 根据数据库表生成Go结构体文件
+var (
+	mapper = &names.SnakeMapper{}
+)
+
+// 根据数据库表生成go结构体文件+表名列名常量文件
 func AutoGen(userName, password, host, port, dbName, dir string) {
 	db := initDB(driverName, userName, password, host, port, dbName)
 	tables := listTables(db)
-	genFiles(tables)
+	genFiles(tables, dir)
 }
 
 // 初始化数据库
@@ -52,51 +56,44 @@ func listTables(engine *xorm.Engine) []*schemas.Table {
 }
 
 // 生成go结构体文件+表名列名常量文件
-func genFiles(tables []*schemas.Table) {
-	dir := filepath.Join(saveDir, packageName)
-	err := os.MkdirAll(dir, os.ModePerm)
+func genFiles(tables []*schemas.Table, dir string) {
+	genDir(dir, packageName)
+	genStructFiles(tables, dir, packageName)
+	genConstFile(tables, dir, packageName)
+}
+
+// 创建go文件保存目录
+func genDir(dir string, packageName string) {
+	saveDir := filepath.Join(dir, packageName)
+	err := os.MkdirAll(saveDir, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
-
-	genConstFile(tables, saveDir, packageName)
-	genStructFiles(tables, saveDir, packageName)
 }
 
 // 生成go结构体文件
 func genStructFiles(tables []*schemas.Table, saveDir, packageName string) {
 	for _, table := range tables {
-		mapper := &names.SnakeMapper{}
 		tableName := table.Name
 		structName := mapper.Table2Obj(tableName)
-
-		fileName := filepath.Join(saveDir, packageName, fmt.Sprintf("%s.go", structName))
-		file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
-		if err != nil {
-			panic(err)
-		}
-		defer file.Close()
-
-		var filedLines []string
 		cols := table.Columns()
+
+		var fieldLines string
 		for _, col := range cols {
-			filedName := mapper.Table2Obj(col.Name)
-			filedTypeName := typestring(col)
-			filedTagStr := genTag(table, col)
-			filedLine := fmt.Sprintf("%s %s %s", filedName, filedTypeName, filedTagStr)
-			filedLines = append(filedLines, filedLine)
+			fieldName := mapper.Table2Obj(col.Name)
+			fieldTypeName := typestring(col)
+			fieldTagStr := genTag(table, col)
+			fieldLines += fmt.Sprintf("%s %s %s\n", fieldName, fieldTypeName, fieldTagStr)
 		}
 		packageLine := fmt.Sprintf("package %s", packageName)
 		typePrefixLine := fmt.Sprintf("type %s struct{", structName)
 		typeSuffixLine := "}"
 		tableNameFuncLine := fmt.Sprintf("func (%s) TableName() string {\n return \"%s\" \n}", structName, tableName)
+		lines := []string{packageLine, typePrefixLine, fieldLines, typeSuffixLine, tableNameFuncLine}
+		fileStr := formatGo(strings.Join(lines, "\n"))
 
-		var lines []string
-		lines = append(lines, packageLine, typePrefixLine)
-		lines = append(lines, filedLines...)
-		lines = append(lines, typeSuffixLine, tableNameFuncLine)
-		fileStr := strings.Join(lines, "\n")
-		_, err = file.WriteString(formatGo(fileStr))
+		fileName := filepath.Join(saveDir, packageName, fmt.Sprintf("%s.go", structName))
+		err := ioutil.WriteFile(fileName, []byte(fileStr), os.ModePerm)
 		if err != nil {
 			panic(err)
 		}
@@ -109,40 +106,33 @@ func genConstFile(tables []*schemas.Table, saveDir, packageName string) {
 		tableNameList []string
 		colNameList   []string
 	)
-
 	for _, table := range tables {
 		tableNameList = append(tableNameList, table.Name)
 		for _, col := range table.Columns() {
 			colNameList = append(colNameList, col.Name)
 		}
 	}
-
 	tableNameList = removeDuplicateSlice(tableNameList)
 	colNameList = removeDuplicateSlice(colNameList)
 
-	packageLine := fmt.Sprintf("package %s", packageName)
-	constPrefixLine := "const ("
-	constSuffixLine := ")"
-	mapper := &names.SnakeMapper{}
 	var tableLines string
 	for _, tableName := range tableNameList {
 		structName := mapper.Table2Obj(tableName)
 		tableLines += fmt.Sprintf("Tbl%s = \"%s\"\n", structName, tableName)
 	}
-	var colLines string
+	var columnLines string
 	for _, colName := range colNameList {
 		structName := mapper.Table2Obj(colName)
-		colLines += fmt.Sprintf("Col%s = \"%s\"\n", structName, colName)
+		columnLines += fmt.Sprintf("Col%s = \"%s\"\n", structName, colName)
 	}
-	lines := []string{packageLine, constPrefixLine, tableLines, constSuffixLine, constPrefixLine, colLines, constSuffixLine}
-	fileStr := strings.Join(lines, "\n")
+	packageLine := fmt.Sprintf("package %s", packageName)
+	constPrefixLine := "const ("
+	constSuffixLine := ")"
+	lines := []string{packageLine, constPrefixLine, tableLines, constSuffixLine, constPrefixLine, columnLines, constSuffixLine}
+	fileStr := formatGo(strings.Join(lines, "\n"))
 
-	fileName := filepath.Join(saveDir, packageName, "ConstTableInfo.go")
-	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
-	if err != nil {
-		panic(err)
-	}
-	_, err = file.WriteString(formatGo(fileStr))
+	fileName := filepath.Join(saveDir, packageName, tblColNameFile)
+	err := ioutil.WriteFile(fileName, []byte(fileStr), os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
@@ -154,6 +144,7 @@ func genTag(table *schemas.Table, col *schemas.Column) string {
 	isIdPk := isNameId && typestring(col) == "int64"
 
 	var res []string
+	res = append(res, fmt.Sprintf("'%s'", col.Name))
 	if !col.Nullable {
 		if !isIdPk {
 			res = append(res, "not null")
@@ -181,7 +172,7 @@ func genTag(table *schemas.Table, col *schemas.Column) string {
 		res = append(res, "deleted")
 	}*/
 
-	if /*supportComment &&*/ col.Comment != "" {
+	if col.Comment != "" {
 		res = append(res, fmt.Sprintf("comment('%s')", col.Comment))
 	}
 
@@ -227,7 +218,7 @@ func genTag(table *schemas.Table, col *schemas.Column) string {
 		}
 		nstr += strings.TrimLeft(opts, ",")
 		nstr += ")"
-	} else if len(col.SetOptions) > 0 { //enum
+	} else if len(col.SetOptions) > 0 { // enum
 		nstr += "("
 		opts := ""
 
@@ -255,6 +246,7 @@ func genTag(table *schemas.Table, col *schemas.Column) string {
 	return fmt.Sprintf("`%s`", strings.Join(tags, " "))
 }
 
+// 根据表字段类型反推其对应go类型
 func typestring(col *schemas.Column) string {
 	st := col.SQLType
 	t := schemas.SQLType2Type(st)
