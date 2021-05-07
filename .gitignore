@@ -23,3 +23,4 @@ go-app
 # Other
 GeoIP2-Country.mmdb
 GeoLite2-City.mmdb
+out
