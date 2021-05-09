@@ -2,6 +2,7 @@ package filepath
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -9,18 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test(t *testing.T) {
-	path := "/tmp/log/2021/info.log"
-	fmt.Println(filepath.Dir(path))
-	fmt.Println(filepath.Base(path))
-	fmt.Println(filepath.Abs(path))
-	fmt.Println(filepath.Clean(path))
-	fmt.Println(filepath.Ext(path))
-	fmt.Println(filepath.EvalSymlinks(path))
-	fmt.Println(filepath.FromSlash(path))
-	fmt.Println(filepath.Glob(path))
-	fmt.Println(filepath.IsAbs(path))
-}
+// filepath: 目录相关工具包 (基于不同平台兼容性,建议优先使用filepath包而不是path包)
 
 // filepath.join(): 目录拼接
 func TestJoin(t *testing.T) {
@@ -208,25 +198,140 @@ func TestRel(t *testing.T) {
 	}
 }
 
-// TODO
+// filepath.EvalSymlinks(): 获取符号链接指定的文件名 TODO
 func Test1(t *testing.T) {
-	// var err error
+	var err error
+	srcFileName := "srcFile"
+	err = ioutil.WriteFile(srcFileName, []byte("test"), os.ModePerm)
+	assert.Nil(t, err)
+	defer os.Remove(srcFileName)
 
-	// srcFileName := "srcFile"
-	// err = ioutil.WriteFile(srcFileName, []byte("test"), os.ModePerm)
-	// assert.Nil(t, err)
-	// // defer os.Remove(srcFileName)
-	//
-	// symlinkDir := "symlink"
-	// err = os.Mkdir(symlinkDir, os.ModePerm)
-	// assert.Nil(t, err)
-	// // defer os.RemoveAll(symlinkDir)
-	//
-	// newFileName := "symlink/newFile"
-	// err = os.Symlink(srcFileName, newFileName)
-	// assert.Nil(t, err)
+	symlinkDir := "symlink"
+	err = os.Mkdir(symlinkDir, os.ModePerm)
+	assert.Nil(t, err)
+	defer os.Remove(symlinkDir)
 
-	newFileName := "symlink/newFile"
+	newFileName := filepath.Join(symlinkDir, "newFile")
+	err = os.Symlink(srcFileName, newFileName)
+	assert.Nil(t, err)
+	defer os.Remove(newFileName)
+
 	fmt.Println(filepath.EvalSymlinks(newFileName))
 	fmt.Println(os.Readlink(newFileName))
+}
+
+// filepath.Match(): 文件是否与pattern匹配
+func TestMatch(t *testing.T) {
+	var err error
+	dirs := []string{"a", "a/b", "a/c"}
+	files := []string{"a/b/f1.txt", "a/c/f2.txt", "a/f3.txt"}
+	for _, dir := range dirs {
+		err = os.MkdirAll(dir, 0777)
+		assert.Nil(t, err)
+	}
+	for _, file := range files {
+		err = ioutil.WriteFile(file, []byte(""), 0755)
+		assert.Nil(t, err)
+	}
+	baseDir := dirs[0]
+	defer os.RemoveAll(baseDir)
+
+	type MatchTest struct {
+		Pattern  string
+		Name     string
+		Expected bool
+	}
+	mts := []*MatchTest{
+		{"a/b/*.txt", "a/b/f1.txt", true},
+
+		{"a/*/*.txt", "a/b/f1.txt", true},
+		{"a/*/*.txt", "a/c/f2.txt", true},
+
+		{"a/*", "a/b", true},
+		{"a/*", "a/c", true},
+		{"a/*", "a/f3.txt", true},
+		{"a/*", "a/b/f1.txt", false},
+	}
+
+	for _, mt := range mts {
+		matched, err := filepath.Match(mt.Pattern, mt.Name)
+		assert.Nil(t, err)
+		assert.Equal(t, mt.Expected, matched)
+	}
+}
+
+// filepath.Glob(): 返回所有匹配文件的名称,没有则返回nil
+func TestGlob(t *testing.T) {
+	var err error
+	dirs := []string{"a", "a/b", "a/c"}
+	files := []string{"a/b/f1.txt", "a/c/f2.txt", "a/f3.txt"}
+	for _, dir := range dirs {
+		err = os.MkdirAll(dir, 0777)
+		assert.Nil(t, err)
+	}
+	for _, file := range files {
+		err = ioutil.WriteFile(file, []byte(""), 0755)
+		assert.Nil(t, err)
+	}
+	baseDir := dirs[0]
+	defer os.RemoveAll(baseDir)
+
+	type GlobTest struct {
+		Pattern  string
+		Expected []string
+	}
+	gts := []*GlobTest{
+		{"a/b/*.txt", []string{"a/b/f1.txt"}},
+		{"a/*/*.txt", []string{"a/b/f1.txt", "a/c/f2.txt"}},
+		{"a/*", []string{"a/b", "a/c", "a/f3.txt"}},
+	}
+	for _, gt := range gts {
+		matches, err := filepath.Glob(gt.Pattern)
+		assert.Nil(t, err)
+		assert.Equal(t, gt.Expected, matches)
+	}
+}
+
+// filepath.Walk(): 遍历目录下所有文件和目录
+// a
+// ├── b
+// │   └── f1
+// ├── c
+// │   └── f2
+// └── f3
+func TestWalk(t *testing.T) {
+	var err error
+	dirs := []string{"a", "a/b", "a/c"}
+	files := []string{"a/b/f1", "a/c/f2", "a/f3"}
+	for _, dir := range dirs {
+		err = os.MkdirAll(dir, 0777)
+		assert.Nil(t, err)
+	}
+	for _, file := range files {
+		err = ioutil.WriteFile(file, []byte(""), 0755)
+		assert.Nil(t, err)
+	}
+	baseDir := dirs[0]
+	defer os.RemoveAll(baseDir)
+
+	err = filepath.Walk(baseDir, func(path string, info os.FileInfo, err error) error {
+		fmt.Printf("path:%7s, isDir:%6t, name:%3s, err: %v\n", path, info.IsDir(), info.Name(), err)
+		return err
+	})
+	assert.Nil(t, err)
+}
+
+// output:
+// path:      a, isDir:  true, name:  a, err: <nil>
+// path:    a/b, isDir:  true, name:  b, err: <nil>
+// path: a/b/f1, isDir: false, name: f1, err: <nil>
+// path:    a/c, isDir:  true, name:  c, err: <nil>
+// path: a/c/f2, isDir: false, name: f2, err: <nil>
+// path:   a/f3, isDir: false, name: f3, err: <nil>
+
+// windows平台3函数
+func TestWin(t *testing.T) {
+	filepath.VolumeName(`C:\foo\bar`)
+	filepath.FromSlash(`/foo/bar`)
+	filepath.ToSlash(`C:\foo\bar`)
 }
