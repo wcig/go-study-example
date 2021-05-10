@@ -199,7 +199,7 @@ func TestRel(t *testing.T) {
 }
 
 // filepath.EvalSymlinks(): 获取符号链接指定的文件名(符号链接文件需与源文件在同一目录)
-func Test1(t *testing.T) {
+func TestEvalSymlinks(t *testing.T) {
 	var err error
 	srcFileName := "srcFile"
 	err = ioutil.WriteFile(srcFileName, []byte("test"), os.ModePerm)
