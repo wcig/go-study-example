@@ -1,4 +1,4 @@
-package filepath
+package ch29_filepath
 
 import (
 	"fmt"
