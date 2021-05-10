@@ -198,7 +198,7 @@ func TestRel(t *testing.T) {
 	}
 }
 
-// filepath.EvalSymlinks(): 获取符号链接指定的文件名 TODO
+// filepath.EvalSymlinks(): 获取符号链接指定的文件名(符号链接文件需与源文件在同一目录)
 func Test1(t *testing.T) {
 	var err error
 	srcFileName := "srcFile"
@@ -211,14 +211,28 @@ func Test1(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.Remove(symlinkDir)
 
-	newFileName := filepath.Join(symlinkDir, "newFile")
-	err = os.Symlink(srcFileName, newFileName)
+	newFileName1 := filepath.Join(symlinkDir, "newFile")
+	err = os.Symlink(srcFileName, newFileName1)
 	assert.Nil(t, err)
-	defer os.Remove(newFileName)
+	defer os.Remove(newFileName1)
 
-	fmt.Println(filepath.EvalSymlinks(newFileName))
-	fmt.Println(os.Readlink(newFileName))
+	newFileName2 := "newFile2"
+	err = os.Symlink(srcFileName, newFileName2)
+	assert.Nil(t, err)
+	defer os.Remove(newFileName2)
+
+	fmt.Println(filepath.EvalSymlinks(newFileName1))
+	fmt.Println(os.Readlink(newFileName1))
+
+	fmt.Println(filepath.EvalSymlinks(newFileName2))
+	fmt.Println(os.Readlink(newFileName2))
 }
+
+// output:
+//  lstat symlink/srcFile: no such file or directory
+// srcFile <nil>
+// srcFile <nil>
+// srcFile <nil>
 
 // filepath.Match(): 文件是否与pattern匹配
 func TestMatch(t *testing.T) {
