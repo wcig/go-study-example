@@ -12,7 +12,7 @@ import (
 
 // filepath: 目录相关工具包 (基于不同平台兼容性,建议优先使用filepath包而不是path包)
 
-// filepath.join(): 目录拼接
+// func Join(elem ...string) string: 目录拼接
 func TestJoin(t *testing.T) {
 	type JoinTest struct {
 		Dirs     []string
@@ -29,7 +29,7 @@ func TestJoin(t *testing.T) {
 	}
 }
 
-// filepath.Split(): 分割为文件目录和文件名
+// func Split(path string) (dir, file string): 分割为文件目录和文件名
 func TestSplit(t *testing.T) {
 	type SplitTest struct {
 		Path         string
@@ -49,7 +49,7 @@ func TestSplit(t *testing.T) {
 	}
 }
 
-// filepath.SplitList(): 分割特定os的目录为子目录列表,常用于PATH,GOPATH
+// func SplitList(path string) []string: 分割特定os的目录为子目录列表,常用于PATH,GOPATH
 func TestSplitList(t *testing.T) {
 	type SplitListTest struct {
 		Path     string
@@ -61,12 +61,11 @@ func TestSplitList(t *testing.T) {
 		{"", []string{}},
 	}
 	for _, st := range sts {
-		fmt.Println(filepath.SplitList(st.Path))
 		assert.Equal(t, st.Expected, filepath.SplitList(st.Path))
 	}
 }
 
-// filepath.Dir(): 获取文件目录(去除目录的文件名)
+// func Dir(path string) string: 获取文件目录(去除目录的文件名)
 func TestDir(t *testing.T) {
 	type DirTest struct {
 		Path     string
@@ -81,7 +80,7 @@ func TestDir(t *testing.T) {
 	}
 }
 
-// filepath.Base(): 获取文件目录的文件名(去除文件路径)
+// func Base(path string) string: 获取文件目录的文件名(去除文件路径)
 func TestBase(t *testing.T) {
 	type BaseTest struct {
 		Path     string
@@ -97,7 +96,7 @@ func TestBase(t *testing.T) {
 	}
 }
 
-// filepath.Ext(): 获取文件扩展名
+// func Ext(path string) string: 获取文件扩展名
 func TestExt(t *testing.T) {
 	type ExtTest struct {
 		Path     string
@@ -112,7 +111,7 @@ func TestExt(t *testing.T) {
 	}
 }
 
-// file.Abs(): 获取文件的绝对路径,如果不是绝对路径则将当前工作路径拼接得到绝对路径(注意硬链接不一定正确)
+// func Abs(path string) (string, error): 获取文件的绝对路径,如果不是绝对路径则将当前工作路径拼接得到绝对路径(注意硬链接不一定正确)
 func TestAbs(t *testing.T) {
 	currentDir, err := os.Getwd()
 	assert.Nil(t, err)
@@ -133,7 +132,7 @@ func TestAbs(t *testing.T) {
 	}
 }
 
-// filepath.IsAbs(): 目录是否绝对路径
+// func IsAbs(path string) bool: 目录是否绝对路径
 func TestIsAbs(t *testing.T) {
 	type IsAbs struct {
 		Path     string
@@ -149,7 +148,7 @@ func TestIsAbs(t *testing.T) {
 	}
 }
 
-// filepath.Clean(): 整理路径
+// func Clean(path string) string: 整理路径
 // 1.去除多余的分隔符
 // 2.剔除每一个'.'(当前目录)
 // 3.剔除路径内的'..'(父目录)和前面的'..'
@@ -176,7 +175,7 @@ func TestClean(t *testing.T) {
 	}
 }
 
-// filepath.Rel(): 计算目标目录对基础目录的相对路径
+// func Rel(basepath, targpath string) (string, error): 计算目标目录对基础目录的相对路径
 func TestRel(t *testing.T) {
 	type RelTest struct {
 		BasePath   string
@@ -198,7 +197,7 @@ func TestRel(t *testing.T) {
 	}
 }
 
-// filepath.EvalSymlinks(): 获取符号链接指定的文件名(符号链接文件需与源文件在同一目录)
+// func EvalSymlinks(path string) (string, error): 获取符号链接指定的文件名(符号链接文件需与源文件在同一目录)
 func TestEvalSymlinks(t *testing.T) {
 	var err error
 	srcFileName := "srcFile"
@@ -234,7 +233,7 @@ func TestEvalSymlinks(t *testing.T) {
 // srcFile <nil>
 // srcFile <nil>
 
-// filepath.Match(): 文件是否与pattern匹配
+// func Match(pattern, name string) (matched bool, err error): 文件是否与pattern匹配
 func TestMatch(t *testing.T) {
 	var err error
 	dirs := []string{"a", "a/b", "a/c"}
@@ -274,7 +273,7 @@ func TestMatch(t *testing.T) {
 	}
 }
 
-// filepath.Glob(): 返回所有匹配文件的名称,没有则返回nil
+// func Glob(pattern string) (matches []string, err error): 返回所有匹配文件的名称,没有则返回nil
 func TestGlob(t *testing.T) {
 	var err error
 	dirs := []string{"a", "a/b", "a/c"}
@@ -306,7 +305,7 @@ func TestGlob(t *testing.T) {
 	}
 }
 
-// filepath.Walk(): 遍历目录下所有文件和目录
+// func Walk(root string, walkFn WalkFunc) error: 遍历目录下所有文件和目录
 // a
 // ├── b
 // │   └── f1
