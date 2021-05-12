@@ -3,6 +3,7 @@ module go-app
 go 1.13
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize/v2 v2.4.0
 	github.com/Shopify/sarama v1.19.0
 	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -19,6 +20,7 @@ require (
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
 	github.com/stretchr/testify v1.7.0
+	github.com/tealeg/xlsx/v3 v3.2.3
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect

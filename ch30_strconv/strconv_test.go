@@ -1,4 +1,4 @@
-package ch29_strconv
+package ch30_strconv
 
 import (
 	"fmt"
