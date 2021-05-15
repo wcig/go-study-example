@@ -2,6 +2,7 @@ package ch30_strconv
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"testing"
 
@@ -120,11 +121,184 @@ func TestParseBool(t *testing.T) {
 	assert.Equal(t, false, val)
 }
 
-// func FormatFloat(f float64, fmt byte, prec, bitSize int) string
-// float64 -> string
-func Test(t *testing.T) {
-	fmt.Println(strconv.FormatFloat(1.231, 'e', 2, 32))
-	fmt.Println(strconv.FormatFloat(1.231, 'f', 2, 32))
-	fmt.Println(strconv.FormatFloat(0.000002, 'e', 10, 32))
+// func FormatFloat(f float64, fmt byte, prec, bitSize int) string: float64 -> string
+func TestFormatFloat(t *testing.T) {
 	fmt.Println(strconv.FormatFloat(0.001, 'e', 3, 32))
+	fmt.Println(strconv.FormatFloat(0.001, 'E', 3, 32))
+
+	fmt.Println(strconv.FormatFloat(1.23456, 'e', 2, 32))
+	fmt.Println(strconv.FormatFloat(1.23456, 'f', 2, 32))
+
+	fmt.Println(strconv.FormatFloat(1.23456, 'e', -1, 32))
+	fmt.Println(strconv.FormatFloat(1.23456, 'f', -1, 32))
+
+	v := 3.1415926535
+	s32 := strconv.FormatFloat(v, 'E', -1, 32)
+	fmt.Printf("%T, %v\n", s32, s32)
+	s64 := strconv.FormatFloat(v, 'E', -1, 64)
+	fmt.Printf("%T, %v\n", s64, s64)
+}
+
+// output:
+// 1.000e-03
+// 1.000E-03
+// 1.23e+00
+// 1.23
+// 1.23456e+00
+// 1.23456
+// string, 3.1415927E+00
+// string, 3.1415926535E+00
+
+// func ParseFloat(s string, bitSize int) (float64, error): string -> float
+func TestParseFloat(t *testing.T) {
+	fmt.Println(strconv.ParseFloat("1.23456", 64))
+	fmt.Println(strconv.ParseFloat("3.1415926535", 32))
+	fmt.Println(strconv.ParseFloat("3.1415926535", 64))
+}
+
+// output:
+// 1.23456 <nil>
+// 3.1415927410125732 <nil>
+// 3.1415926535 <nil>
+
+// func AppendBool(dst []byte, b bool) []byte: 添加bool类型字符串到模板字符切片后
+func TestAppendBool(t *testing.T) {
+	type appendBoolTest struct {
+		dst      string
+		b        bool
+		expected string
+	}
+	ats := []*appendBoolTest{
+		{"ok-", true, "ok-true"},
+		{"ok-", false, "ok-false"},
+	}
+	for _, at := range ats {
+		val := strconv.AppendBool([]byte(at.dst), at.b)
+		assert.Equal(t, at.expected, string(val))
+	}
+}
+
+// func AppendInt(dst []byte, i int64, base int) []byte
+// func AppendUint(dst []byte, i uint64, base int) []byte
+// 添加int类型以指定进制转换的字符串到最后
+func TestAppendInt(t *testing.T) {
+	type appendIntTest struct {
+		dst      string
+		i        int64
+		base     int
+		expected string
+	}
+	ats := []*appendIntTest{
+		{"ok", 123, 10, "ok123"},
+		{"ok", -123, 10, "ok-123"},
+		{"ok", 7, 2, "ok111"},
+		{"ok", 15, 8, "ok17"},
+		{"ok", 31, 16, "ok1f"},
+	}
+	for _, at := range ats {
+		val := strconv.AppendInt([]byte(at.dst), at.i, at.base)
+		assert.Equal(t, at.expected, string(val))
+	}
+}
+
+// func AppendFloat(dst []byte, f float64, fmt byte, prec, bitSize int) []byte: 添加float类型转换后字符串到最后
+func TestAppendFloat(t *testing.T) {
+	fmt.Println(string(strconv.AppendFloat([]byte("ok"), 1.23456, 'f', -1, 64)))
+	fmt.Println(string(strconv.AppendFloat([]byte("ok"), 1.23456, 'e', 2, 64)))
+	fmt.Println(string(strconv.AppendFloat([]byte("ok"), 1.23456, 'E', 2, 64)))
+}
+
+// output:
+// ok1.23456
+// ok1.23e+00
+// ok1.23E+00
+
+// Quote: 添加引号
+func TestQuote(t *testing.T) {
+	// func Quote(s string) string: 字符串添加双引号
+	fmt.Println(strconv.Quote("ok"))
+	// func QuoteRune(r rune) string: 字符添加单引号
+	fmt.Println(strconv.QuoteRune('a'))
+	// func QuoteRuneToASCII(r rune) string: 字符先ascii转换再添加单引号
+	fmt.Println(strconv.QuoteRuneToASCII('好'))
+	// func QuoteToASCII(s string) string: 字符串先ascii转换再添加双引号
+	fmt.Println(strconv.QuoteToASCII("好"))
+	// func QuoteRuneToGraphic(r rune) string: 字符先对IsGraphic函数定义的非ascii或不可打印字符转义再添加单引号
+	fmt.Println(strconv.QuoteRuneToGraphic('好'))
+	// func QuoteToGraphic(s string) string: 字符串先对IsGraphic函数定义的非ascii或不可打印字符转义再添加双引号
+	fmt.Println(strconv.QuoteToGraphic("好"))
+}
+
+// func Unquote(s string) (string, error): 将s解释为单引号/双引号/反引号字符串
+func TestUnquote(t *testing.T) {
+	fmt.Println(strconv.Unquote(`"ok"`))
+	fmt.Println(strconv.Unquote("`ok`"))
+	fmt.Println(strconv.Unquote(`'o'`))
+	fmt.Println(strconv.Unquote("ok"))
+}
+
+// output:
+// ok <nil>
+// ok <nil>
+// o <nil>
+// invalid syntax
+
+// func UnquoteChar(s string, quote byte) (value rune, multibyte bool, tail string, err error):
+// 解码转义的字符串或由字符串s表示的字符文字中的第一个字符或字节
+func TestUnquoteChar(t *testing.T) {
+	v, mb, tt, err := strconv.UnquoteChar(`\"Fran & Freddie's Diner\"`, '"')
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("value:", string(v))
+	fmt.Println("multibyte:", mb)
+	fmt.Println("tail:", tt)
+}
+
+// output:
+// value: "
+// multibyte: false
+// tail: Fran & Freddie's Diner\"
+
+// AppendQuote: 添加引号包裹的字符/字符串到最后
+func TestAppendQuote(t *testing.T) {
+	fmt.Println(string(strconv.AppendQuote([]byte("ok"), "tom")))
+	fmt.Println(string(strconv.AppendQuoteToASCII([]byte("ok"), "好")))
+	fmt.Println(string(strconv.AppendQuoteToGraphic([]byte("ok"), "好")))
+
+	fmt.Println(string(strconv.AppendQuoteRune([]byte("ok"), '好')))
+	fmt.Println(string(strconv.AppendQuoteRuneToASCII([]byte("ok"), '好')))
+	fmt.Println(string(strconv.AppendQuoteRuneToGraphic([]byte("ok"), '好')))
+}
+
+// output:
+// ok"tom"
+// ok"\u597d"
+// ok"好"
+// ok'好'
+// ok'\u597d'
+// ok'好'
+
+// func IsGraphic(r rune) bool:
+// IsGraphic报告是否通过Unicode将符文定义为“图形”。 此类字符包括字母，标记，数字，标点符号，符号和空格，来自类别L，M，N，P，S和Zs。
+func TestIsGraphic(t *testing.T) {
+	assert.Equal(t, true, strconv.IsGraphic('*'))
+	assert.Equal(t, true, strconv.IsGraphic('a'))
+	assert.Equal(t, true, strconv.IsGraphic('\u597d'))
+	assert.Equal(t, false, strconv.IsGraphic('\007'))
+}
+
+// func IsPrint(r rune) bool: 判断是否为go可打印字符
+func TestIsPrint(t *testing.T) {
+	assert.Equal(t, true, strconv.IsPrint('*'))
+	assert.Equal(t, true, strconv.IsPrint('a'))
+	assert.Equal(t, true, strconv.IsPrint('\u597d'))
+	assert.Equal(t, false, strconv.IsPrint('\007'))
+}
+
+// func CanBackquote(s string) bool:
+// CanBackquote报告字符串s是否可以不变地表示为单行反引号字符串,且没有制表符以外的控制字符
+func TestCanBackquote(t *testing.T) {
+	assert.Equal(t, true, strconv.CanBackquote("Fran & Freddie's Diner ☺"))
+	assert.Equal(t, false, strconv.CanBackquote("`can't backquote this`"))
 }

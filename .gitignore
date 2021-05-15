@@ -24,3 +24,4 @@ go-app
 GeoIP2-Country.mmdb
 GeoLite2-City.mmdb
 out
+.DS_Store
