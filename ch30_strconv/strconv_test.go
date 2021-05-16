@@ -161,7 +161,7 @@ func TestParseFloat(t *testing.T) {
 // 3.1415927410125732 <nil>
 // 3.1415926535 <nil>
 
-// func AppendBool(dst []byte, b bool) []byte: 添加bool类型字符串到模板字符切片后
+// func AppendBool(dst []byte, b bool) []byte: 添加bool类型字符串到目标字符切片后
 func TestAppendBool(t *testing.T) {
 	type appendBoolTest struct {
 		dst      string

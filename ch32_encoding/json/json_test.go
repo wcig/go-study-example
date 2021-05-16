@@ -84,7 +84,6 @@ func TestJsonHTMLEscape(t *testing.T) {
 
 	json.HTMLEscape(&b, []byte(jsonStr))
 	assert.True(t, bytes.Equal(b.Bytes(), want.Bytes()))
-	fmt.Println("html escape result:", string(b.Bytes()))
 }
 
 // interface -> json io.Writer
