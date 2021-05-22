@@ -1,6 +1,6 @@
 module go-app
 
-go 1.13
+go 1.16
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.4.0
@@ -24,7 +24,7 @@ require (
 	github.com/tealeg/xlsx/v3 v3.2.3
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
+	golang.org/x/net v0.0.0-20210510120150-4163338589ed
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
