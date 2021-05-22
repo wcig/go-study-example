@@ -1,10 +1,13 @@
 package gob
 
 import (
+	"bytes"
 	"encoding/gob"
 	"fmt"
 	"os"
+	"reflect"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -13,8 +16,9 @@ import (
 // gob(go binary)文件编解码器,可以作为rpc调用的参数使用
 
 type user struct {
-	Id   int
-	Name string
+	Id         int
+	Name       string
+	CreateTime int64
 }
 
 // func NewEncoder(w io.Writer) *Encoder
@@ -39,7 +43,7 @@ func TestEncode(t *testing.T) {
 	defer file.Close()
 
 	encoder := gob.NewEncoder(file)
-	u := &user{Id: 1, Name: "tom"}
+	u := &user{Id: 1, Name: "tom", CreateTime: time.Now().Unix()}
 	err = encoder.Encode(u)
 	assert.Nil(t, err)
 }
@@ -58,4 +62,19 @@ func TestDecode(t *testing.T) {
 	err = decoder.Decode(&u)
 	assert.Nil(t, err)
 	fmt.Println(u)
+}
+
+// func (enc *Encoder) EncodeValue(value reflect.Value) error
+// func (dec *Decoder) DecodeValue(v reflect.Value) error
+// 使用很少,建议使用上面的Encode(),Decode()方法
+func TestValue(t *testing.T) {
+	var bf bytes.Buffer
+	srcUser := &user{Id: 1, Name: "tom", CreateTime: time.Now().Unix()}
+	err := gob.NewEncoder(&bf).EncodeValue(reflect.ValueOf(srcUser))
+	assert.Nil(t, err)
+
+	dstUser := &user{}
+	err = gob.NewDecoder(&bf).DecodeValue(reflect.ValueOf(dstUser))
+	assert.Nil(t, err)
+	fmt.Println(dstUser)
 }
