@@ -1,4 +1,4 @@
-package ch31_xls
+package xls
 
 import (
 	"fmt"
