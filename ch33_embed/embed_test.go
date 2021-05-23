@@ -41,14 +41,19 @@ func TestFs(t *testing.T) {
 
 // 注意: 不支持嵌入为函数内局部变量
 func TestLocalVariable(t *testing.T) {
-	/*//go:embed hello.txt
-	var b []byte
+	// //go:embed hello.txt
+	// var b []byte
+	//
+	// //go:embed hello.txt
+	// var s string
+	//
+	// //go:embed hello.txt
+	// var f embed.FS
 
-	//go:embed hello.txt
-	var s string
-
-	//go:embed hello.txt
-	var f embed.FS*/
+	// output:
+	// ./embed_test.go:44:4: go:embed cannot apply to var inside func
+	// ./embed_test.go:47:4: go:embed cannot apply to var inside func
+	// ./embed_test.go:50:4: go:embed cannot apply to var inside func
 }
 
 // 支持嵌入为导出和非导出变量
@@ -129,7 +134,8 @@ func TestDir(t *testing.T) {
 	fmt.Println(string(b2))
 }
 
-// 支持目录
+// func (f FS) ReadDir(name string) ([]fs.DirEntry, error)
+// 读取目录方法
 //go:embed tmp
 var f9 embed.FS
 
@@ -146,7 +152,8 @@ func TestReadDir(t *testing.T) {
 	// hello2.txt, false, ----------, &{name:tmp/hello2.txt data:hello world!2 hash:[141 156 121 6 142 89 84 140 113 253 171 22 140 214 122 115]}, %!s(<nil>)
 }
 
-// 支持目录
+// func (f FS) Open(name string) (fs.File, error)
+// 打开文件
 //go:embed hello.txt
 var f10 embed.FS
 
@@ -162,7 +169,7 @@ func TestOpen(t *testing.T) {
 	// file.Close()
 }
 
-// http (http://localhost:28080/)
+// net/http (http://localhost:28080/)
 //go:embed tmp
 var f11 embed.FS
 
