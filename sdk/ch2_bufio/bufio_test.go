@@ -1,4 +1,4 @@
-package ch51_bufio
+package ch2_bufio
 
 import (
 	"bufio"
