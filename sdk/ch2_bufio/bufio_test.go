@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// bufio
+// bufio TODO
 // 包bufio实现了缓冲的I/O。
 // 它包装了一个io.Reader或io.Writer对象，创建了另一个对象（Reader或Writer），该对象也实现了该接口，但提供了缓冲和一些有关文本I/O的帮助。
 
@@ -132,20 +132,105 @@ func TestReadByte(t *testing.T) {
 // func (b *Reader) ReadRune() (r rune, size int, err error)
 // 读取单个UTF-8编码的Unicode字符，并返回符文及其大小（以字节为单位）。 (建议使用bufio.Scanner更方便)
 func TestReadRune(t *testing.T) {
-	r := bufio.NewReader(strings.NewReader("hello"))
+	r := bufio.NewReader(strings.NewReader("天气ok"))
 	for {
 		r, n, err := r.ReadRune()
 		if err == io.EOF {
 			break
 		}
-		fmt.Println(r, n)
+		fmt.Println(string(r), n)
 	}
 	// output:
-	// h
-	// e
-	// l
-	// l
-	// o
+	// 天 3
+	// 气 3
+	// o 1
+	// k 1
+}
+
+// func (b *Reader) UnreadByte() error
+// 取消读取最后一个字节。 只有最近读取的字节可以不被读取。
+func TestUnreadByte(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	b, err := r.ReadByte()
+	fmt.Println(string(b), err) // h <nil>
+
+	err = r.UnreadByte()
+	assert.Nil(t, err)
+
+	b, err = r.ReadByte()
+	fmt.Println(string(b), err) // h <nil>
+}
+
+// func (b *Reader) UnreadRune() error
+// 取消读取最后一个字符。 如果在Reader上调用的最新方法不是ReadRune，则UnreadRune返回错误。
+func TestUnreadRune(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("天气ok"))
+	rr, n, err := r.ReadRune()
+	fmt.Println(string(rr), n, err) // 天 3 <nil>
+
+	err = r.UnreadRune()
+	assert.Nil(t, err)
+
+	rr, n, err = r.ReadRune()
+	fmt.Println(string(rr), n, err) // 天 3 <nil>
+}
+
+// func (b *Reader) Buffered() int
+// 返回可从当前缓冲区读取的字节数。
+func TestBuffered(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	fmt.Println(r.Buffered())
+
+	b, err := r.ReadByte()
+	fmt.Println(string(b), err) // h <nil>
+
+	fmt.Println(r.Buffered())
+	// output:
+	// 0
+	// h <nil>
+	// 4
+}
+
+// func (b *Reader) Discard(n int) (discarded int, err error)
+// 跳过n个字节,返回跳过的字节数
+func TestDiscard(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	discard, err := r.Discard(2)
+	fmt.Println(discard, err) // 2 <nil>
+
+	b, err := r.ReadByte()
+	fmt.Println(string(b), err) // l <nil>
+}
+
+// func (b *Reader) Peek(n int) ([]byte, error)
+// 返回下一个n个字节，而不会使阅读器前进。 字节在下一个读取调用时不再有效。 如果Peek返回的字节数少于n个字节，则它还会返回一个错误，说明读取短的原因。 如果n大于b的缓冲区大小，则错误为ErrBufferFull。
+func TestPeek(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	b, err := r.Peek(2)
+	fmt.Println(string(b), err) // he <nil>
+
+	b2, err2 := r.ReadByte()
+	fmt.Println(string(b2), err2) // h <nil>
+}
+
+// func (b *Reader) Reset(r io.Reader)
+// 丢弃所有缓冲的数据，重置所有状态，并将缓冲的读取器切换为从r读取。
+func TestReset(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	b, err := r.ReadByte()
+	fmt.Println(string(b), err) // h <nil>
+
+	r.Reset(strings.NewReader("world"))
+
+	b, err = r.ReadByte()
+	fmt.Println(string(b), err) // w <nil>
+}
+
+// func (b *Reader) Size() int
+// 返回底层缓冲区的大小（以字节为单位）。
+func TestSize(t *testing.T) {
+	r := bufio.NewReader(strings.NewReader("hello"))
+	fmt.Println(r.Size())
 }
 
 // func (b *Reader) WriteTo(w io.Writer) (n int64, err error)
