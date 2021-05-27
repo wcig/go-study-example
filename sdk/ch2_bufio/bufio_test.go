@@ -70,11 +70,11 @@ func TestReader_ReadString(t *testing.T) {
 	reader := bufio.NewReader(strings.NewReader("hello world.|It is ok"))
 
 	line1, _ := reader.ReadString('|')
-	fmt.Println("line1:", string(line1))
+	fmt.Println("line1:", line1)
 
 	line2, _ := reader.ReadString('|')
-	fmt.Println("line2:", string(line2))
-	fmt.Println("line1:", string(line1))
+	fmt.Println("line2:", line2)
+	fmt.Println("line1:", line1)
 	// output:
 	// line1: hello world.|
 	// line2: It is ok
