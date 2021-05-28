@@ -22,6 +22,7 @@ func TestZipFile(t *testing.T) {
 	srcFileName := "tmp.a.txt"
 	err := os.WriteFile(srcFileName, []byte("hello world."), os.ModePerm)
 	assert.Nil(t, err)
+	defer os.Remove(srcFileName)
 
 	// 创建准备写入的zip文件
 	zipFileName := "tmp.a.zip"
@@ -85,6 +86,7 @@ func TestZipDir(t *testing.T) {
 	_ = os.WriteFile("tmp/b", []byte("bbbbb"), 0755)
 	_ = os.Mkdir("tmp/c", 0755)
 	_ = os.WriteFile("tmp/c/d", []byte("ddddd"), 0755)
+	defer os.RemoveAll("tmp")
 
 	zipFile, err := os.Create("tmp.zip")
 	if err != nil {
@@ -145,4 +147,134 @@ func TestZipDir(t *testing.T) {
 	// 成功压缩文件:tmp/a, 写入字节数:5
 	// 成功压缩文件:tmp/b, 写入字节数:5
 	// 成功压缩文件:tmp/c/d, 写入字节数:5
+}
+
+// 解压文件
+func TestUnzipFile(t *testing.T) {
+	TestZipFile(t)
+
+	src := "tmp.a.zip"
+	readCloser, err := zip.OpenReader(src)
+	if err != nil {
+		panic(err)
+	}
+	defer readCloser.Close()
+
+	for _, file := range readCloser.File {
+		srcFile, err := file.Open()
+		if err != nil {
+			panic(err)
+		}
+
+		dstFile, err := os.OpenFile(file.Name, os.O_RDWR|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			panic(err)
+		}
+
+		n, err := io.Copy(dstFile, srcFile)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("成功解压文件:%s, 写入字节数:%d\n", file.Name, n)
+
+		dstFile.Close()
+		srcFile.Close()
+	}
+	// output:
+	// 成功解压文件:tmp.a.txt, 写入字节数:12
+}
+
+// 解压目录
+func TestUnzipDir(t *testing.T) {
+	TestZipDir(t)
+
+	src := "tmp.zip"
+	readCloser, err := zip.OpenReader(src)
+	if err != nil {
+		panic(err)
+	}
+	defer readCloser.Close()
+
+	for _, file := range readCloser.File {
+		// 如果是目录则创建目录并结束
+		if file.FileInfo().IsDir() {
+			if err := os.MkdirAll(file.Name, file.Mode()); err != nil {
+				panic(err)
+			}
+			fmt.Printf("成功解压目录:%s\n", file.Name)
+			continue
+		}
+
+		// 如果是文件创建并拷贝文件
+		srcFile, err := file.Open()
+		if err != nil {
+			panic(err)
+		}
+
+		dstFile, err := os.OpenFile(file.Name, os.O_RDWR|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			panic(err)
+		}
+
+		n, err := io.Copy(dstFile, srcFile)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("成功解压文件:%s, 写入字节数:%d\n", file.Name, n)
+
+		dstFile.Close()
+		srcFile.Close()
+	}
+	// output:
+	// 成功解压目录:tmp/
+	// 成功解压文件:tmp/a, 写入字节数:5
+	// 成功解压文件:tmp/b, 写入字节数:5
+	// 成功解压目录:tmp/c/
+	// 成功解压文件:tmp/c/d, 写入字节数:5
+}
+
+func Test(t *testing.T) {
+	file, err := os.Create("tmp.zip")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	w := zip.NewWriter(file)
+	defer w.Close()
+
+	walker := func(path string, info os.FileInfo, err error) error {
+		fmt.Printf("Crawling: %#v\n", path)
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		file, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		// Ensure that `path` is not absolute; it should not start with "/".
+		// This snippet happens to work because I don't use
+		// absolute paths, but ensure your real-world code
+		// transforms path into a zip-root relative path.
+		f, err := w.Create(path)
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(f, file)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+	err = filepath.Walk("tmp", walker)
+	if err != nil {
+		panic(err)
+	}
 }
