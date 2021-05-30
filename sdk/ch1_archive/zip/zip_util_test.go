@@ -136,9 +136,7 @@ func ZipDir(dst, src string) (err error) {
 		}
 
 		// 如果是目录则保留源文件目录结构,如果是文件设置压缩 (注意src为绝对路径情况)
-		if src != "" {
-			fileHeader.Name = filepath.Join(baseDir, strings.TrimPrefix(path, src))
-		}
+		fileHeader.Name = filepath.Join(baseDir, strings.TrimPrefix(path, src))
 		if info.IsDir() {
 			fileHeader.Name += "/"
 		} else {
