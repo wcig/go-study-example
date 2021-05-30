@@ -2,13 +2,16 @@ package ch4_bytes
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 	"unicode"
 
 	"github.com/stretchr/testify/assert"
 )
 
-// bytes包 TODO
+// bytes包
+
+/* -----------------------------字节切片比较-------------------------------------- */
 
 // 字节切片校验相等 (nil和空切片相等)
 func TestEqual(t *testing.T) {
@@ -20,6 +23,11 @@ func TestEqual(t *testing.T) {
 	assert.True(t, bytes.Equal(b1, b2))
 	assert.False(t, bytes.Equal(b1, b3))
 	assert.True(t, bytes.Equal(b4, nil))
+}
+
+// 不区分大小写是否相等
+func TestEqualFold(t *testing.T) {
+	println(bytes.EqualFold([]byte("Go"), []byte("go"))) // true
 }
 
 // 字节切片比较 (0:a==b, 1:a>b, -1:a<b)
@@ -37,6 +45,8 @@ func TestCompare(t *testing.T) {
 	// -1
 	// 0
 }
+
+/* -----------------------------字节切片包含,计算-------------------------------------- */
 
 // 子切片seq在切片s出现的次数
 func TestCount(t *testing.T) {
@@ -103,6 +113,26 @@ func TestContainsRune(t *testing.T) {
 	// true
 	// false
 	// false
+}
+
+// s是否有指定prefix前缀
+func TestHasPrefix(t *testing.T) {
+	prefix := []byte("hello")
+	s1 := []byte("hello ok")
+	s2 := []byte("ok")
+
+	fmt.Println(bytes.HasPrefix(s1, prefix)) // true
+	fmt.Println(bytes.HasPrefix(s2, prefix)) // false
+}
+
+// s是否有指定prefix前缀
+func TestHasSuffix(t *testing.T) {
+	suffix := []byte("hello")
+	s1 := []byte("ok hello")
+	s2 := []byte("ok")
+
+	fmt.Println(bytes.HasSuffix(s1, suffix)) // true
+	fmt.Println(bytes.HasSuffix(s2, suffix)) // false
 }
 
 // 返回seq字节切片在b字节切片第一次出现的位置,没有则返回-1
@@ -245,6 +275,8 @@ func TestLastIndexFunc(t *testing.T) {
 	// -1
 }
 
+/* -----------------------------字节切片修剪-------------------------------------- */
+
 // 返回字节切片s去除所有前后cutset子串出现的字符
 func TestTrim(t *testing.T) {
 	cutset := "0123456789"
@@ -321,4 +353,217 @@ func TestTrimSpace(t *testing.T) {
 	// |a lone gopher|
 }
 
-// TODO
+/* -----------------------------字节切片大小写转换-------------------------------------- */
+
+// 转小写
+func TestToLower(t *testing.T) {
+	println(string(bytes.ToLower([]byte("Gopher")))) // gopher
+}
+
+// 转大写
+func TestToUpper(t *testing.T) {
+	println(string(bytes.ToUpper([]byte("Gopher")))) // GOPHER
+}
+
+// 转小写+特殊字符处理
+func TestToLowerSpecial(t *testing.T) {
+	str := []byte("AHOJ VÝVOJÁRİ GOLANG")
+	totitle := bytes.ToLowerSpecial(unicode.AzeriCase, str)
+	println("Original : " + string(str))
+	println("ToLower : " + string(totitle))
+	// output:
+	// Original : AHOJ VÝVOJÁRİ GOLANG
+	// ToLower : ahoj vývojári golang
+}
+
+// 转大写+特殊字符处理
+func TestToUpperSpecial(t *testing.T) {
+	str := []byte("ahoj vývojári golang")
+	totitle := bytes.ToUpperSpecial(unicode.AzeriCase, str)
+	println("Original : " + string(str))
+	println("ToUpper : " + string(totitle))
+	// output:
+	// Original : ahoj vývojári golang
+	// ToUpper : AHOJ VÝVOJÁRİ GOLANG
+}
+
+// 将 s 视为 UTF-8 编码的字节，并返回一个副本，其中所有 Unicode 字母都映射到它们的标题大小写。
+func TestToTitle(t *testing.T) {
+	println(string(bytes.ToTitle([]byte("loud noises"))))
+	println(string(bytes.ToTitle([]byte("хлеб"))))
+	// output:
+	// LOUD NOISES
+	// ХЛЕБ
+}
+
+// 将 s 视为 UTF-8 编码的字节，并返回一个副本，其中每个字节代表无效的 UTF-8 替换为替换中的字节，该字节可能为空。
+func TestToValidUTF8(t *testing.T) {
+	println(string(bytes.ToValidUTF8([]byte("hello你好"), []byte("ok")))) // hello你好
+}
+
+/* -----------------------------字节切片分割合并-------------------------------------- */
+
+// 以指定字节切片合并
+func TestJoin(t *testing.T) {
+	s := [][]byte{[]byte("foo"), []byte("bar"), []byte("baz")}
+	println(string(bytes.Join(s, []byte(", ")))) // foo, bar, baz
+}
+
+// 以seq字节切片分割,如果seq为空则划分每个utf8字符 (等价于SplitN() n=-1)
+func TestSplit(t *testing.T) {
+	fmt.Printf("%q\n", bytes.Split([]byte("a,b,c"), []byte(",")))
+	fmt.Printf("%q\n", bytes.Split([]byte("a,b,c,好"), []byte("")))
+	fmt.Printf("%q\n", bytes.Split([]byte("a man a plan a canal panama"), []byte("a ")))
+	fmt.Printf("%q\n", bytes.Split([]byte(" xyz "), []byte("")))
+	fmt.Printf("%q\n", bytes.Split([]byte(""), []byte("Bernardo O'Higgins")))
+	// output:
+	// ["a" "b" "c"]
+	// ["a" "," "b" "," "c" "," "好"]
+	// ["" "man " "plan " "canal panama"]
+	// [" " "x" "y" "z" " "]
+	// [""]
+}
+
+// 基本同Split()一样,区别: n>0返回n个子切片,超过的不再划分; n==0返回空切片; n<0返回所有子切片
+func TestSplitN(t *testing.T) {
+	fmt.Printf("%q\n", bytes.SplitN([]byte("a,b,c"), []byte(","), 2))
+	z := bytes.SplitN([]byte("a,b,c"), []byte(","), 0)
+	fmt.Printf("%q (nil = %v)\n", z, z == nil)
+	// output:
+	// ["a" "b,c"]
+	// [] (nil = true)
+}
+
+// 切片划分
+func TestSplitAfter(t *testing.T) {
+	fmt.Printf("%q\n", bytes.SplitAfter([]byte("a,b,c"), []byte(",")))
+	fmt.Printf("%q\n", bytes.SplitAfter([]byte("a,b,c,好"), []byte("")))
+	// output:
+	// ["a," "b," "c"]
+	// ["a" "," "b" "," "c" "," "好"]
+}
+
+// 切片划分
+func TestSplitAfterN(t *testing.T) {
+	fmt.Printf("%q\n", bytes.SplitAfterN([]byte("a,b,c"), []byte(","), 2)) // ["a," "b,c"]
+}
+
+// 按单个或多个空白符划分
+func TestFields(t *testing.T) {
+	fmt.Printf("Fields are: %q", bytes.Fields([]byte("  foo bar  baz   "))) // Fields are: ["foo" "bar" "baz"]
+}
+
+// 按指定函数划分
+func TestFieldsFunc(t *testing.T) {
+	f := func(c rune) bool {
+		return !unicode.IsLetter(c) && !unicode.IsNumber(c)
+	}
+	fmt.Printf("Fields are: %q", bytes.FieldsFunc([]byte("  foo1;bar2,baz3..."), f)) // Fields are: ["foo1" "bar2" "baz3"]
+}
+
+// 将 s 解释为一系列 UTF-8 编码的代码点。 它返回一段相当于 s 的符文（Unicode 代码点）。
+func TestRunes(t *testing.T) {
+	rs := bytes.Runes([]byte("go gopher"))
+	for _, r := range rs {
+		fmt.Printf("%#U\n", r)
+	}
+	// output:
+	// U+0067 'g'
+	// U+006F 'o'
+	// U+0020 ' '
+	// U+0067 'g'
+	// U+006F 'o'
+	// U+0070 'p'
+	// U+0068 'h'
+	// U+0065 'e'
+	// U+0072 'r'
+}
+
+/* -----------------------------字节切片替换-------------------------------------- */
+
+// 重复字节切片指定次数
+func TestRepeat(t *testing.T) {
+	println(string(bytes.Repeat([]byte("ab"), 3))) // ababab
+}
+
+// 替换字节切片最多指定个数,-1表示所有
+func TestReplace(t *testing.T) {
+	fmt.Printf("%s\n", bytes.Replace([]byte("oink oink oink"), []byte("k"), []byte("ky"), 2))
+	fmt.Printf("%s\n", bytes.Replace([]byte("oink oink oink"), []byte("oink"), []byte("moo"), -1))
+	// output:
+	// oinky oinky oink
+	// moo moo moo
+}
+
+// 替换所有字节切片
+func TestReplaceAll(t *testing.T) {
+	fmt.Printf("%s\n", bytes.ReplaceAll([]byte("oink oink oink"), []byte("oink"), []byte("moo"))) // moo moo moo
+}
+
+// 返回字节切片 s 的副本，其中所有字符都根据映射函数进行了修改。 如果映射返回负值，则字符从字节切片中删除而没有替换。 s 中的字符和输出被解释为 UTF-8 编码的代码点。
+func TestMap(t *testing.T) {
+	rot13 := func(r rune) rune {
+		switch {
+		case r >= 'A' && r <= 'Z':
+			return 'A' + (r-'A'+13)%26
+		case r >= 'a' && r <= 'z':
+			return 'a' + (r-'a'+13)%26
+		}
+		return r
+	}
+	fmt.Printf("%s", bytes.Map(rot13, []byte("'Twas brillig and the slithy gopher...")))
+	// 'Gjnf oevyyvt naq gur fyvgul tbcure...
+}
+
+// 根据输入字节切片初始化一buffer (buffer集成多个reader、writer接口)
+func TestNewBuffer(t *testing.T) {
+	buf1 := bytes.NewBuffer([]byte("hello"))
+	assert.NotNil(t, buf1)
+
+	buf2 := bytes.NewBufferString("hello")
+	assert.NotNil(t, buf2)
+
+	var buf3 bytes.Buffer
+	assert.NotNil(t, buf3)
+}
+
+// bytes.Buffer方法
+func TestBufferMethod(t *testing.T) {
+	buf := bytes.NewBuffer([]byte("hello"))
+	fmt.Println(buf.String())
+
+	n, err := buf.Write([]byte(" world"))
+	fmt.Println(n, err, buf.String())
+
+	s := make([]byte, 2)
+	nn, err := buf.Read(s)
+	fmt.Println(nn, err, buf.String())
+	// output:
+	// hello
+	// 6 <nil> hello world
+	// 2 <nil> llo world
+}
+
+// 创建bytes.Reader (buffer集成多个reader接口)
+func TestNewReader(t *testing.T) {
+	reader := bytes.NewReader([]byte("hello"))
+	s1 := make([]byte, 5)
+	n, err := reader.Read(s1)
+	fmt.Println(n, err)
+	fmt.Println(string(s1))
+	fmt.Println(reader.Size(), reader.Len())
+
+	reader = bytes.NewReader([]byte("hello world."))
+	fmt.Println(reader.Size(), reader.Len())
+	var buf bytes.Buffer
+	nn, err := reader.WriteTo(&buf)
+	fmt.Println(nn, err)
+	fmt.Println(buf.String())
+	// output:
+	// 5 <nil>
+	// hello
+	// 5 0
+	// 12 12
+	// 12 <nil>
+	// hello world.
+}
