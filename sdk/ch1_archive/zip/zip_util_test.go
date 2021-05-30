@@ -8,12 +8,13 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestZip(t *testing.T) {
+func TestZipDirV1(t *testing.T) {
 	_ = os.Mkdir("tmp", 0755)
 	_ = os.WriteFile("tmp/a", []byte("aaaaa"), 0755)
 	_ = os.WriteFile("tmp/b", []byte("bbbbb"), 0755)
@@ -23,18 +24,18 @@ func TestZip(t *testing.T) {
 
 	{
 		// 相对路径
-		err := Zip("tmp.1.zip", "tmp")
+		err := ZipDir("tmp.1.zip", "tmp")
 		assert.Nil(t, err)
 	}
 	{
 		// 绝对路径
 		wd, _ := os.Getwd()
-		err := Zip(filepath.Join(wd, "tmp.2.zip"), filepath.Join(wd, "tmp"))
+		err := ZipDir(filepath.Join(wd, "tmp.2.zip"), filepath.Join(wd, "tmp"))
 		assert.Nil(t, err)
 	}
 }
 
-func TestZipV2(t *testing.T) {
+func TestZipDirV2(t *testing.T) {
 	_ = os.Mkdir("tmp", 0755)
 	_ = os.WriteFile("tmp/a", []byte("aaaaa"), 0755)
 	_ = os.WriteFile("tmp/b", []byte("bbbbb"), 0755)
@@ -44,13 +45,23 @@ func TestZipV2(t *testing.T) {
 
 	{
 		// 相对路径
-		err := ZipV2("tmp.1.zip", "tmp")
+		err := ZipDirV2("tmp.1.zip", "tmp")
 		assert.Nil(t, err)
 	}
 	{
 		// 绝对路径
 		wd, _ := os.Getwd()
-		err := ZipV2(filepath.Join(wd, "tmp.2.zip"), filepath.Join(wd, "tmp"))
+		err := ZipDirV2(filepath.Join(wd, "tmp.2.zip"), filepath.Join(wd, "tmp"))
+		assert.Nil(t, err)
+	}
+}
+
+func TestZipFiles(t *testing.T) {
+	{
+		_ = os.WriteFile("tmp.a.txt", []byte("aaaaa"), 0755)
+		_ = os.WriteFile("tmp.b.txt", []byte("bbbbb"), 0755)
+		_ = os.WriteFile("tmp.c.txt", []byte("ccccc"), 0755)
+		err := ZipFiles("tmp.zip", []string{"tmp.a.txt", "tmp.b.txt", "tmp.c.txt"})
 		assert.Nil(t, err)
 	}
 }
@@ -84,7 +95,7 @@ var (
 )
 
 // 压缩文件
-func Zip(dst, src string) (err error) {
+func ZipDir(dst, src string) (err error) {
 	// 校验
 	if src == "" {
 		return ErrEmpty
@@ -96,6 +107,9 @@ func Zip(dst, src string) (err error) {
 	if err != nil {
 		return err
 	}
+
+	// 相对路径
+	baseDir := fileInfo.Name()
 
 	// 创建zip文件
 	zipFile, err := os.Create(dst)
@@ -109,7 +123,7 @@ func Zip(dst, src string) (err error) {
 	defer zipWriter.Close()
 
 	// 遍历并写入到zip文件
-	err = filepath.Walk(fileInfo.Name(), func(path string, info fs.FileInfo, err2 error) error {
+	err = filepath.Walk(src, func(path string, info fs.FileInfo, err2 error) error {
 		// 遍历目录错误则直接返回
 		if err2 != nil {
 			return err2
@@ -121,10 +135,14 @@ func Zip(dst, src string) (err error) {
 			return err
 		}
 
-		// 保留源文件目录结构
-		fileHeader.Name = path
+		// 如果是目录则保留源文件目录结构,如果是文件设置压缩 (注意src为绝对路径情况)
+		if src != "" {
+			fileHeader.Name = filepath.Join(baseDir, strings.TrimPrefix(path, src))
+		}
 		if info.IsDir() {
 			fileHeader.Name += "/"
+		} else {
+			fileHeader.Method = zip.Deflate
 		}
 
 		// 根据zip文件头信息创建io.Writer用于写入文件
@@ -134,8 +152,7 @@ func Zip(dst, src string) (err error) {
 		}
 
 		// 如果是目录则只写入头信息不需要写入文件数据
-		// 如果不是标准文件也是一样
-		if info.IsDir() || !info.Mode().IsRegular() {
+		if info.IsDir() {
 			return nil
 		}
 
@@ -148,17 +165,13 @@ func Zip(dst, src string) (err error) {
 
 		// 拷贝数据写入
 		_, err = io.Copy(fw, fr)
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return err
 	})
 	return err
 }
 
 // 压缩文件V2简化版本
-func ZipV2(dst, src string) (err error) {
+func ZipDirV2(dst, src string) (err error) {
 	// 校验
 	if src == "" {
 		return ErrEmpty
@@ -212,15 +225,62 @@ func ZipV2(dst, src string) (err error) {
 
 		// 拷贝数据写入
 		_, err = io.Copy(fw, fr)
-		if err != nil {
-			return err
-		}
-
-		return nil
+		return err
 	}
 
 	// 执行遍历并写入zip文件
 	return filepath.Walk(fileName, walkFunc)
+}
+
+// 压缩多个文件
+func ZipFiles(dst string, files []string) (err error) {
+	if len(files) == 0 {
+		return ErrEmpty
+	}
+	if filepath.Ext(dst) != ZipFileExt {
+		return ErrZipExt
+	}
+
+	zipFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer zipFile.Close()
+
+	zipWriter := zip.NewWriter(zipFile)
+	defer zipWriter.Close()
+
+	for _, fileName := range files {
+		fileInfo, err := os.Stat(fileName)
+		if err != nil {
+			return err
+		}
+
+		fileHeader, err := zip.FileInfoHeader(fileInfo)
+		if err != nil {
+			return err
+		}
+
+		fileHeader.Name = fileInfo.Name() // 使用文件名,避免绝对路径情况
+		fileHeader.Method = zip.Deflate
+
+		fw, err := zipWriter.CreateHeader(fileHeader)
+		if err != nil {
+			return err
+		}
+
+		fr, err := os.Open(fileName)
+		if err != nil {
+			return err
+		}
+		defer fr.Close()
+
+		if _, err = io.Copy(fw, fr); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // 解压文件 (如果dstDir为空则解压至当前目录)
