@@ -21,6 +21,7 @@ func TestConstCompressLevel(t *testing.T) {
 	_ = flate.BestSpeed          // 最快速度压缩
 	_ = flate.NoCompression      // 不压缩
 	_ = flate.DefaultCompression // 默认压缩
+	_ = flate.HuffmanOnly
 }
 
 // func NewReader(r io.Reader) io.ReadCloser
