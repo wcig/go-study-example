@@ -75,24 +75,31 @@ func TestResize(t *testing.T) {
 	}
 }
 
-// func resize(orig string, dest string) {
-//    mw := gmagick.NewMagickWand()
-//    defer mw.Destroy()
-//    mw.ReadImage(orig)
-//    filter := gmagick.FILTER_LANCZOS
-//    w := mw.GetImageWidth()
-//    h := mw.GetImageHeight()
-//    mw.ResizeImage(w/2, h/2, filter, 1)
-//    mw.WriteImage(dest)
-// }
-//
-// func main() {
-//    f := flag.String("from", "", "original image file ...")
-//    t := flag.String("to", "", "target file ...")
-//    flag.Parse()
-//
-//    gmagick.Initialize()
-//    defer gmagick.Terminate()
-//
-//    resize(*f, *t)
-// }
+func Test(t *testing.T) {
+	gmagick.Initialize()
+	defer gmagick.Terminate()
+
+	mw := gmagick.NewMagickWand()
+	defer mw.Destroy()
+
+	var err error
+	err = mw.ReadImage("src.jpeg")
+	if err != nil {
+		panic(err)
+	}
+
+	err = mw.ExtentImage(300, 300, 300, 300)
+	if err != nil {
+		panic(err)
+	}
+
+	err = mw.SetImageGravity(gmagick.GRAVITY_CENTER)
+	if err != nil {
+		panic(err)
+	}
+
+	err = mw.WriteImage("tmp.300x300.jpeg")
+	if err != nil {
+		panic(err)
+	}
+}
