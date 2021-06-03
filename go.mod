@@ -6,6 +6,7 @@ require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.4.0
 	github.com/Shopify/sarama v1.19.0
 	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
+	github.com/chai2010/webp v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eapache/go-resiliency v1.1.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 // indirect
@@ -32,6 +33,7 @@ require (
 	github.com/tealeg/xlsx/v3 v3.2.3
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
+	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed
 	golang.org/x/sys v0.0.0-20210521203332-0cec03c779c1 // indirect
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
