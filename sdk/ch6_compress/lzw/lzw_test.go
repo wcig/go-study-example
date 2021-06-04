@@ -30,7 +30,7 @@ func TestWriteAndRead(t *testing.T) {
 		panic(err)
 	}
 
-	// 写入完成即关闭io.WriteCloser,保证正常EOF
+	// 注意: 写入完成即关闭io.WriteCloser,保证正常EOF
 	err = writeCloser.Close()
 	if err != nil {
 		panic(err)
