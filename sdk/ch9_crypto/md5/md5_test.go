@@ -12,8 +12,8 @@ import (
 
 // 常量
 func Test(t *testing.T) {
-	_ = md5.BlockSize // MD5块大小（字节）
-	_ = md5.Size      // MD5校验和的大小（字节）
+	_ = md5.BlockSize // 64，MD5块大小（字节）
+	_ = md5.Size      // 16, MD5校验和的大小（字节）
 }
 
 // 函数

@@ -9,9 +9,9 @@ import (
 
 // 常量
 func TestConst(t *testing.T) {
-	_ = sha256.BlockSize // 64
-	_ = sha256.Size
-	_ = sha256.Size224
+	_ = sha256.BlockSize // 64，sha256、sha224块大小（字节）
+	_ = sha256.Size      // 32，sha256校验和大小（字节）
+	_ = sha256.Size224   // 28，sha224校验和大小（字节）
 }
 
 // 函数
