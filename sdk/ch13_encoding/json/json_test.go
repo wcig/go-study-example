@@ -110,24 +110,23 @@ func TestInterfaceToIoWriter(t *testing.T) {
 	err = encoder.Encode(u)
 	assert.Nil(t, err)
 	fmt.Printf("after set escape html false, json str:\n%s\n", string(b.Bytes()))
+	// output:
+	// default json str:
+	// {"id":1,"name":"\u003cdiv\u003etom\u003c/div\u003e"}
+	//
+	// after set indent, json str:
+	// {
+	//	"id": 1,
+	//	"name": "\u003cdiv\u003etom\u003c/div\u003e"
+	// }
+	//
+	// after set escape html false, json str:
+	// {
+	//	"id": 1,
+	//	"name": "<div>tom</div>"
+	// }
+	//
 }
-
-// output:
-// default json str:
-// {"id":1,"name":"\u003cdiv\u003etom\u003c/div\u003e"}
-//
-// after set indent, json str:
-// {
-//	"id": 1,
-//	"name": "\u003cdiv\u003etom\u003c/div\u003e"
-// }
-//
-// after set escape html false, json str:
-// {
-//	"id": 1,
-//	"name": "<div>tom</div>"
-// }
-//
 
 // json io.Reader -> interface
 func TestIoWriterToInterface(t *testing.T) {
@@ -142,10 +141,9 @@ func TestIoWriterToInterface(t *testing.T) {
 	err = decoder.Decode(&u)
 	assert.Nil(t, err)
 	fmt.Println("user:", u)
+	// output:
+	// user: {1 <div>tom</div>}
 }
-
-// output:
-// user: {1 <div>tom</div>}
 
 // 校验是否json字符串
 func TestValidJsonString(t *testing.T) {

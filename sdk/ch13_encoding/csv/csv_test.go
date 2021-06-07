@@ -11,8 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// encoding/csc
-// 构造和解析csv文件
+// encoding/csc: 构造和解析csv文件（CSV文件有很多种；这个包支持 RFC 4180 中描述的格式）
 
 // csv定义错误常量
 func TestErr(t *testing.T) {
@@ -163,11 +162,19 @@ func initCsvFile(t *testing.T) {
 		{"Ken", "Thompson", "ken"},
 		{"Robert", "Griesemer", "gri"},
 	}
+
 	file, err := os.Create("writer.csv")
-	assert.Nil(t, err)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
 	writer := csv.NewWriter(file)
-	err = writer.WriteAll(records)
-	assert.Nil(t, err)
-	err = writer.Error()
-	assert.Nil(t, err)
+	if err = writer.WriteAll(records); err != nil {
+		panic(err)
+	}
+
+	if err = writer.Error(); err != nil {
+		panic(err)
+	}
 }
