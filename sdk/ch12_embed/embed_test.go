@@ -1,4 +1,4 @@
-package ch33_embed
+package ch12_embed
 
 import (
 	"embed"
