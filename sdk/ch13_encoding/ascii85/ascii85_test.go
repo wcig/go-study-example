@@ -47,15 +47,15 @@ func TestNewEncoder(t *testing.T) {
 	encoder := ascii85.NewEncoder(bb)
 	n, err := encoder.Write([]byte("hello明天"))
 	fmt.Println(n, err)
+
 	err = encoder.Close()
 	fmt.Println(err)
 	fmt.Println(bb.String())
+	// output:
+	// 11 <nil>
+	// <nil>
+	// BOu!rDs!FIjeSj
 }
-
-// output:
-// 11 <nil>
-// <nil>
-// BOu!rDs!FIjeSj
 
 // func NewDecoder(r io.Reader) io.Reader
 // 创建一个从r解码ascii85流的解码器
