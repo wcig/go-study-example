@@ -39,17 +39,23 @@ func main() {
 			f.Name, f.DefValue, f.Usage, f.Value)
 	})
 	flag.VisitAll(func(f *flag.Flag) {
-		fmt.Printf("flag-vskit: name:%s, defaultValue:%v, usage:%s, value:%v\n",
+		fmt.Printf("flag-vskitAll: name:%s, defaultValue:%v, usage:%s, value:%v\n",
 			f.Name, f.DefValue, f.Usage, f.Value)
 	})
 
 	// go run flag.go -name=tom -age=20 hello world ok
-	// command-line args: [/tmp/go-build1751193545/b001/exe/flag -name=tom -age=20 hello world ok]
+	// output:
+	// command-line args: [/tmp/go-build708948192/b001/exe/flag -name=tom -age=20 hello world ok]
 	// current is parsed: false
 	// current is parsed: true
 	//name:tom, age:20
 	// args: [hello world ok]
 	// arg 0: hello
-	// 3
-	// 2
+	// remain arg num after flag: 3
+	// flag num: 2
+	// after set name: jerry
+	// flag-vskit: name:age, defaultValue:10, usage:年龄, value:20
+	// flag-vskit: name:name, defaultValue:default-name, usage:名称, value:jerry
+	// flag-vskitAll: name:age, defaultValue:10, usage:年龄, value:20
+	// flag-vskitAll: name:name, defaultValue:default-name, usage:名称, value:jerry
 }
