@@ -1,3 +1,3 @@
-package ch18
+package ch18_go
 
 // go：Go语言的词法、语法树、类型等。可通过这个包进行代码信息提取和修改
