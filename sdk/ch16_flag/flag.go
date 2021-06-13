@@ -4,15 +4,33 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 )
 
+type Percent int
+
+func (p *Percent) Set(s string) error {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return err
+	}
+	*p = Percent(n)
+	return nil
+}
+
+func (p *Percent) String() string {
+	return strconv.Itoa(int(*p))
+}
+
 var (
-	name = flag.String("name", "default-name", "名称")
-	age  int
+	name    = flag.String("name", "default-name", "名称")
+	age     int
+	percent Percent
 )
 
 func init() {
 	flag.IntVar(&age, "age", 10, "年龄")
+	flag.Var(&percent, "percent", "百分比")
 }
 
 func main() {
@@ -21,7 +39,7 @@ func main() {
 	flag.Parse()
 
 	fmt.Println("current is parsed:", flag.Parsed())
-	fmt.Printf("name:%s, age:%d\n", *name, age)
+	fmt.Printf("name:%s, age:%d, percent:%d\n", *name, age, percent)
 	fmt.Println("args:", flag.Args())
 	fmt.Println("arg 0:", flag.Arg(0))
 	fmt.Println("remain arg num after flag:", flag.NArg())
@@ -43,19 +61,21 @@ func main() {
 			f.Name, f.DefValue, f.Usage, f.Value)
 	})
 
-	// go run flag.go -name=tom -age=20 hello world ok
+	// go run flag.go -name=tom -age=20 -percent=30 hello world ok
 	// output:
-	// command-line args: [/tmp/go-build708948192/b001/exe/flag -name=tom -age=20 hello world ok]
+	// command-line args: [/var/folders/vh/lks7z1qx6x90j10nwtm3njlw0000gn/T/go-build1964889729/b001/exe/flag -name=tom -age=20 -percent=30 hello world ok]
 	// current is parsed: false
 	// current is parsed: true
-	//name:tom, age:20
+	// name:tom, age:20, percent:30
 	// args: [hello world ok]
 	// arg 0: hello
 	// remain arg num after flag: 3
-	// flag num: 2
+	// flag num: 3
 	// after set name: jerry
 	// flag-vskit: name:age, defaultValue:10, usage:年龄, value:20
 	// flag-vskit: name:name, defaultValue:default-name, usage:名称, value:jerry
+	// flag-vskit: name:percent, defaultValue:0, usage:百分比, value:30
 	// flag-vskitAll: name:age, defaultValue:10, usage:年龄, value:20
 	// flag-vskitAll: name:name, defaultValue:default-name, usage:名称, value:jerry
+	// flag-vskitAll: name:percent, defaultValue:0, usage:百分比, value:30
 }

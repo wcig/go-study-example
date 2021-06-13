@@ -1,7 +1,29 @@
 package main
 
+import (
+	"flag"
+	"testing"
+)
+
 // flag: 命令行标志解析
 // flag 包支持的命令行参数类型有 bool、int、int64、uint、uint64、float、float64、string、duration.
+
+// 命令行语法：
+// -flag
+// -flag=x
+// -flag x // non-boolean flags only
+
+// 变量
+func TestVar(t *testing.T) {
+	_ = flag.CommandLine // 默认解析命令行flag集合
+}
+
+// 错误
+func TestErr(t *testing.T) {
+	_ = flag.ContinueOnError // 描述性错误
+	_ = flag.ExitOnError     // 调用os.Exit(2) 或-h/-help Exit(0)
+	_ = flag.PanicOnError    // 描述性的panic错误
+}
 
 // 函数
 // 1.命令行参数解析方式一: flag.Type() *Type
@@ -32,3 +54,9 @@ package main
 // func Parse() // 解析来自OS.ARGS [1：]的命令行标志,定义标志后必须调用
 // func Parsed() bool // 报告命令行标志是否已解析
 // func Set(name, value string) error // 设置命名命令行标志的值
+
+// 4.结构体：定义flag的集合
+// type FlagSet struct {
+// 	Usage func()
+// 	// 其他未导出字段
+// }
