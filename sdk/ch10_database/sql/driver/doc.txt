@@ -1,0 +1,14 @@
+database/sql/driver：定义sql包使用的数据库驱动所需要实现的接口
+
+
+1.Driver
+数据库驱动实现基础接口
+type Driver interface {
+    // 返回一个连接给数据库，只用于一个goroutine在一个时间的使用
+	Open(name string) (Conn, error)
+}
+
+"github.com/go-sql-driver/mysql" mysql包加载驱动方式：
+func init() {
+	sql.Register("mysql", &MySQLDriver{})
+}

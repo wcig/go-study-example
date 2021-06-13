@@ -1,0 +1,61 @@
+database/sql：提供了一个围绕 SQL（或类似 SQL）数据库的通用接口。
+
+类型
+
+1.DB
+零个或多个底层连接池的数据库的句柄，多个goroutine并发安全。
+type DB struct {
+    // contains filtered or unexported fields
+}
+
+2.Conn
+单个数据库连接，除非特定需要建议从DB获取，使用完毕需调用Close方法进行释放。
+type Conn struct {
+    // contains filtered or unexported fields
+}
+
+3.Tx
+Tx 是一个进行中的数据库事务。
+事务必须以调用 Commit 或 Rollback 结束。调用 Commit 或 Rollback 后，事务上的所有操作都失败并显示 ErrTxDone。
+通过调用事务的 Prepare 或 Stmt 方法为事务准备的语句，通过调用 Commit 或 Rollback 关闭。
+type Tx struct {
+    // contains filtered or unexported fields
+}
+
+4.Stmt
+stmt是一个准备好的语句，多个goroutine并发安全。
+通过Tx、Conn创建的stmt会与底层连接绑定，Tx、Conn关闭则stmt也会失效。通过DB创建则在整个DB生命周期都有效。
+type Stmt struct {
+    // contains filtered or unexported fields
+}
+
+5.Result
+汇总执行过的SQL命令。
+type Result interface {
+    // 返回上次插入数据库返回的id
+    LastInsertId() (int64, error)
+
+    // 返回update、insert、delete操作时影响的行数
+    RowsAffected() (int64, error)
+}
+
+6.Row
+调用QueryRow或选择单行的结果。
+type Row struct {
+    // contains filtered or unexported fields
+}
+
+7.Rows
+查询的结果。它的游标在结果集的第一行之前开始。使用 Next 从一行前进到另一行。
+type Rows struct {
+    // contains filtered or unexported fields
+}
+
+
+8.ColumnType
+包含列的名称和类型。
+type ColumnType struct {
+    // contains filtered or unexported fields
+}
+
+参考：https://www.cnblogs.com/wanghui-garcia/p/10406829.html
