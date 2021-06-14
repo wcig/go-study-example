@@ -1,0 +1,34 @@
+hash包：哈希函数的接口
+
+1.hash.Hash
+所有哈希函数实现的公共接口。
+type Hash interface {
+    // 写入数据来运行哈希，从不返回错误。
+    io.Writer
+
+    // 将当前散列添加到b并返回结果切片，不会改变底层哈希状态。
+    Sum(b []byte) []byte
+
+    // 重置Hash到它的初始状态。
+    Reset()
+
+    // 返回Sum的字节数
+    Size() int
+
+    // 返回哈希的底层块大小
+    BlockSize() int
+}
+
+2.hash.Hash32
+32位哈希函数实现的接口。
+type Hash32 interface {
+    Hash
+    Sum32() uint32
+}
+
+3.hash.Hash64
+64位哈希函数实现的接口。
+type Hash64 interface {
+    Hash
+    Sum64() uint64
+}
