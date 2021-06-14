@@ -8,6 +8,7 @@ import (
 
 // "hash/maphash"
 // 提供字节序列的哈希函数。这些散列函数旨在用于实现散列表或其他需要将任意字符串或字节序列映射到无符号 64 位整数上的统一分布的数据结构。哈希表或数据结构的每个不同实例都应该使用自己的种子。
+// maphash.Hash继承了hash.Hash64接口
 
 // func MakeSeed() Seed：创建一新的随机种子
 func TestMakeSeed(t *testing.T) {
