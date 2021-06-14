@@ -1,4 +1,4 @@
-package ch26_log
+package ch25_log
 
 import (
 	"os"
