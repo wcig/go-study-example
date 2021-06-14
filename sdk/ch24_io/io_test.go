@@ -1,18 +1,17 @@
-package io
+package ch24_io
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func Test1(t *testing.T) {
-	fmt.Println("aaa")
-}
+// io：io的基本接口。
 
 // ReaderFrom接口
 func TestReaderFrom(t *testing.T) {
