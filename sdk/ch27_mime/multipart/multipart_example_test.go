@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gopkg.in/resty.v1"
 )
 
 func TestServerWithGin(t *testing.T) {
@@ -56,6 +57,31 @@ func TestServerWithGin(t *testing.T) {
 	// string params: key:age, val:[10]
 	// file params: fieldName:file2, fileName:tmp.2.txt
 	// file params: fieldName:file1, fileName:tmp.1.txt
+}
+
+func TestClientWithResty(t *testing.T) {
+	_ = ioutil.WriteFile("tmp.1.txt", []byte("ok"), os.ModePerm)
+	_ = ioutil.WriteFile("tmp.2.txt", []byte("hello world."), os.ModePerm)
+
+	url := "http://localhost:28080/multipart"
+	strParams := map[string]string{
+		"name": "tom",
+		"age":  "10",
+	}
+	fileParams := map[string]string{
+		"file1": "tmp.1.txt",
+		"file2": "tmp.2.txt",
+	}
+
+	client := resty.New()
+	resp, err := client.R().
+		SetFormData(strParams).
+		SetFiles(fileParams).
+		Post(url)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(resp.String())
 }
 
 func TestClient(t *testing.T) {
