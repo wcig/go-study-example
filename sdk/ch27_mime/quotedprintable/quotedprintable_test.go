@@ -10,6 +10,8 @@ import (
 )
 
 // mime/quotedprintable: 实现了RFC 2045 指定的quoted-printable编码。
+// Quoted-printable或QP encoding，没有规范的中文译名，可译为可打印字符引用编码或使用可打印字符的编码。Quoted-printable是使用可打印的ASCII字符（如字母、数字与“=”）表示各种编码格式下的字符，以便能在7-bit数据通路上传输8-bit数据, 或者更一般地说在非8-bit clean媒体上正确处理数据[注 1]。这被定义为MIME content transfer encoding，用于e-mail。
+// 参考: https://zh.wikipedia.org/wiki/Quoted-printable
 
 // Type quotedprintable.Reader: quote-printable解码器
 //    func NewReader(r io.Reader) *Reader: 基于r创建一quotedprintable Reader
