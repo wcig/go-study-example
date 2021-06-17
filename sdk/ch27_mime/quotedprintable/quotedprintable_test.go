@@ -46,10 +46,16 @@ func TestReader(t *testing.T) {
 		b, err := io.ReadAll(quotedprintable.NewReader(strings.NewReader(s)))
 		fmt.Printf("%s %v\n", b, err)
 	}
+	// output:
+	// Hello, Gophers! <nil>
+	// invalid escape: <b style="font-size: 200%">hello</b> <nil>
+	// Hello, Gophers! This symbol will be unescaped: = and this will be written in one line. <nil>
 }
 
 func TestWriter(t *testing.T) {
 	w := quotedprintable.NewWriter(os.Stdout)
 	w.Write([]byte("These symbols will be escaped: = \t"))
 	w.Close()
+	// output:
+	// These symbols will be escaped: =3D =09
 }
