@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -181,63 +182,85 @@ func TestCloser(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// ReaderFrom接口
-func TestReaderFrom(t *testing.T) {
-	file, err := os.Open("temp1") // 文本: hello world.
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer file.Close()
+// LimitedReader接口
+func TestLimitedReader(t *testing.T) {
+	r := strings.NewReader("hello world.")
+	lr := io.LimitReader(r, 5)
 
-	buf := bytes.NewBufferString("ok")
-	num, err := buf.ReadFrom(file)
-	fmt.Println(num, err)     // 12 <nil>
-	fmt.Println(buf.String()) // okhello world.
+	buf1 := make([]byte, 5)
+	n, err := lr.Read(buf1)
+	fmt.Println(n, err, string(buf1))
+
+	buf2 := make([]byte, 5)
+	n, err = lr.Read(buf2)
+	fmt.Println(n, err)
+	// output:
+	// 5 <nil> hello
+	// 0 EOF
 }
 
-// WriterTo接口
-func TestWriterTo(t *testing.T) {
-	file, err := os.Create("temp2")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer file.Close()
+// PipeReader接口
+func TestPipeReader(t *testing.T) {
+	r, w := io.Pipe()
 
-	buf := bytes.NewBufferString("hello ok")
-	num, err := buf.WriteTo(file)
-	fmt.Println(num, err)     // 8 <nil>
-	fmt.Println(buf.String()) // hello ok
+	go func() {
+		n, err := w.Write([]byte("hello world.\n"))
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("成功写入字节数:", n)
+		_ = w.Close()
+	}()
+
+	n, err := io.Copy(os.Stdout, r)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("成功读取字节数:", n)
+	// output:
+	// hello world.
+	// 成功写入字节数: 13
+	// 成功读取字节数: 13
 }
 
-// ReaderAt接口
-func TestReaderAt(t *testing.T) {
-	reader := strings.NewReader("ok-hello world.")
-	p := make([]byte, 6)
-	n, err := reader.ReadAt(p, 2)
+// PipeWriter接口
+func TestPipeWriter(t *testing.T) {
+	r, w := io.Pipe()
+
+	go func() {
+		n, err := w.Write([]byte("hello world.\n"))
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("成功写入字节数:", n)
+		_ = w.Close()
+	}()
+
+	n, err := io.Copy(os.Stdout, r)
 	if err != nil {
-		t.Fatal(err)
+		panic(err)
 	}
-	fmt.Printf("%s, %d\n", p, n) // -hello, 6
+	fmt.Println("成功读取字节数:", n)
+	// output:
+	// hello world.
+	// 成功写入字节数: 13
+	// 成功读取字节数: 13
 }
 
-// WriterAt接口
-func TestWriterAt(t *testing.T) {
-	file, err := os.Create("temp3")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer file.Close()
-
-	file.WriteString("ok-hello world.")
-	n, err := file.WriteAt([]byte("666"), 8)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println(n) // 3
-	// temp3: ok-hello666rld.
+// ReadCloser接口
+func TestReadCloser(t *testing.T) {
+	r := strings.NewReader("hello world.")
+	rc := io.NopCloser(r)
+	err := rc.Close()
+	assert.Nil(t, err)
 }
 
-// MultiReader
+// LimitReader方法
+func TestLimitReader(t *testing.T) {
+	TestLimitedReader(t)
+}
+
+// MultiReader方法
 func TestMultiReader(t *testing.T) {
 	readers := []io.Reader{
 		strings.NewReader("from strings reader..."),
@@ -262,23 +285,160 @@ func TestMultiReader(t *testing.T) {
 	fmt.Printf("%s\n", data) // from strings reader...from bytes buffer...
 }
 
+// TeeReader方法
+func TestTeeReader(t *testing.T) {
+	var r io.Reader = strings.NewReader("hello world.\n")
+	r = io.TeeReader(r, os.Stdout)
+	b, err := io.ReadAll(r)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(b))
+	// output:
+	// hello world.
+	// hello world.
+	//
+}
+
+// ReaderAt接口
+func TestReaderAt(t *testing.T) {
+	reader := strings.NewReader("ok-hello world.")
+	p := make([]byte, 6)
+	n, err := reader.ReadAt(p, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("%s, %d\n", p, n) // -hello, 6
+}
+
+// ReaderFrom接口
+func TestReaderFrom(t *testing.T) {
+	_ = ioutil.WriteFile("temp1", []byte("hello world."), os.ModePerm)
+	defer os.Remove("temp1")
+
+	file, err := os.Open("temp1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	buf := bytes.NewBuffer(nil)
+	num, err := buf.ReadFrom(file)
+	fmt.Println(num, err)
+	fmt.Println(buf.String())
+	// output:
+	// 12 <nil>
+	// hello world.
+}
+
+// RuneReader接口
+func TestRuneReader(t *testing.T) {
+	src := "tom你好"
+	buf := bytes.NewBuffer([]byte(src))
+
+	for {
+		r, size, err := buf.ReadRune()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(r), size)
+	}
+	// output:
+	// t 1
+	// o 1
+	// m 1
+	// 你 3
+	// 好 3
+}
+
+// RuneScanner接口
+func TestRuneScanner(t *testing.T) {
+	buf := bytes.NewBufferString("你好")
+	r, size, _ := buf.ReadRune()
+	fmt.Println(string(r), size)
+
+	err := buf.UnreadRune()
+	assert.Nil(t, err)
+
+	r, size, _ = buf.ReadRune()
+	fmt.Println(string(r), size)
+	// output:
+	// 你 3
+	// 你 3
+}
+
+// SectionReader接口
+func TestSectionReader(t *testing.T) {
+	r := strings.NewReader("some io.Reader stream to be read\n")
+	s := io.NewSectionReader(r, 5, 17)
+
+	if _, err := io.Copy(os.Stdout, s); err != nil {
+		log.Fatal(err)
+	}
+	// output:
+	// some io.Reader stream
+}
+
+// io.Discard
+func TestDiscard(t *testing.T) {
+	w := io.Discard
+	n, err := w.Write([]byte("hello world."))
+	fmt.Println(n, err) // 12 <nil>
+}
+
 // MultiWriter
 func TestMultiWriter(t *testing.T) {
-	file, err := os.Create("temp4")
+	file, err := os.Create("tmp")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
+
 	writers := []io.Writer{
 		file,
 		os.Stdout,
 	}
 	writer := io.MultiWriter(writers...)
-	writer.Write([]byte("hello world.\n"))
+	n, err := writer.Write([]byte("hello world.\n"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("成功写入字节数:", n)
+	// output:
+	// hello world.
+	// 成功写入字节数: 13
 }
 
-// TeeReader
-func TestTeeReader(t *testing.T) {
-	reader := io.TeeReader(strings.NewReader("hello world.\n"), os.Stdout)
-	reader.Read(make([]byte, 20))
+// WriterAt接口
+func TestWriterAt(t *testing.T) {
+	file, err := os.Create("temp3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	file.WriteString("ok-hello world.")
+	n, err := file.WriteAt([]byte("666"), 8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(n) // 3
+	// temp3: ok-hello666rld.
+}
+
+// WriterTo接口
+func TestWriterTo(t *testing.T) {
+	file, err := os.Create("temp2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	buf := bytes.NewBufferString("hello ok")
+	num, err := buf.WriteTo(file)
+	fmt.Println(num, err)     // 8 <nil>
+	fmt.Println(buf.String()) // hello ok
 }
