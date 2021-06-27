@@ -34,7 +34,7 @@
 * reflect
 * regexp
 * runtime
-* sort
+* sort (√)
 * strconv
 * strings
 * sync
