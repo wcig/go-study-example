@@ -1,1 +1,46 @@
-在线文档命令：godoc -http=:6060
+在线文档命令：godoc (√)http=:6060
+
+* archive (√)
+* bufio (√)
+* builtin (√)
+* bytes (√)
+* cmd (√)
+* compress (√)
+* container (√)
+* context (√)
+* crypto (√)
+* database (√)
+* debug (√)
+* embed (√)
+* encoding (√)
+* errors (√)
+* expvar (√)
+* flag (√)
+* fmt (√)
+* go (√)
+* hash (√)
+* html (√)
+* image
+* index (√)
+* internal (√)
+* io
+* log (√)
+* math
+* mime (√)
+* net
+* os
+* path (√)
+* plugin (√)
+* reflect
+* regexp
+* runtime
+* sort
+* strconv
+* strings
+* sync
+* syscall
+* testing
+* text
+* time
+* unicode
+* unsafe
