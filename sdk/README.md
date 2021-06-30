@@ -35,7 +35,7 @@
 * regexp
 * runtime
 * sort (√)
-* strconv
+* strconv (√)
 * strings
 * sync
 * syscall
