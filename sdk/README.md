@@ -36,7 +36,7 @@
 * runtime
 * sort (√)
 * strconv (√)
-* strings
+* strings (√)
 * sync
 * syscall
 * testing

@@ -2,6 +2,7 @@ package ch37_strings
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"unicode"
@@ -348,4 +349,81 @@ func TestTrimSuffix(t *testing.T) {
 	s = strings.TrimSuffix(s, ", Gophers!!!")
 	s = strings.TrimSuffix(s, ", Marmots!!!")
 	fmt.Println(s) // ¡¡¡Hello
+}
+
+func TestTypeBuilder(t *testing.T) {
+	var b strings.Builder
+
+	fmt.Println("---init---")
+	fmt.Println("cap:", b.Cap())
+	fmt.Println("len:", b.Len())
+
+	n, err := b.Write([]byte("ok"))
+	fmt.Println(n, err)
+	err = b.WriteByte('-')
+	fmt.Println(err)
+	n, err = b.WriteRune('好')
+	fmt.Println(n, err)
+	n, err = b.WriteString("666")
+	fmt.Println(n, err)
+
+	fmt.Println("---after write---")
+	fmt.Println("content:", b.String())
+	fmt.Println("cap:", b.Cap())
+	fmt.Println("len:", b.Len())
+
+	fmt.Println("---after reset---")
+	b.Reset()
+	fmt.Println("content:", b.String())
+	fmt.Println("cap:", b.Cap())
+	fmt.Println("len:", b.Len())
+
+	fmt.Println("---after grow---")
+	b.Grow(5)
+	fmt.Println("cap:", b.Cap())
+	fmt.Println("len:", b.Len())
+	// output:
+	// ---init---
+	// cap: 0
+	// len: 0
+	// 2 <nil>
+	// <nil>
+	// 3 <nil>
+	// 3 <nil>
+	// ---after write---
+	// content: ok-好666
+	// cap: 16
+	// len: 9
+	// ---after reset---
+	// content:
+	// cap: 0
+	// len: 0
+	// ---after grow---
+	// cap: 5
+	// len: 0
+}
+
+func TestTypeReader(t *testing.T) {
+	r := strings.NewReader("ok\n")
+	fmt.Println("len:", r.Len())
+	fmt.Println("size:", r.Size())
+	n, err := r.WriteTo(os.Stdout)
+	fmt.Println(n, err)
+	// output:
+	// len: 3
+	// size: 3
+	// ok
+	// 3 <nil>
+}
+
+func TestReplacer(t *testing.T) {
+	r := strings.NewReplacer("<", "&lt;", ">", "&gt;")
+	fmt.Println(r.Replace("This is <b>HTML</b>!"))
+
+	n, err := r.WriteString(os.Stdout, "<ok>\n")
+	fmt.Println(n, err)
+	// output:
+	// This is &lt;b&gt;HTML&lt;/b&gt;!
+	// &lt;ok&gt;
+	// 11 <nil>
 }
