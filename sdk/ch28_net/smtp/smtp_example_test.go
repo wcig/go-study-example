@@ -19,7 +19,7 @@ var (
 	msgFormat = "To: %s\r\nFrom: %s\r\nCc: %s\r\nSubject: %s\r\n\r\n%s\r\n" // to,from,cc,subject,body
 )
 
-// 发件人和收件人设置昵称：from、to修改为格式：nickname<from/to>
+// 发件人和收件人设置昵称：from、to修改为格式：`nickname <from/to>`
 func TestSendMail(t *testing.T) {
 	auth := smtp.PlainAuth("", username, password, host)
 	subject := "test subject"
