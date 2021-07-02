@@ -23,7 +23,7 @@
 * image
 * index (√)
 * internal (√)
-* io
+* io (√)
 * log (√)
 * math
 * mime (√)

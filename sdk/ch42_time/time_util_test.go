@@ -1,4 +1,4 @@
-package ch27_time
+package ch42_time
 
 import (
 	"fmt"
