@@ -1,256 +1,181 @@
 package ch42_time
 
-import (
-	"fmt"
-	"testing"
-	"time"
+// time：提供测量和显示时间功能（历法计算始终采用公历，没有闰秒）
 
-	"github.com/stretchr/testify/assert"
-)
+// 常量
+// 1.时间格式化：layout
+// const (
+// 	ANSIC       = "Mon Jan _2 15:04:05 2006"
+// 	UnixDate    = "Mon Jan _2 15:04:05 MST 2006"
+// 	RubyDate    = "Mon Jan 02 15:04:05 -0700 2006"
+// 	RFC822      = "02 Jan 06 15:04 MST"
+// 	RFC822Z     = "02 Jan 06 15:04 -0700" // RFC822 with numeric zone
+// 	RFC850      = "Monday, 02-Jan-06 15:04:05 MST"
+// 	RFC1123     = "Mon, 02 Jan 2006 15:04:05 MST"
+// 	RFC1123Z    = "Mon, 02 Jan 2006 15:04:05 -0700" // RFC1123 with numeric zone
+// 	RFC3339     = "2006-01-02T15:04:05Z07:00"
+// 	RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
+// 	Kitchen     = "3:04PM"
+// 	// Handy time stamps.
+// 	Stamp      = "Jan _2 15:04:05"
+// 	StampMilli = "Jan _2 15:04:05.000"
+// 	StampMicro = "Jan _2 15:04:05.000000"
+// 	StampNano  = "Jan _2 15:04:05.000000000"
+// )
 
-// 获取当前时间Time
-func TestNowTime(t *testing.T) {
-	lt := time.Now()
-	fmt.Println("当前时间:", lt)
+// 2.持续时间单位：time.Duration
+// const (
+// 	Nanosecond  Duration = 1
+// 	Microsecond          = 1000 * Nanosecond
+// 	Millisecond          = 1000 * Microsecond
+// 	Second               = 1000 * Millisecond
+// 	Minute               = 60 * Second
+// 	Hour                 = 60 * Minute
+// )
 
-	secondTimestamp := lt.Unix()
-	MillisecondTimestamp := lt.UnixNano() / 1e6
-	nanosecondTimestamp := lt.UnixNano()
-	fmt.Println("秒时间戳:", secondTimestamp)
-	fmt.Println("毫秒时间戳:", MillisecondTimestamp)
-	fmt.Println("纳秒时间戳:", nanosecondTimestamp)
+// 3.月份：time.Month
+// const (
+// 	January Month = 1 + iota
+// 	February
+// 	March
+// 	April
+// 	May
+// 	June
+// 	July
+// 	August
+// 	September
+// 	October
+// 	November
+// 	December
+// )
 
-	location := lt.Location()
-	fmt.Println("位置:", location)
+// 4.周几：time.Weekday
+// const (
+// 	Sunday Weekday = iota
+// 	Monday
+// 	Tuesday
+// 	Wednesday
+// 	Thursday
+// 	Friday
+// 	Saturday
+// )
 
-	zoneName, zoneOffset := lt.Zone()
-	fmt.Printf("时区名称:%s, 时区相对标准时间偏移量(单位秒):%d\n", zoneName, zoneOffset)
+// 函数
+// func After(d Duration) <-chan Time // 等过去时间d，然后在返回的通道发送当前时间。相当于NewTimer(d).C。
+// func Sleep(d Duration)             // 当前goroutine暂停时间d，如果d为负数或0则立即返回。
+// func Tick(d Duration) <-chan Time  // NewTicker 的便捷包装器，仅提供对滴答通道的访问。
 
-	fmt.Println("时间:", lt.Year(), lt.Month(), lt.Day(), lt.YearDay(), lt.Weekday(), lt.Hour(), lt.Minute(), lt.Second(), lt.Nanosecond())
-	year, week := lt.ISOWeek()
-	fmt.Println(year, week)
+// 类型
+// 1.时间间隔：将两个瞬间之间经过的时间表示为 int64 纳秒计数。该表示将最大可表示持续时间限制为大约 290 年。
+// type Duration int64
+// func ParseDuration(s string) (Duration, error) // 字符串解析为duration
+// func Since(t Time) Duration                    // 等价于time.Now().Sub(t)，返回当前时间减去时间t的间隔
+// func Until(t Time) Duration                    // 等价于t.Sub(time.Now))，返回t减去当前时间的间隔
+// func (d Duration) Hours() float64
+// func (d Duration) Microseconds() int64
+// func (d Duration) Milliseconds() int64
+// func (d Duration) Minutes() float64
+// func (d Duration) Nanoseconds() int64
+// func (d Duration) Round(m Duration) Duration // 时间间隔d以m为单位四舍五入
+// func (d Duration) Seconds() float64
+// func (d Duration) String() string               // 以“72h3m0.5s”的形式返回表示持续时间的字符串
+// func (d Duration) Truncate(m Duration) Duration // 时间间隔d以m为单位截断
 
-	// UTC时间
-	fmt.Println("当前时间转换为UTC时间:", lt.UTC())
-}
+// 2.位置：位置将时间映射为当前使用区域
+// type Location struct {
+// 	// contains filtered or unexported fields
+// }
+// var Local *Location = &localLoc // 本地位置
+// var UTC *Location = &utcLoc // utc位置
+// func FixedZone(name string, offset int) *Location // 根据区域名称name和偏移量（UTC以东的秒数），返回位置
+// func LoadLocation(name string) (*Location, error) // 根据给定名称name返回其位置。
+// 1.如果name为空或"UTC"则返回UTC位置，如果name是"Local"则返回本地位置，否则将被与IANA时区数据库对应的位置（例如"America/New_York"）
+// 2.所有系统都不存在LoadLocation所需的时区数据库，尤其是非UNIX系统。LoadLocation在ZoneInfo环境变量中指定的目录或未压缩的zip文件中，如果有的话，然后在UNIX系统上查看已知的安装位置，最后查找$GOROOT/lib/time/dioundfo.zip。
+// func LoadLocationFromTZData(name string, data []byte) (*Location, error) // 从名称name和IANA数据库数据获取位置
+// func (l *Location) String() string // 返回位置的时区信息
 
-// output:
-// 当前时间: 2021-03-05 15:12:39.788645297 +0800 CST m=+0.000487483
-// 秒时间戳: 1614928359
-// 毫秒时间戳: 1614928359788
-// 纳秒时间戳: 1614928359788645297
-// 位置: Local
-// 时区名称:CST, 时区相对标准时间偏移量(单位秒):28800
-// 时间: 2021 March 5 64 Friday 15 12 39 788645297
-// 2021 9
-// 2021-03-05 07:12:39.788645297 +0000 UTC
+// 3.Month：月份
+// type Month int
+// func (m Month) String() string
 
-// 位置-时区
-func TestLocation(t *testing.T) {
-	utcLc, err := time.LoadLocation("UTC")
-	assert.Nil(t, err)
-	fmt.Println(utcLc)
+// 4.ParseError：解析时间字符串的问题
+// type ParseError struct {
+// 	Layout     string
+// 	Value      string
+// 	LayoutElem string
+// 	ValueElem  string
+// 	Message    string
+// }
+// func (e *ParseError) Error() string
 
-	shLc, err := time.LoadLocation("Asia/Shanghai")
-	assert.Nil(t, err)
-	fmt.Println(shLc)
+// 5.Ticker：持有一个channel，时钟刻度
+// type Ticker struct {
+// 	C <-chan Time // The channel on which the ticks are delivered.
+// 	// contains filtered or unexported fields
+// }
+// func NewTicker(d Duration) *Ticker // 根据时间间隔d返回一Ticker，该Ticker每过指定时间发送时间channel
+// func (t *Ticker) Reset(d Duration) // 暂停t并重置其周期为指定时间间隔d，下一次触发在新的周期过去
+// func (t *Ticker) Stop()            // 关闭t，tick将不再发送，但不会关闭channel，以防止并发的goroutine读取错误
 
-	lt := time.Now()
-	fmt.Println(lt)
-	fmt.Println(lt.In(utcLc))
-	fmt.Println(lt.In(shLc))
+// 6.Time：以纳秒为精度的时间
+// type Time struct {
+// 	// contains filtered or unexported fields
+// }
+// func Date(year int, month Month, day, hour, min, sec, nsec int, loc *Location) Time // 指定参数初始化时间
+// func Now() Time                                                                     // 返回当前时间
+// func Parse(layout, value string) (Time, error)                                      // 基于指定格式layout和时间字符串value解析，返回时间和错误
+// func ParseInLocation(layout, value string, loc *Location) (Time, error)             // 以指定时区解析时间
+// func Unix(sec int64, nsec int64) Time                                               // 自1970年1月1日起返回与给定的UNIX时间，SEC秒和NSEC纳秒相对应的本地时间。（sec和nsec不能重复）
+// func (t Time) Add(d Duration) Time                                                  // 返回t增加间隔d后的时间
+// func (t Time) AddDate(years int, months int, days int) Time                         // 返回t增加指定年月日后的时间
+// func (t Time) After(u Time) bool                                                    // 报告t是否在d之后
+// func (t Time) AppendFormat(b []byte, layout string) []byte                          // 在b基础上，返回增加以layout格式的时间字符串后的字节切片
+// func (t Time) Before(u Time) bool                                                   // 报告t是否在u之后
+// func (t Time) Clock() (hour, min, sec int)                                          // 返回t的时分秒
+// func (t Time) Date() (year int, month Month, day int)                               // 返回t的年月日
+// func (t Time) Day() int                                                             // 返回t的月份的天
+// func (t Time) Equal(u Time) bool                                                    // 报告t和u时间是否相等，不同时区也可以相等
+// func (t Time) Format(layout string) string                                          // 以指定格式layout格式化时间t
+// func (t *Time) GobDecode(data []byte) error                                         // 实现了GobDecoder接口
+// func (t Time) GobEncode() ([]byte, error)                                           // 实现了GobEncoder接口
+// func (t Time) Hour() int                                                            // 返回t的时（范围0到23）
+// func (t Time) ISOWeek() (year, week int)                                            // 返回t的ISO8601年月和周数
+// func (t Time) In(loc *Location) Time                                                // 返回t的副本示例，该示例的时区为loc
+// func (t Time) IsZero() bool                                                         // 报告t是否为零时间：January 1, year 1, 00:00:00 UTC
+// func (t Time) Local() Time                                                          // 返回t以本地时区的时间
+// func (t Time) Location() *Location                                                  // 返回t的时区信息
+// func (t Time) MarshalBinary() ([]byte, error)                                       // 实现了Binary.Marshaler接口
+// func (t Time) MarshalJSON() ([]byte, error)                                         // 实现了json.Marshaler接口，格式为RFC 3339
+// func (t Time) MarshalText() ([]byte, error)                                         // 实现了encoding.TextMarshaler接口
+// func (t Time) Minute() int                                                          // 返回t的分钟数（范围0到59）
+// func (t Time) Month() Month                                                         // 返回t的月份
+// func (t Time) Nanosecond() int                                                      // 返回t的秒单位的纳秒数（范围0到999999999）
+// func (t Time) Round(d Duration) Time                                                // 返回时间t以间隔单位d四舍五入后的时间
+// func (t Time) Second() int                                                          // 返回t的秒单位数（范围0到59）
+// func (t Time) String() string                                                       // 返回t以指定格式的字符串："2006-01-02 15:04:05.999999999 -0700 MST"
+// func (t Time) Sub(u Time) Duration                                                  // 返回时间t减去时间u的时间间隔
+// func (t Time) Truncate(d Duration) Time                                             // 返回t以间隔单位d截断后的时间
+// func (t Time) UTC() Time                                                            // 返回t以UTC时区的时间
+// func (t Time) Unix() int64                                                          // 返回t的秒时间戳
+// func (t Time) UnixNano() int64                                                      // 返回t的纳秒时间戳
+// func (t *Time) UnmarshalBinary(data []byte) error                                   // 实现接口：encoding.BinaryUnmarshaler
+// func (t *Time) UnmarshalJSON(data []byte) error                                     // 实现接口：json.Unmarshaler
+// func (t *Time) UnmarshalText(data []byte) error                                     // 实现接口：encoding.TextUnmarshaler
+// func (t Time) Weekday() Weekday                                                     // 返回t的Weekday
+// func (t Time) Year() int                                                            // 返回t的年份数
+// func (t Time) YearDay() int                                                         // 返回t的一年中第几天（范围1到365或1到366）
+// func (t Time) Zone() (name string, offset int)                                      // 返回t的时区名称和偏移量
 
-	format := "2006-01-02 15:04:05.999"
-	str := "2021-03-05 11:43:11.959"
-	tt, err := time.ParseInLocation(format, str, utcLc)
-	assert.Nil(t, err)
-	fmt.Println(tt)
-}
+// 7.Timer：表示一个事件，当定时器到期，将会在C上发送当前时间（除非计时器是由AfterFunc创建的。必须使用newtimer或afterfunc创建计时器。）
+// type Timer struct {
+// 	C <-chan Time
+// 	// contains filtered or unexported fields
+// }
+// func AfterFunc(d Duration, f func()) *Timer // 等待过去的持续时间，然后在自己的Goroutine中调用f。它返回一个可用于使用其停止方法取消呼叫的计时器。
+// func NewTimer(d Duration) *Timer            // 创建一定时时间为d的定时器
+// func (t *Timer) Reset(d Duration) bool      // 改变定时器t，使得在时间间隔d过后失效，定时器已激活返回true，定时器已过期或被暂停返回false
+// func (t *Timer) Stop() bool                 // 暂停定时器t，如果调用stops返回true，如果定时器已过期或暂停则返回false
 
-// output:
-// UTC
-// Asia/Shanghai
-// 2021-03-05 11:50:11.237275717 +0800 CST m=+0.000541605
-// 2021-03-05 03:50:11.237275717 +0000 UTC
-// 2021-03-05 11:50:11.237275717 +0800 CST
-// 2021-03-05 11:43:11.959 +0000 UTC
-
-// 位置-时区 (时区信息文件目录: $GOROOT/lib/time/zoneinfo.zip)
-func TestLocationWithZone(t *testing.T) {
-	utcZoneLc := time.FixedZone("UTC", 0)
-	shZoneLc := time.FixedZone("Asia/Shanghai", 8*60*60)
-	fmt.Println(utcZoneLc)
-	fmt.Println(shZoneLc)
-
-	lt := time.Now()
-	fmt.Println(lt)
-	fmt.Println(lt.In(utcZoneLc))
-	fmt.Println(lt.In(shZoneLc))
-}
-
-// output:
-// UTC
-// Asia/Shanghai
-// 2021-03-05 11:49:35.595836736 +0800 CST m=+0.000499919
-// 2021-03-05 03:49:35.595836736 +0000 UTC
-// 2021-03-05 11:49:35.595836736 +0800 Asia/Shanghai
-
-// 时间计算
-func TestTimeCal(t *testing.T) {
-	lt := time.Now()
-	fmt.Println(lt)
-
-	// 时间加减
-	lt = lt.Add(time.Second)
-	lt = lt.Add(time.Minute)
-	lt = lt.Add(-time.Hour)
-	fmt.Println(lt)
-
-	lt = lt.AddDate(-1, 1, 1)
-	fmt.Println(lt)
-
-	// 时间取整
-	fmt.Println(lt.Truncate(time.Second))                        // 纳秒取零
-	fmt.Println(lt.Truncate(time.Minute))                        // 纳秒,秒取零
-	fmt.Println(lt.Truncate(time.Hour))                          // 纳秒,秒,分钟取零
-	fmt.Println(lt.Truncate(time.Hour * 24).Add(time.Hour * -8)) // 纳秒,秒,分钟,小时取零
-
-	// 时间前后判断
-	fmt.Println(lt.Before(lt.Add(time.Second)))
-	fmt.Println(lt.After(lt.Add(time.Second)))
-	fmt.Println(lt.Equal(lt.Add(time.Second)))
-
-	// now - t -> duration
-	oneHourAgoTime := time.Now().Add(time.Hour)
-	fmt.Println(int64(time.Since(oneHourAgoTime).Seconds()))
-
-	// t - now
-	fmt.Println(int64(time.Until(oneHourAgoTime).Seconds()))
-
-	// t1 - t2
-	now := time.Now()
-	fmt.Println(int64(now.Sub(now.Add(-time.Hour)).Seconds()))
-}
-
-// output:
-// 2021-03-05 15:14:01.262368652 +0800 CST m=+0.000533499
-// 2021-03-05 14:15:02.262368652 +0800 CST m=-3538.999466501
-// 2020-04-06 14:15:02.262368652 +0800 CST
-// 2020-04-06 14:15:02 +0800 CST
-// 2020-04-06 14:15:00 +0800 CST
-// 2020-04-06 14:00:00 +0800 CST
-// 2020-04-06 00:00:00 +0800 CST
-// true
-// false
-// false
-// -3599
-// 3599
-// 3600
-
-// Duration
-func TestDuration(t *testing.T) {
-	// 时长基础单位
-	fmt.Println(time.Nanosecond)
-	fmt.Println(time.Microsecond)
-	fmt.Println(time.Millisecond)
-	fmt.Println(time.Second)
-	fmt.Println(time.Minute)
-	fmt.Println(time.Hour)
-
-	// 时长换算
-	fmt.Println(time.Hour.Hours())
-	fmt.Println(time.Hour.Minutes())
-	fmt.Println(time.Hour.Seconds())
-	fmt.Println(time.Hour.Milliseconds())
-	fmt.Println(time.Hour.Microseconds())
-	fmt.Println(time.Hour.Nanoseconds())
-
-	// string -> duration
-	hd, _ := time.ParseDuration("1h")
-	md, _ := time.ParseDuration("2m")
-	sd, _ := time.ParseDuration("3s")
-	fmt.Println(hd, md, sd)
-
-	// 截断
-	td1, _ := time.ParseDuration("1h2m3s4ms")
-	fmt.Println(td1)
-	fmt.Println(td1.Truncate(time.Second))
-	fmt.Println(td1.Truncate(time.Minute))
-	fmt.Println(td1.Truncate(time.Hour))
-
-	// 四舍五入
-	td2, _ := time.ParseDuration("1h2m30s")
-	fmt.Println(td2)
-	fmt.Println(td2.Round(time.Minute))
-}
-
-// output:
-// 1ns
-// 1µs
-// 1ms
-// 1s
-// 1m0s
-// 1h0m0s
-// 1
-// 60
-// 3600
-// 3600000
-// 3600000000
-// 3600000000000
-// 1h0m0s 2m0s 3s
-// 1h2m3.004s
-// 1h2m3s
-// 1h2m0s
-// 1h0m0s
-// 1h2m30s
-// 1h3m0s
-
-// Date -> Time
-func TestInitTimeWithDate(t *testing.T) {
-	utcLc, _ := time.LoadLocation("UTC")
-	tt := time.Date(2021, 3, 5, 13, 43, 1, 2, utcLc)
-	fmt.Println(tt) // 2021-03-05 13:43:01.000000002 +0000 UTC
-}
-
-// Time -> string
-func TestTime2String(t *testing.T) {
-	now := time.Now()
-	fmt.Println(time.Now().Format(time.UnixDate))      // Thu Mar  4 16:54:35 CST 2021
-	fmt.Println(time.Now().Format(time.RFC3339Nano))   // 2021-03-04T16:54:35.185979712+08:00
-	fmt.Println(time.Now().Format(time.StampMicro))    // Mar  4 16:54:35.185982
-	fmt.Println(now.Format("2006-01-02 15:04:05.999")) // 2021-03-04 16:54:35.185
-}
-
-// string -> Time
-func TestString2Time(t *testing.T) {
-	str := "2021-03-04 16:54:35.185"
-	format := "2006-01-02 15:04:05.999"
-	tt, err := time.Parse(format, str)
-	assert.Nil(t, err)
-	fmt.Println(tt)
-}
-
-// Time -> timestamp
-func TestTime2Timestamp(t *testing.T) {
-	lt := time.Now()
-	secondTimestamp := lt.Unix()
-	MillisecondTimestamp := lt.UnixNano() / 1e6
-	nanosecondTimestamp := lt.UnixNano()
-	fmt.Println("秒时间戳:", secondTimestamp)
-	fmt.Println("毫秒时间戳:", MillisecondTimestamp)
-	fmt.Println("纳秒时间戳:", nanosecondTimestamp)
-}
-
-// timestamp -> Time
-func TestTimestamp2Time(t *testing.T) {
-	lt := time.Now()
-	fmt.Println(lt) // 2021-03-04 18:23:53.783620241 +0800 CST m=+0.000490590
-
-	sts := lt.Unix()
-	tt1 := time.Unix(sts, 0)
-	fmt.Println(tt1) // 2021-03-04 18:23:53 +0800 CST
-
-	nts := lt.UnixNano()
-	tt2 := time.Unix(0, nts)
-	fmt.Println(tt2) // 2021-03-04 18:23:53.783620241 +0800 CST
-}
+// 8.Weekday：指定一周的一天
+// type Weekday int
+// func (d Weekday) String() string

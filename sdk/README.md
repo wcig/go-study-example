@@ -41,6 +41,6 @@
 * syscall
 * testing
 * text
-* time
+* time (√)
 * unicode (√)
 * unsafe (√)
