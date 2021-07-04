@@ -6,7 +6,7 @@ import (
 )
 
 // image: 实现一基本的二维图像库
-// 第三方库: "golang.org/x/image", "github.com/chai2010/webp"
+// 更多图像相关功能可使用第三方库: "golang.org/x/image", "github.com/chai2010/webp"
 
 // 变量
 func TestVar(t *testing.T) {

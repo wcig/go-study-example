@@ -20,7 +20,7 @@
 * go (√)
 * hash (√)
 * html (√)
-* image
+* image (√)
 * index (√)
 * internal (√)
 * io (√)
