@@ -42,5 +42,5 @@
 * testing
 * text
 * time
-* unicode
+* unicode (√)
 * unsafe (√)
