@@ -38,7 +38,7 @@
 * strconv (√)
 * strings (√)
 * sync
-* syscall
+* syscall (√)
 * testing
 * text
 * time (√)
