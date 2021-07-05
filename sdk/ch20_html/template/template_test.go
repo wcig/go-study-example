@@ -150,7 +150,7 @@ func TestNew(t *testing.T) {
 	assert.NotNil(t, t1)
 }
 
-// func ParseFS(fs fs.FS, patterns ...string) (*Template, error)：类型ParseFile和ParseGlob，从文件系统fs加载
+// func ParseFS(fs fs.FS, patterns ...string) (*Template, error)：类似ParseFile和ParseGlob，从文件系统fs和指定模式glob patterns加载
 func TestParseFS(t *testing.T) {
 	fs := os.DirFS("testdata")
 	t1, err := template.ParseFS(fs, "DOES NOT EXIST")
