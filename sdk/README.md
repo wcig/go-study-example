@@ -39,7 +39,7 @@
 * strings (√)
 * sync
 * syscall (√)
-* testing
+* testing (√)
 * text (√)
 * time (√)
 * unicode (√)
