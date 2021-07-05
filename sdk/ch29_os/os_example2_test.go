@@ -1,4 +1,4 @@
-package os
+package ch29_os
 
 import (
 	"fmt"
@@ -91,6 +91,12 @@ func TestEnv(t *testing.T) {
 	os.Clearenv()
 
 	fmt.Println(len(os.Environ())) // 0
+}
+
+// Executable
+func TestExecutable(t *testing.T) {
+	name, err := os.Executable()
+	fmt.Println(name, err) // /private/var/folders/vh/lks7z1qx6x90j10nwtm3njlw0000gn/T/___TestExecutable_in_go_app_sdk_ch29_os.test <nil>
 }
 
 // Expand
