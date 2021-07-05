@@ -40,7 +40,7 @@
 * sync
 * syscall (√)
 * testing
-* text
+* text (√)
 * time (√)
 * unicode (√)
 * unsafe (√)
