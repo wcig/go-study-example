@@ -74,7 +74,7 @@ package ch29_os
 // var ErrProcessDone = errors.New("os: process already finished")
 
 // 4.函数
-// func Chdir(dir string) error                                      // 创建目录
+// func Chdir(dir string) error                                      // 修改当前工作目录为name目录
 // func Chmod(name string, mode FileMode) error                      // 修改name文件权限
 // func Chown(name string, uid, gid int) error                       // 修改name文件所属用户和所属用户组
 // func Chtimes(name string, atime time.Time, mtime time.Time) error // 修改name文件的访问时间和修改时间
@@ -82,45 +82,55 @@ package ch29_os
 // func DirFS(dir string) fs.FS                                      // 以dir为根的文件数返回一文件系统fs.FS
 // func Environ() []string                                           // 以"key=value"返回环节变量
 // func Executable() (string, error)                                 // 返回启动当前进程的可执行文件的路径名
-// func Exit(code int) // 以指定状态码code退出当前程序，0表示成功，非0表示错误。程序会立即终止，defer函数不会运行（为了可移植性，状态码应在[0,125]范围内）
-// func Expand(s string, mapping func(string) string) string // 根据mapping映射函数替换字符串s中的${var}或$var
-// func ExpandEnv(s string) string // 根据环境变量替换字符串s中的${var}或$var
-// func Getegid() int // 返回调用者的有效数字组id，windows返回-1
-// func Getenv(key string) string // 获取环境变量中指定key对应的值，不存在则返回空
-// func Geteuid() int // 返回调用者的有效数字用户id，windows返回-1
-// func Getgid() int // 返回调用者的数字组id，windows返回-1
-// func Getgroups() ([]int, error)
-// func Getpagesize() int
-// func Getpid() int
-// func Getppid() int
-// func Getuid() int
-// func Getwd() (dir string, err error)
-// func Hostname() (name string, err error)
-// func IsExist(err error) bool
-// func IsNotExist(err error) bool
-// func IsPathSeparator(c uint8) bool
-// func IsPermission(err error) bool
-// func IsTimeout(err error) bool
-// func Lchown(name string, uid, gid int) error
-// func Link(oldname, newname string) error
-// func LookupEnv(key string) (string, bool)
-// func Mkdir(name string, perm FileMode) error
-// func MkdirAll(path string, perm FileMode) error
-// func MkdirTemp(dir, pattern string) (string, error)
-// func NewSyscallError(syscall string, err error) error
-// func Pipe() (r *File, w *File, err error)
-// func ReadFile(name string) ([]byte, error)
-// func Readlink(name string) (string, error)
-// func Remove(name string) error
-// func RemoveAll(path string) error
-// func Rename(oldpath, newpath string) error
-// func SameFile(fi1, fi2 FileInfo) bool
-// func Setenv(key, value string) error
-// func Symlink(oldname, newname string) error
-// func TempDir() string
-// func Truncate(name string, size int64) error
-// func Unsetenv(key string) error
-// func UserCacheDir() (string, error)
-// func UserConfigDir() (string, error)
-// func UserHomeDir() (string, error)
-// func WriteFile(name string, data []byte, perm FileMode) error
+// func Exit(code int)                                               // 以指定状态码code退出当前程序，0表示成功，非0表示错误。程序会立即终止，defer函数不会运行（为了可移植性，状态码应在[0,125]范围内）
+// func Expand(s string, mapping func(string) string) string         // 根据mapping映射函数替换字符串s中的${var}或$var
+// func ExpandEnv(s string) string                                   // 根据环境变量替换字符串s中的${var}或$var
+// func Getegid() int                                                // 返回调用者的有效数字组id，windows返回-1
+// func Getenv(key string) string                                    // 获取环境变量中指定key对应的值，不存在则返回空
+// func Geteuid() int                                                // 返回调用者的有效数字用户id，windows返回-1
+// func Getgid() int                                                 // 返回调用者的数字组id，windows返回-1
+// func Getgroups() ([]int, error)                                   // 返回调用者所属组的数字id列表
+// func Getpagesize() int                                            // 返回底层系统的内存页大小
+// func Getpid() int                                                 // 返回调用者的进程id
+// func Getppid() int                                                // 返回调用者的父进程id
+// func Getuid() int                                                 // 返回调用者的用户数字id
+// func Getwd() (dir string, err error)                              // 返回当前目录的根路径名
+// func Hostname() (name string, err error)                          // 返回内核报告的主机名
+// func IsExist(err error) bool                                      // 报告错误是否为文件或目录已存在（ErrExist满足）
+// func IsNotExist(err error) bool                                   // 报告错误是否为文件或目录不存在（ErrNotExist满足）
+// func IsPathSeparator(c uint8) bool                                // 报告c是否为目录分隔符
+// func IsPermission(err error) bool                                 // 报告错误err是否是权限被拒绝
+// func IsTimeout(err error) bool                                    // 报告错误err是否超时发生
+// func Lchown(name string, uid, gid int) error                      // 修改文件的所属用户id和组id，如果文件是符号链接则修改的符号链接自身的uid和gid，如果发生错误则为*PathError类型
+// func Link(oldname, newname string) error                          // 创建一newname作为oldname的硬链接，有错误则为*LinkError类型
+// func LookupEnv(key string) (string, bool)                         // 检索环境变量中key对应的值，存在返回值和true，不存在返回空和false
+// func Mkdir(name string, perm FileMode) error                      // 以指定权限创建name目录，有错误则为*PathError类型
+// func MkdirAll(path string, perm FileMode) error                   // 以指定权限创建path目录和其必要的父目录
+// func MkdirTemp(dir, pattern string) (string, error)               // 在目录dir中创建以模式pattern加末尾随机字符串的目录，返回创建的目录和错误
+// func NewSyscallError(syscall string, err error) error             // 返回一个带有给定系统调用名称和错误详细信息的新的SyscallError错误，如果err为nil则返回错误为nil
+// func Pipe() (r *File, w *File, err error)                         // 创建一对*File，从r读取数据返回写入w的字节
+// func ReadFile(name string) ([]byte, error)                        // 读取name文件并返回所有内容和错误，成功调用返回错误为nil而不是EOF
+// func Readlink(name string) (string, error)                        // 返回name符号链接的目的地，有错误则为*PathError类型
+// func Remove(name string) error                                    // 删除name文件或空目录，有错误则为*PathError类型
+// func RemoveAll(path string) error                                 // 删除path目录以及其包含的所有子项
+// func Rename(oldpath, newpath string) error                        // 重命名oldpath为newpath，如果newpath已存在并且不是目录，Rename将替换它，有错误则为*LinkError类型
+// func SameFile(fi1, fi2 FileInfo) bool                             // 报告fi1、fi2是否描述同一个文件
+// func Setenv(key, value string) error                              // 环境变量设置值
+// func Symlink(oldname, newname string) error                       // 创建newname文件作为oldname的符号链接，有错误则为*LinkError类型，有错误则为*PathError类型
+// func TempDir() string                                             // 返回给用户存放临时文件的默认目录
+// func Truncate(name string, size int64) error                      // 改变name文件的大小，如果文件是符号链接，其改变的是链接指定目标的文件大小
+// func Unsetenv(key string) error                                   // unset环境变量
+// func UserCacheDir() (string, error)                               // 返回用于用户特定缓存数据的默认根目录
+// func UserConfigDir() (string, error)                              // 返回用于用户特定配置数据的默认根目录
+// func UserHomeDir() (string, error)                                // 返回当前用户的主目录
+// func WriteFile(name string, data []byte, perm FileMode) error     // 以perm权限写入data数据到name文件中，如果文件已存在则在写之前截断它
+
+// 5.类型
+// (1) DirEntry: 从目录读取的条目（使用os.ReadDir或File的ReadDir获取）
+// type DirEntry = fs.DirEntry
+// func ReadDir(name string) ([]DirEntry, error) // 读取name目录，按文件名排序返回所有目录条目
+
+// (2) File: 打开的文件描述符
+// type File struct {
+//    // contains filtered or unexported fields
+// }

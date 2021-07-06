@@ -83,63 +83,10 @@ func TestChtimes(t *testing.T) {
 	}
 }
 
-// Environ/Clearenv
-func TestEnv(t *testing.T) {
-	vals := os.Environ()
-	fmt.Println(len(vals), vals[len(vals)-1]) // 41 CGO_ENABLED=1
-
-	os.Clearenv()
-
-	fmt.Println(len(os.Environ())) // 0
-}
-
 // Executable
 func TestExecutable(t *testing.T) {
 	name, err := os.Executable()
 	fmt.Println(name, err) // /private/var/folders/vh/lks7z1qx6x90j10nwtm3njlw0000gn/T/___TestExecutable_in_go_app_sdk_ch29_os.test <nil>
-}
-
-// Expand
-func TestExpand(t *testing.T) {
-	mapper := func(placeholderName string) string {
-		switch placeholderName {
-		case "DAY_PART":
-			return "morning"
-		case "NAME":
-			return "Gopher"
-		}
-
-		return ""
-	}
-
-	fmt.Println(os.Expand("Good ${DAY_PART}, $NAME!", mapper)) // Good morning, Gopher!
-}
-
-// ExpandEnv
-func TestExpandEnv(t *testing.T) {
-	os.Setenv("NAME", "gopher")
-	os.Setenv("BURROW", "/usr/gopher")
-
-	fmt.Println(os.ExpandEnv("$NAME lives in ${BURROW}."))
-}
-
-// LookupEnv
-func TestLookupEnv(t *testing.T) {
-	val, has := os.LookupEnv("GOROOT")
-	fmt.Println(val, has)
-
-	val, has = os.LookupEnv("GOROOT2")
-	fmt.Println(val, has)
-}
-
-// Unsetenv
-func TestUnsetenv(t *testing.T) {
-	os.Setenv("TMPDIR", "/my/tmp")
-	fmt.Println(os.Getenv("TMPDIR")) // /my/tmp
-
-	os.Unsetenv("TMPDIR")
-
-	fmt.Println(os.Getenv("TMPDIR")) //
 }
 
 // SameFile
@@ -158,18 +105,6 @@ func TestLinkAndSymlink(t *testing.T) {
 	f3, _ := os.Create("temp3")
 	os.Symlink("temp3", "temp4")
 	f3.Close()
-}
-
-// TempDir
-func TestTempDir(t *testing.T) {
-	fmt.Println(os.TempDir()) // tmp
-}
-
-// UserDir
-func TestUserDir(t *testing.T) {
-	fmt.Println(os.UserCacheDir())  // /home/yangbo/.cache <nil>
-	fmt.Println(os.UserConfigDir()) // /home/yangbo/.config <nil>
-	fmt.Println(os.UserHomeDir())   // /home/yangbo <nil>
 }
 
 // Get
