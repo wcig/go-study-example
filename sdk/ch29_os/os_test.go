@@ -134,3 +134,102 @@ package ch29_os
 // type File struct {
 //    // contains filtered or unexported fields
 // }
+// func Create(name string) (*File, error)                              // 创建或截断文件，返回文件描述符和错误。文件已存在则截断，文件不存在则以0666权限创建。
+// func CreateTemp(dir, pattern string) (*File, error)                  // 在目录dir中以模式pattern创建临时文件
+// func NewFile(fd uintptr, name string) *File                          // 基于给定文件描述符和名称返回一新的File
+// func Open(name string) (*File, error)                                // 打开文件name用于读取，返回*File和错误
+// func OpenFile(name string, flag int, perm FileMode) (*File, error)   // 以指定标志flag和指定权限perm打开文件name
+// func (f *File) Chdir() error                                         // 修改当前工作目录为f，其必须是一目录
+// func (f *File) Chmod(mode FileMode) error                            // 修改文件f的权限
+// func (f *File) Chown(uid, gid int) error                             // 修改文件f的所属用户数字uid和用户组gid
+// func (f *File) Close() error                                         // 关闭文件f，使其无法用于I/O
+// func (f *File) Fd() uintptr                                          // 返回文件f的整数unix文件描述符
+// func (f *File) Name() string                                         // 返回文件f的名称
+// func (f *File) Read(b []byte) (n int, err error)                     // 从文件f读取最多len(b)个字节到b中，返回读取的字节数和错误，到文件末尾时返回0,io.EOF
+// func (f *File) ReadAt(b []byte, off int64) (n int, err error)        // 从偏移量off位置开始读取len(b)个字节，当n<len(b)总是返回一非nil错误
+// func (f *File) ReadDir(n int) ([]DirEntry, error)                    // 读取文件f关联的目录，返回部分按目录顺序的DirEntry切片
+// func (f *File) ReadFrom(r io.Reader) (n int64, err error)            // 实现了io.ReaderFrom接口
+// func (f *File) Readdir(n int) ([]FileInfo, error)                    // 读取文件f关联的目录，返回部分按目录顺序的FileInfo
+// func (f *File) Readdirnames(n int) (names []string, err error)       // 读取文件f关联的目录，返回部分按目录顺序的文件名切片
+// func (f *File) Seek(offset int64, whence int) (ret int64, err error) // 基于起始标志whence，将下一次Read和Write的偏移量设置为offset，返回新的偏移量和错误
+// func (f *File) SetDeadline(t time.Time) error                        // 设置文件f读写的期限，等价于同时调用SetReadDeadline和SetWriteDeadline
+// func (f *File) SetReadDeadline(t time.Time) error                    // 设置文件f的读期限
+// func (f *File) SetWriteDeadline(t time.Time) error                   // 设置文件f的写期限
+// func (f *File) Stat() (FileInfo, error)                              // 返回文件f的FileInfo和错误
+// func (f *File) Sync() error                                          // 将文件当前内容提交到稳定存储，意味着将文件系统的最近写入的内存数据刷新到磁盘中
+// func (f *File) SyscallConn() (syscall.RawConn, error)                // 返回原始文件，实现了syscall.Conn接口
+// func (f *File) Truncate(size int64) error                            // 改变文件大小，不会修改I/O偏移量
+// func (f *File) Write(b []byte) (n int, err error)                    // 写入len(b)字节到文件f，返回写入的字节数和错误，当n!=len(b)返回非nil错误
+// func (f *File) WriteAt(b []byte, off int64) (n int, err error)       // 从off偏移量开始写入len(b)字节到文件f中，当n!=len(b)返回非nil错误
+// func (f *File) WriteString(s string) (n int, err error)              // 相当于Write，只不过出传入的是字符串
+
+// (3) FileInfo: 用于描述文件，通过函数Stat、Lstat获取
+// type FileInfo = fs.FileInfo
+// func Lstat(name string) (FileInfo, error) // 返回文件name的FileInfo，如果文件是符号链接，则返回的是符号链接的FileInfo
+// func Stat(name string) (FileInfo, error)  // 返回文件name的FileInfo
+
+// (4) FileMode: 描述文件的模式和权限位
+// type FileMode = fs.FileMode
+
+// (5) LinkError: 记录链接或符号链接或重命名调用时的错误和引起错误的路径
+// type LinkError struct {
+// 	Op  string
+// 	Old string
+// 	New string
+// 	Err error
+// }
+// func (e *LinkError) Error() string
+// func (e *LinkError) Unwrap() error
+
+// (6) PathError: 记录错误以及导致它的操作和文件路径
+// type PathError = fs.PathError
+
+// (7) ProcAttr: 保存将应用于由 StartProcess 启动的新进程的属性。
+// type ProcAttr struct {
+// 	Dir string
+// 	Env []string
+// 	Files []*File
+// 	Sys *syscall.SysProcAttr
+// }
+
+// (8) Process: 保存StartProcess创建进程的信息
+// type Process struct {
+// 	Pid int
+// 	// contains filtered or unexported fields
+// }
+// func FindProcess(pid int) (*Process, error)                                     // 通过pid查询正在运行进程
+// func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) // 开始启动一新进程
+// func (p *Process) Kill() error                                                  // 进程立刻腿粗，不会等到Process实际退出
+// func (p *Process) Release() error                                               // 释放与进程p相关的任何资源，使其将来无法使用，只有在不是Wait时Release才需要调用
+// func (p *Process) Signal(sig Signal) error                                      // 发送信号sig给进程
+// func (p *Process) Wait() (*ProcessState, error)                                 // 等待进程退出，返回返回描述状态的ProcessState和错误
+
+// (9) ProcessState: 保存一进程的信息，由Wait报告
+// type ProcessState struct {
+//    // contains filtered or unexported fields
+// }
+// func (p *ProcessState) ExitCode() int             // 返回进程退出的退出代码，如果进程尚未退出或被信号终止则返回-1
+// func (p *ProcessState) Exited() bool              // 报告进程是否已退出
+// func (p *ProcessState) Pid() int                  // 返回退出进程的进程id
+// func (p *ProcessState) String() string            // 实现Stringer接口
+// func (p *ProcessState) Success() bool             // 报告进程是否成功退出，unix退出状态为0
+// func (p *ProcessState) Sys() interface{}          // 返回进程独立于系统的退出信息
+// func (p *ProcessState) SysUsage() interface{}     // 返回独立于系统的资源使用信息
+// func (p *ProcessState) SystemTime() time.Duration // 返回退出进程和其子进程的系统CPU时间
+// func (p *ProcessState) UserTime() time.Duration   // 返回退出进程和其子进程的用户CPU时间
+
+// (10) Signal: 表示操作系统信号，底层实现依赖于系统，在Unix上它是syscall.Signal
+// type Signal interface {
+//    String() string
+//    Signal() // to distinguish from other Stringers
+// }
+// var (
+//    Interrupt Signal = syscall.SIGINT
+//    Kill      Signal = syscall.SIGKILL
+// )
+
+// (11) SyscallError: 记录特定系统调用的错误
+// type SyscallError
+// func (e *SyscallError) Error() string
+// func (e *SyscallError) Timeout() bool // 报告错误是否表示超时
+// func (e *SyscallError) Unwrap() error
