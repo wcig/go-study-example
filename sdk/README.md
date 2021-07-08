@@ -28,7 +28,7 @@
 * math
 * mime (√)
 * net
-* os
+* os (√)
 * path (√)
 * plugin (√)
 * reflect
