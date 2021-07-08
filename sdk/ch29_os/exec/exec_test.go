@@ -13,23 +13,23 @@ func TestErr(t *testing.T) {
 }
 
 // 函数
-// func LookPath(file string) (string, error) // 在PATH环境变量命名的目录中搜索一名称为file的可执行文件
+// func LookPath(file string) (string, error) // 在PATH环境变量命名的目录中搜索一名称为file的可执行文件（可用于判断外部命令是否存在）
 
 // 类型
 // 1.Cmd: 表示正准备和运行的 外部命令，在调用其Run、Output或CombinedOutpu方法后，不能重复该Cmd
 // type Cmd struct {
-//    Path string
-//    Args []string
-//    Env []string
-//    Dir string
-//    Stdin io.Reader
-//    Stdout io.Writer
-//    Stderr io.Writer
-//    ExtraFiles []*os.File
-//    SysProcAttr *syscall.SysProcAttr
-//    Process *os.Process
-//    ProcessState *os.ProcessState
-//    // contains filtered or unexported fields
+// 	Path         string
+// 	Args         []string
+// 	Env          []string
+// 	Dir          string    // 工作路径
+// 	Stdin        io.Reader // 标准输入
+// 	Stdout       io.Writer // 标准输出
+// 	Stderr       io.Writer // 标准错误
+// 	ExtraFiles   []*os.File
+// 	SysProcAttr  *syscall.SysProcAttr
+// 	Process      *os.Process
+// 	ProcessState *os.ProcessState
+// 	// contains filtered or unexported fields
 // }
 // func Command(name string, arg ...string) *Cmd                             // 以命令name额参数arg创建一Cmd
 // func CommandContext(ctx context.Context, name string, arg ...string) *Cmd // 与Command类型，但包含了一个Context，如果context在命令自行完成之前完成，则context用于终止进程

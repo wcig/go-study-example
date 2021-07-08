@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -27,6 +29,83 @@ func TestCommand(t *testing.T) {
 		log.Fatal(err)
 	}
 	fmt.Printf(out.String()) // ok
+}
+
+func TestCommandDir(t *testing.T) {
+	cmd := exec.Command("ls", "-l")
+	cmd.Dir = "/" // 设置工作路径
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(output))
+	// output:
+	// total 9
+	// drwxrwxr-x+ 70 root  admin  2240 Jul  3 11:21 Applications
+	// drwxr-xr-x  65 root  wheel  2080 Aug  9  2020 Library
+	// drwxr-xr-x@  8 root  wheel   256 Sep 30  2019 System
+	// drwxr-xr-x   6 root  admin   192 Feb 22  2020 Users
+	// drwxr-xr-x   5 root  wheel   160 Jul  8 20:29 Volumes
+	// drwxr-xr-x@ 38 root  wheel  1216 Sep 30  2019 bin
+	// drwxr-xr-x   2 root  wheel    64 Aug 25  2019 cores
+	// dr-xr-xr-x   3 root  wheel  4545 Jul  8 20:25 dev
+	// lrwxr-xr-x@  1 root  admin    11 Oct 20  2019 etc -> private/etc
+	// lrwxr-xr-x   1 root  wheel    25 Jul  8 20:25 home -> /System/Volumes/Data/home
+	// drwxr-xr-x   2 root  wheel    64 Aug 25  2019 opt
+	// drwxr-xr-x   6 root  wheel   192 Sep 30  2019 private
+	// drwxr-xr-x@ 64 root  wheel  2048 Oct 20  2019 sbin
+	// lrwxr-xr-x@  1 root  admin    11 Oct 20  2019 tmp -> private/tmp
+	// drwxr-xr-x@ 11 root  wheel   352 Oct 20  2019 usr
+	// lrwxr-xr-x@  1 root  admin    11 Oct 20  2019 var -> private/var
+	//
+}
+
+func TestCommandPath(t *testing.T) {
+	cmd := exec.Command("/usr/local/go/bin/go", "version")
+	fmt.Println("cmd path:", cmd.Path)
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("output:", string(output))
+	// output:
+	// cmd path: /usr/local/go/bin/go
+	// output: go version go1.16.4 darwin/amd64
+	//
+}
+
+func TestCommandEnv(t *testing.T) {
+	cmd := exec.Command("/bin/sh", "-c", "echo $my_var")
+	cmd.Env = []string{"my_var=ok"}
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("output:", string(output))
+	// output:
+	// output: ok
+	//
+}
+
+func TestCommandProcess(t *testing.T) {
+	cmd := exec.Command("/bin/sh", "-c", "sleep 10 && echo ok")
+	err := cmd.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("cmd process pid:", cmd.Process.Pid)
+	err = cmd.Wait()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("cmd process exit code:", cmd.ProcessState.ExitCode())
+	// output:
+	// cmd process pid: 6349
+	// cmd process exit code: 0
 }
 
 func TestCommandContext(t *testing.T) {
@@ -51,6 +130,22 @@ func TestCombinedOutput(t *testing.T) {
 	// stdout
 	// stderr
 	//
+}
+
+func TestCommandStdin(t *testing.T) {
+	stdin, err := os.Open("exec_example_test.go")
+	if err != nil {
+		panic(err)
+	}
+
+	cmd := exec.Command("wc", "-l")
+	cmd.Stdin = stdin
+
+	b, err := cmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("output:", string(b)) // output:      247\n
 }
 
 func TestOutput(t *testing.T) {
@@ -150,4 +245,28 @@ func TestStdoutPipe(t *testing.T) {
 	fmt.Printf("%s is %d years old\n", person.Name, person.Age)
 	// output:
 	// Bob is 32 years old
+}
+
+func TestProcessStatus(t *testing.T) {
+	cmd := exec.Command("curl", "https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz")
+	var stdoutProcessStatus bytes.Buffer
+	cmd.Stdout = io.MultiWriter(ioutil.Discard, &stdoutProcessStatus)
+	done := make(chan struct{})
+	go func() {
+		tick := time.NewTicker(time.Second)
+		defer tick.Stop()
+		for {
+			select {
+			case <-done:
+				return
+			case <-tick.C:
+				log.Printf("downloaded: %d", stdoutProcessStatus.Len())
+			}
+		}
+	}()
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("failed to call Run(): %v", err)
+	}
+	close(done)
 }
