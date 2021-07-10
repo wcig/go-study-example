@@ -25,7 +25,7 @@
 * internal (√)
 * io (√)
 * log (√)
-* math
+* math (√)
 * mime (√)
 * net
 * os (√)
