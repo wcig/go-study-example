@@ -29,6 +29,7 @@ require (
 	github.com/oschwald/geoip2-golang v1.5.0
 	github.com/pelletier/go-toml v1.9.1 // indirect
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
+	github.com/prometheus/client_golang v0.9.3 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
