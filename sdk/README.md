@@ -33,11 +33,11 @@
 * plugin (√)
 * reflect
 * regexp
-* runtime
+* runtime (√)
 * sort (√)
 * strconv (√)
 * strings (√)
-* sync
+* sync (√)
 * syscall (√)
 * testing (√)
 * text (√)
