@@ -32,7 +32,7 @@
 * path (√)
 * plugin (√)
 * reflect
-* regexp
+* regexp (√)
 * runtime (√)
 * sort (√)
 * strconv (√)
