@@ -31,7 +31,7 @@
 * os (√)
 * path (√)
 * plugin (√)
-* reflect
+* reflect (√)
 * regexp (√)
 * runtime (√)
 * sort (√)

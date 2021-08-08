@@ -25,13 +25,12 @@ func TestTypeOf(t *testing.T) {
 		filed := _type.Field(i)
 		fmt.Printf("user filed: %d, %+v\n", i, filed)
 	}
+	// output:
+	// user type: ch13_reflect.User
+	// user filed num: 2
+	// user filed: 0, {Name:Id PkgPath: Type:int Tag:json:"id" Offset:0 Index:[0] Anonymous:false}
+	// user filed: 1, {Name:Name PkgPath: Type:string Tag:json:"name" Offset:8 Index:[1] Anonymous:false}
 }
-
-// output:
-// user type: ch13_reflect.User
-// user filed num: 2
-// user filed: 0, {Name:Id PkgPath: Type:int Tag:json:"id" Offset:0 Index:[0] Anonymous:false}
-// user filed: 1, {Name:Name PkgPath: Type:string Tag:json:"name" Offset:8 Index:[1] Anonymous:false}
 
 // ValueOf
 func TestValueOf(t *testing.T) {
@@ -47,13 +46,12 @@ func TestValueOf(t *testing.T) {
 		value := _value.Field(i)
 		fmt.Printf("user value: %d, %+v\n", i, value)
 	}
+	// output:
+	// user value: {1 tom}
+	// user value num: 2
+	// user value: 0, 1
+	// user value: 1, tom
 }
-
-// output:
-// user value: {1 tom}
-// user value num: 2
-// user value: 0, 1
-// user value: 1, tom
 
 // 获取成员变量值
 func TestGetFileValue(t *testing.T) {
@@ -81,13 +79,12 @@ func TestGetFileValue(t *testing.T) {
 	for i := 0; i < _type.NumField(); i++ {
 		fmt.Println("filed:", i, _type.Field(i).Name)
 	}
+	// output:
+	// Filed: int 1 string tom
+	// FieldByName: int 1 string tom
+	// filed: 0 Id
+	// filed: 1 Name
 }
-
-// output:
-// Filed: int 1 string tom
-// FieldByName: int 1 string tom
-// filed: 0 Id
-// filed: 1 Name
 
 // 私有成员变量: 私有成员变量类型可以获取,但是值不能获取
 func TestPrivateField(t *testing.T) {
@@ -103,24 +100,25 @@ func TestPrivateField(t *testing.T) {
 	}
 
 	_value := reflect.ValueOf(u)
-	for i := 0; i < _value.NumField(); i++ {
-		fmt.Println("value:", i, _value.Field(i).Interface())
-	}
-
 	iv := _value.FieldByName("Id")
 	fmt.Println("id:", iv.Interface().(int))
 
+	for i := 0; i < _value.NumField(); i++ {
+		fmt.Println("value:", i, _value.Field(i).Interface()) // panic
+	}
+
 	// nv := _value.FieldByName("name")
 	// fmt.Println("name:", nv.Interface().(string)) // error
-}
 
-// output:
-// filed: 0 Id
-// filed: 1 name
-// value: 0 1
-// --- FAIL: TestPrivateField (0.00s)
-// panic: reflect.Value.Interface: cannot return value obtained from unexported field or method [recovered]
-//	panic: reflect.Value.Interface: cannot return value obtained from unexported field or method
+	// output:
+	// filed: 0 Id
+	// filed: 1 name
+	// id: 1
+	// value: 0 1
+	// --- FAIL: TestPrivateField (0.00s)
+	// panic: reflect.Value.Interface: cannot return value obtained from unexported field or method [recovered]
+	//	panic: reflect.Value.Interface: cannot return value obtained from unexported field or method
+}
 
 // 通过反射获取方法
 func (u User) Print1() {
@@ -152,13 +150,12 @@ func TestGetMethod1(t *testing.T) {
 	fmt.Println(p1, has)
 	p2, has := _type.MethodByName("print2")
 	fmt.Println(p2, has)
+	// output:
+	// method: 0 {Print1  func(ch13_reflect.User) <func(ch13_reflect.User) Value> 0}
+	// method: 1 {Print3  func(ch13_reflect.User, string) <func(ch13_reflect.User, string) Value> 1}
+	// {Print1  func(ch13_reflect.User) <func(ch13_reflect.User) Value> 0} true
+	// {  <nil> <invalid Value> 0} false
 }
-
-// output:
-// method: 0 {Print1  func(ch13_reflect.User) <func(ch13_reflect.User) Value> 0}
-// method: 1 {Print3  func(ch13_reflect.User, string) <func(ch13_reflect.User, string) Value> 1}
-// {Print1  func(ch13_reflect.User) <func(ch13_reflect.User) Value> 0} true
-// {  <nil> <invalid Value> 0} false
 
 type Object struct{}
 
@@ -183,12 +180,11 @@ func TestGetMethod2(t *testing.T) {
 	for i := 0; i < _type2.NumMethod(); i++ {
 		fmt.Println("method2:", i, _type2.Method(i))
 	}
+	// output:
+	// method1: 0 {Ok1  func(ch13_reflect.Object) <func(ch13_reflect.Object) Value> 0}
+	// method2: 0 {Ok1  func(*ch13_reflect.Object) <func(*ch13_reflect.Object) Value> 0}
+	// method2: 1 {Ok2  func(*ch13_reflect.Object) <func(*ch13_reflect.Object) Value> 1}
 }
-
-// output:
-// method1: 0 {Ok1  func(ch13_reflect.Object) <func(ch13_reflect.Object) Value> 0}
-// method2: 0 {Ok1  func(*ch13_reflect.Object) <func(*ch13_reflect.Object) Value> 0}
-// method2: 1 {Ok2  func(*ch13_reflect.Object) <func(*ch13_reflect.Object) Value> 1}
 
 // 通过反射调用方法
 func TestCallMethod1(t *testing.T) {
@@ -197,17 +193,21 @@ func TestCallMethod1(t *testing.T) {
 
 	p1 := _type.MethodByName("Print1")
 	if p1.IsValid() {
-		p1.Call(nil) // Print1 user id:1, name:tom
+		p1.Call(nil)
 	}
 
 	p2 := _type.MethodByName("print2")
-	fmt.Println("print2", p2.IsValid()) // print2 false
+	fmt.Println("print2", p2.IsValid())
 
 	p3 := _type.MethodByName("Print3")
 	if p3.IsValid() {
 		args := []reflect.Value{reflect.ValueOf("hello")}
-		p3.Call(args) // Print3 hello user id:1, name:tom
+		p3.Call(args)
 	}
+	// output:
+	// Print1 user id:1, name:tom
+	// print2 false
+	// Print3 hello user id:1, name:tom
 }
 
 func TestCallMethod2(t *testing.T) {
@@ -216,12 +216,15 @@ func TestCallMethod2(t *testing.T) {
 	v1 := reflect.ValueOf(u)
 	p11 := v1.MethodByName("Print1")
 	p14 := v1.MethodByName("Print4")
-	fmt.Println(p11.IsValid(), p14.IsValid()) // true false
+	fmt.Println(p11.IsValid(), p14.IsValid())
 
 	v2 := reflect.ValueOf(&u)
 	p21 := v2.MethodByName("Print1")
 	p24 := v2.MethodByName("Print4")
-	fmt.Println(p21.IsValid(), p24.IsValid()) // true true
+	fmt.Println(p21.IsValid(), p24.IsValid())
+	// output:
+	// true false
+	// true true
 }
 
 // 反射修改值
@@ -229,11 +232,14 @@ func TestModifyValue(t *testing.T) {
 	num := 1
 	v1 := reflect.ValueOf(&num)
 	v1.Elem().SetInt(100)
-	fmt.Println("num:", num) // num: 100
+	fmt.Println("num:", num)
 
 	u := User{Id: 1, Name: "tom"}
 	modify(&u)
-	fmt.Println("user:", u) // user: {1 jerry}
+	fmt.Println("user:", u)
+	// output:
+	// num: 100
+	// user: {1 jerry}
 }
 
 func modify(u *User) {
@@ -286,11 +292,10 @@ func TestNestReflect(t *testing.T) {
 
 	nameField := _type.FieldByIndex([]int{0, 0})
 	fmt.Println("name field:", nameField)
+	// output:
+	// user field: {user go-app/basic/ch13_reflect ch13_reflect.user  0 [0] true} , has: true
+	// name field: {Id  int  0 [0] false}
 }
-
-// output:
-// user field: {user go-app/ch13_reflect ch13_reflect.user  0 [0] true} , has: true
-// name field: {Id  int  0 [0] false}
 
 // 反射获取struct tag
 func TestGetTag(t *testing.T) {
@@ -307,13 +312,12 @@ func TestGetTag(t *testing.T) {
 		fmt.Println("tag:", tag)
 		fmt.Println(tag.Get("json"))
 	}
+	// output:
+	// tag: json:"id"
+	// id
+	// tag: json:"name"
+	// name
 }
-
-// output:
-// tag: json:"id"
-// id
-// tag: json:"name"
-// name
 
 // 校验类型是否实现了接口
 type MyError struct{}
@@ -327,15 +331,21 @@ func TestCheckImplements(t *testing.T) {
 	myErrType := reflect.TypeOf(MyError{})
 	myErrPtrType := reflect.TypeOf(&MyError{})
 
-	fmt.Println(myErrType.Implements(errType))    // false
-	fmt.Println(myErrPtrType.Implements(errType)) // true
+	fmt.Println(myErrType.Implements(errType))
+	fmt.Println(myErrPtrType.Implements(errType))
+	// output:
+	// false
+	// true
 }
 
 // interface -> reflection object
 func TestReflectLaw1(t *testing.T) {
 	str := "hello"
-	fmt.Println("TypeOf str:", reflect.TypeOf(str))   // TypeOf str: string
-	fmt.Println("ValueOf str:", reflect.ValueOf(str)) // ValueOf str: hello
+	fmt.Println("TypeOf str:", reflect.TypeOf(str))
+	fmt.Println("ValueOf str:", reflect.ValueOf(str))
+	// output:
+	// TypeOf str: string
+	// ValueOf str: hello
 }
 
 // reflection object -> interface
@@ -353,11 +363,18 @@ func TestReflectLaw3(t *testing.T) {
 	if v1.Kind() == reflect.Ptr && v1.Elem().CanSet() {
 		v1.Elem().SetString("ok")
 	}
-	fmt.Println(str1) // ok
+	fmt.Println(str1)
 
 	str2 := "world"
 	v2 := reflect.ValueOf(str2)
-	fmt.Println(v2.Kind() == reflect.Ptr) // false
-	fmt.Println(v2.CanSet())              // false
-	// v2.SetString("ok")                 // panic: reflect: reflect.flag.mustBeAssignable using unaddressable value [recovered]
+	fmt.Println(v2.Kind() == reflect.Ptr)
+	fmt.Println(v2.CanSet())
+	v2.SetString("ok")
+
+	// output:
+	// ok
+	// false
+	// false
+	// panic: reflect: reflect.Value.SetString using unaddressable value [recovered]
+	//	panic: reflect: reflect.Value.SetString using unaddressable value
 }
