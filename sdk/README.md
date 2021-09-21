@@ -27,7 +27,7 @@
 * log (√)
 * math (√)
 * mime (√)
-* net
+* net (√)
 * os (√)
 * path (√)
 * plugin (√)
