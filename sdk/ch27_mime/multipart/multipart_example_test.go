@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/resty.v1"
+	"github.com/go-resty/resty/v2"
 )
 
 func TestServerWithGin(t *testing.T) {
