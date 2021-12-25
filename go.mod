@@ -12,7 +12,7 @@ require (
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
 	github.com/go-redis/redis v6.15.8+incompatible
-	github.com/go-resty/resty/v2 v2.7.0 // indirect
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gographics/gmagick v1.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -32,6 +32,7 @@ require (
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
+	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -40,6 +41,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/tealeg/xlsx/v3 v3.2.3
 	github.com/ugorji/go v1.2.6 // indirect
+	github.com/wcig/go-utils v0.0.2
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
