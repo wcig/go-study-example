@@ -14,15 +14,16 @@ import (
 
 type Downloader struct {
 	concurrency int
-	// fileUrl              string
-	// fileName             string
-	// fileSize             int64
-	// supportMultiDownload bool
-	// tmpDir               string
 }
 
 func NewDownloader(concurrency int) *Downloader {
 	return &Downloader{concurrency: concurrency}
+}
+
+var DefaultDownloader = NewDownloader(3)
+
+func Download(fileUrl string, fileName string) error {
+	return DefaultDownloader.Download(fileUrl, fileName)
 }
 
 func (d *Downloader) Download(fileUrl string, fileName string) error {
@@ -85,24 +86,28 @@ func (d *Downloader) singleDownload(fileUrl string, fileName string) error {
 }
 
 func (d *Downloader) multiDownload(fileUrl string, fileName string, fileSize int64) error {
-	dir, err := os.MkdirTemp("./", "frag-")
+	fragDir, err := os.MkdirTemp("./", fmt.Sprintf("%s-", fileName))
 	if err != nil {
 		return err
 	}
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(fragDir)
+
+	fragNum := d.concurrency
+	fragSize := fileSize / int64(fragNum)
 
 	var wg sync.WaitGroup
-	wg.Add(d.concurrency)
-	fragSize := fileSize / int64(d.concurrency)
-	for i := 1; i <= d.concurrency; i++ {
+	wg.Add(fragNum)
+
+	for i := 1; i <= fragNum; i++ {
 		go func(i int, fragSize int64) {
 			defer wg.Done()
+
 			start := int64(i-1) * fragSize
 			end := int64(i)*fragSize - 1
-			if i == d.concurrency {
+			if i == fragNum {
 				end = fileSize
 			}
-			if err2 := d.downloadFrag(fileUrl, dir, i, start, end); err2 != nil {
+			if err2 := d.downloadFrag(fileUrl, fragDir, i, start, end); err2 != nil {
 				err = err2
 			}
 			fmt.Println("download frag over:", i, start, end)
@@ -113,10 +118,10 @@ func (d *Downloader) multiDownload(fileUrl string, fileName string, fileSize int
 	}
 
 	wg.Wait()
-	return d.mergeFrag(dir, fileName)
+	return d.mergeFrag(fragDir, fileName)
 }
 
-func (d *Downloader) downloadFrag(fileUrl string, dir string, i int, start int64, end int64) error {
+func (d *Downloader) downloadFrag(fileUrl string, fragDir string, i int, start int64, end int64) error {
 	fmt.Println("download frag:", i, start, end)
 
 	req, err := http.NewRequest("GET", fileUrl, nil)
@@ -130,7 +135,7 @@ func (d *Downloader) downloadFrag(fileUrl string, dir string, i int, start int64
 	}
 	defer resp.Body.Close()
 
-	fragFileName := d.getFragFileName(dir, i)
+	fragFileName := d.getFragFileName(fragDir, i)
 	file, err := os.Create(fragFileName)
 	if err != nil {
 		return err
@@ -141,8 +146,9 @@ func (d *Downloader) downloadFrag(fileUrl string, dir string, i int, start int64
 	return err
 }
 
-func (d *Downloader) mergeFrag(dir string, fileName string) error {
-	fmt.Println("merge frag")
+func (d *Downloader) mergeFrag(fragDir string, fileName string) error {
+	fmt.Println("merge frag start:")
+
 	file, err := os.Create(fileName)
 	if err != nil {
 		return err
@@ -150,19 +156,26 @@ func (d *Downloader) mergeFrag(dir string, fileName string) error {
 	defer file.Close()
 
 	for i := 1; i <= d.concurrency; i++ {
-		fragFileName := d.getFragFileName(dir, i)
-		fragFile, err := os.Open(fragFileName)
+		var (
+			fragFileName string
+			fragFile     *os.File
+		)
+
+		fragFileName = d.getFragFileName(fragDir, i)
+		fragFile, err = os.Open(fragFileName)
 		if err != nil {
 			return err
 		}
-		defer fragFile.Close()
-		if _, err = io.Copy(file, fragFile); err != nil {
+
+		_, err = io.Copy(file, fragFile)
+		fragFile.Close()
+		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (d *Downloader) getFragFileName(dir string, i int) string {
-	return filepath.Join(dir, fmt.Sprintf("frag-%d", i))
+func (d *Downloader) getFragFileName(fragDir string, i int) string {
+	return filepath.Join(fragDir, fmt.Sprintf("frag-%d", i))
 }
