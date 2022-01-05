@@ -13,14 +13,15 @@ import (
 // 支持并发下载的下载器（参考：https://polarisxu.studygolang.com/posts/go/action/build-a-concurrent-file-downloader/）
 
 type Downloader struct {
-	concurrency int
+	concurrency uint
 }
 
-func NewDownloader(concurrency int) *Downloader {
+func NewDownloader(concurrency uint) *Downloader {
 	return &Downloader{concurrency: concurrency}
 }
 
-var DefaultDownloader = NewDownloader(3)
+// 默认单个下载
+var DefaultDownloader = NewDownloader(1)
 
 func Download(fileUrl string, fileName string) error {
 	return DefaultDownloader.Download(fileUrl, fileName)
@@ -92,7 +93,7 @@ func (d *Downloader) multiDownload(fileUrl string, fileName string, fileSize int
 	}
 	defer os.RemoveAll(fragDir)
 
-	fragNum := d.concurrency
+	fragNum := int(d.concurrency)
 	fragSize := fileSize / int64(fragNum)
 
 	var wg sync.WaitGroup
@@ -155,7 +156,7 @@ func (d *Downloader) mergeFrag(fragDir string, fileName string) error {
 	}
 	defer file.Close()
 
-	for i := 1; i <= d.concurrency; i++ {
+	for i := 1; i <= int(d.concurrency); i++ {
 		var (
 			fragFileName string
 			fragFile     *os.File
