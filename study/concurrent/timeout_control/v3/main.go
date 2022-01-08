@@ -8,8 +8,7 @@ import (
 	"time"
 )
 
-// v2: 非内存泄露版本
-// 解决方法：done channel定义为缓冲channel（hardWork()执行完后即释放go routine）
+// v3: panic捕获
 func main() {
 	num := 1000
 
@@ -21,6 +20,12 @@ func main() {
 
 	for i := 0; i < num; i++ {
 		go func() {
+			defer func() {
+				if p := recover(); p != nil {
+					fmt.Println("panic:", p)
+				}
+			}()
+
 			defer wg.Done()
 			_ = requestWork(context.Background(), "ok")
 		}()
@@ -58,7 +63,14 @@ func requestWork(ctx context.Context, job interface{}) error {
 	defer cancel()
 
 	done := make(chan error, 1)
+	panicChan := make(chan interface{}, 1)
 	go func() {
+		defer func() {
+			if p := recover(); p != nil {
+				panicChan <- p
+			}
+		}()
+
 		done <- hardWork(job)
 	}()
 

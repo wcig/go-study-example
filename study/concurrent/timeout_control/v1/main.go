@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// v1内存泄露版本
+// v1: 内存泄露版本
 // 原因：requestWork因超时执行完成，此时done channel没有go routine接收，done <- hardWork(job)将一直卡主占用一个goroutine
 func main() {
 	num := 1000
