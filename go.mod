@@ -47,6 +47,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e // indirect
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
