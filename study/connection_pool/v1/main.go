@@ -2,20 +2,75 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"sync"
 )
 
 // v1：连接池
 // 参考：https://studygolang.com/articles/12333
+
 func main() {
-	//
+	fmt.Println("----------------------")
+	pool, err := NewConnPool(3, 5, func() (io.Closer, error) {
+		return &conn{}, nil
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("new, num of open:", pool.numOpen)
+
+	fmt.Println("----------------------")
+	var connList []io.Closer
+	for i := 0; i < 5; i++ {
+		conn, err := pool.Acquire()
+		if err != nil {
+			panic(err)
+		}
+		connList = append(connList, conn)
+		fmt.Printf("acquire %d after, num of open: %d\n", i, pool.numOpen)
+	}
+
+	fmt.Println("----------------------")
+	for i := 0; i < len(connList); i++ {
+		err := pool.Release(connList[i])
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("release %d after, num of open: %d\n", i, pool.numOpen)
+	}
+
+	fmt.Println("----------------------")
+	for i := 0; i < 2; i++ {
+		conn, err := pool.Acquire()
+		if err != nil {
+			panic(err)
+		}
+		err = pool.Close(conn)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("close %d after, num of open: %d\n", i, pool.numOpen)
+	}
+
+	fmt.Println("----------------------")
+	err = pool.Shutdown()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("shutdown, num of open:", pool.numOpen)
 }
 
 var (
 	ErrPoolConfig = errors.New("invalid config")
 	ErrPoolClosed = errors.New("conn pool closed")
 )
+
+type conn struct{}
+
+func (c *conn) Close() error {
+	return nil
+}
 
 type Pool interface {
 	Acquire() (io.Closer, error) // 获取资源
@@ -67,23 +122,29 @@ func (cp *ConnPool) Acquire() (io.Closer, error) {
 		return nil, ErrPoolClosed
 	}
 
-	cp.mu.Lock()
-	defer cp.mu.Unlock()
-
-	if cp.numOpen >= cp.maxOpen {
-		for {
-			select {
-			case conn := <-cp.pool:
-				return conn, nil
-			}
+	for {
+		select {
+		case conn := <-cp.pool:
+			return conn, nil
+		default:
 		}
-	} else {
+
+		cp.mu.Lock()
+
+		if cp.numOpen >= cp.maxOpen {
+			conn := <-cp.pool
+			cp.mu.Unlock()
+			return conn, nil
+		}
+
 		conn, err := cp.factory()
 		if err != nil {
+			cp.mu.Unlock()
 			return nil, err
 		}
 		cp.numOpen++
-		return conn, err
+		cp.mu.Unlock()
+		return conn, nil
 	}
 }
 
@@ -96,7 +157,6 @@ func (cp *ConnPool) Release(conn io.Closer) error {
 	defer cp.mu.Unlock()
 
 	cp.pool <- conn
-	cp.numOpen--
 	return nil
 }
 
