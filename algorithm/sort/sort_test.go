@@ -105,12 +105,36 @@ func TestShellSort(t *testing.T) {
 }
 
 func TestMergeSort(t *testing.T) {
-	//arr := []int{2, 4, 3, 1, 5, 9, 0, 7, 6, 8}
-	arr := []int{1, 2, 6, 7, 9, 0, 3, 4, 5, 8}
+	arr := []int{2, 4, 3, 1, 5, 9, 0, 7, 6, 8}
 	MergeSort(arr)
 	fmt.Println(arr)
 
-	//sortCheck(t, MergeSort)
+	sortCheck(t, MergeSort)
+}
+
+func TestQuickSort(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
+	QuickSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, QuickSort)
+}
+
+func TestCountSort(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5, -1}
+	CountSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, CountSort)
+}
+
+func TestRadixSort(t *testing.T) {
+	// arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5, -1}
+	arr := []int{421, 240, 115, 532, 305, 430, 124, 0, 12, -123}
+	RadixSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, RadixSort)
 }
 
 func Test(t *testing.T) {
