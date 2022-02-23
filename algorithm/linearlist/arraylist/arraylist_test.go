@@ -99,23 +99,21 @@ func TestAdd(t *testing.T) {
 
 func TestInsert(t *testing.T) {
 	list := New()
-	list.Add(100)
-
 	for i := 0; i < 10; i++ {
 		result := list.Insert(i, i)
 		fmt.Printf("result: %t, size: %d, capacity: %d, list: %v\n", result, len(list.data), cap(list.data), list.Values())
 	}
 	// Output:
-	// result: true, size: 2, capacity: 10, list: [0 100]
-	// result: true, size: 3, capacity: 10, list: [0 1 100]
-	// result: true, size: 4, capacity: 10, list: [0 1 2 100]
-	// result: true, size: 5, capacity: 10, list: [0 1 2 3 100]
-	// result: true, size: 6, capacity: 10, list: [0 1 2 3 4 100]
-	// result: true, size: 7, capacity: 10, list: [0 1 2 3 4 5 100]
-	// result: true, size: 8, capacity: 10, list: [0 1 2 3 4 5 6 100]
-	// result: true, size: 9, capacity: 10, list: [0 1 2 3 4 5 6 7 100]
-	// result: true, size: 10, capacity: 10, list: [0 1 2 3 4 5 6 7 8 100]
-	// result: true, size: 11, capacity: 20, list: [0 1 2 3 4 5 6 7 8 9 100]
+	// result: true, size: 1, capacity: 10, list: [0]
+	// result: true, size: 2, capacity: 10, list: [0 1]
+	// result: true, size: 3, capacity: 10, list: [0 1 2]
+	// result: true, size: 4, capacity: 10, list: [0 1 2 3]
+	// result: true, size: 5, capacity: 10, list: [0 1 2 3 4]
+	// result: true, size: 6, capacity: 10, list: [0 1 2 3 4 5]
+	// result: true, size: 7, capacity: 10, list: [0 1 2 3 4 5 6]
+	// result: true, size: 8, capacity: 10, list: [0 1 2 3 4 5 6 7]
+	// result: true, size: 9, capacity: 10, list: [0 1 2 3 4 5 6 7 8]
+	// result: true, size: 10, capacity: 10, list: [0 1 2 3 4 5 6 7 8 9]
 }
 
 func TestRemove(t *testing.T) {

@@ -47,6 +47,10 @@ func (l *ArrayList) Add(v interface{}) {
 
 func (l *ArrayList) Insert(index int, v interface{}) bool {
 	if !l.rangeCheck(index) {
+		if index == l.size {
+			l.Add(v)
+			return true
+		}
 		return false
 	}
 
@@ -115,10 +119,7 @@ func (l *ArrayList) Iterator() *ArrayIterator {
 }
 
 func (l *ArrayList) rangeCheck(index int) bool {
-	if index >= l.size || index < 0 {
-		return false
-	}
-	return true
+	return index >= 0 && index < l.size
 }
 
 func (l *ArrayList) grow(minCapacity int) {
