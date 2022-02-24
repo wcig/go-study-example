@@ -74,3 +74,24 @@ func TestExample(t *testing.T) {
 	// 0 crypto/bcrypt: hashedSecret too short to be a bcrypted password
 	// crypto/bcrypt: hashedPassword is not the hash of the given password
 }
+
+func BenchmarkGenerateFromPasswordMinCost(b *testing.B) {
+	pwd := []byte("123456")
+	for i := 0; i < b.N; i++ {
+		_, _ = bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	}
+}
+
+func BenchmarkGenerateFromPasswordDefaultCost(b *testing.B) {
+	pwd := []byte("123456")
+	for i := 0; i < b.N; i++ {
+		_, _ = bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
+	}
+}
+
+func BenchmarkGenerateFromPasswordMaxCost(b *testing.B) {
+	pwd := []byte("123456")
+	for i := 0; i < b.N; i++ {
+		_, _ = bcrypt.GenerateFromPassword(pwd, bcrypt.MaxCost)
+	}
+}
