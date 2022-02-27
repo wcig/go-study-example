@@ -20,6 +20,12 @@ func TestVariables(t *testing.T) {
 	_ = rsa.ErrVerification   // crypto/rsa: verification error
 }
 
+// 对应加解密
+// 1.OEAP: EncryptOAEP (公钥) -> DecryptOAEP (私钥)
+// 2.PKCS1v15: EncryptPKCS1v15 (公钥) -> DecryptPKCS1v15 (私钥)
+// 3.SignPKCS1v15: SignPKCS1v15 (私钥) -> VerifyPKCS1v15 (公钥)
+// 4.SignPSS: SignPSS (私钥) -> VerifyPSS (公钥)
+
 // 函数
 // 1.RSA-OAEP解密
 // func DecryptOAEP(hash hash.Hash, random io.Reader, priv *PrivateKey, ciphertext []byte, label []byte) ([]byte, error)

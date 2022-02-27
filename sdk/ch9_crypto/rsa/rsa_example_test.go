@@ -4,10 +4,13 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var test2048Key *rsa.PrivateKey
@@ -66,4 +69,44 @@ func TestDecryptOAEP(t *testing.T) {
 	fmt.Println("RSA-OAEP decrypt result:", string(val))
 	// output:
 	// RSA-OAEP decrypt result: hello world.
+}
+
+func TestRsaOAEP(t *testing.T) {
+	privateKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+	publicKey := &privateKey.PublicKey
+	data := []byte("hello world.")
+	label := []byte("123456")
+	hash := sha256.New()
+
+	// public key加密
+	encryptData, err := rsa.EncryptOAEP(hash, rand.Reader, publicKey, data, label)
+	fmt.Println(len(encryptData), base64.StdEncoding.EncodeToString(encryptData), err)
+
+	// private key解密
+	decryptData, err := rsa.DecryptOAEP(hash, rand.Reader, privateKey, encryptData, label)
+	fmt.Println(len(decryptData), err, string(decryptData))
+	assert.Equal(t, data, decryptData)
+
+	// Output:
+	// 256 jrH3mzlRvcBauXtdJSaYnV+wroQvjHu83C9YuzvvZw5pefDRhVZfPNBLG+6uOFtn0BzWZESlPJ1hSLEFelzKHyzuHjiIyXhHC9UZtXZXyW0MnpOF2arAR3JKu7yM+akM7nQF3uV96T6XMw8FoP2IZEQL+iMKr6voeSCJg8AcRjci0VM84PyZdg5bGfEt4t26bUEcWxcNdmCvjlksKpUIaigizbFH5wmrS848ndMpGRt9jdOAHQsY0E9PCLvIv5fUkdv8EqyphgpRXwEuOCk0yvCFIE8A2ZtNh9Bg4HykIgcp8kAc3rBodV+NiGl93uBToUZTYMYrk/sReInFTFYJiA== <nil>
+	// 12 <nil> hello world.
+}
+
+func TestRsaPKCS1v15(t *testing.T) {
+	privateKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+	publicKey := &privateKey.PublicKey
+	data := []byte("hello world.")
+
+	// public key加密
+	encryptData, err := rsa.EncryptPKCS1v15(rand.Reader, publicKey, data)
+	fmt.Println(len(encryptData), base64.StdEncoding.EncodeToString(encryptData), err)
+
+	// private key解密
+	decryptData, err := rsa.DecryptPKCS1v15(rand.Reader, privateKey, encryptData)
+	fmt.Println(len(decryptData), err, string(decryptData))
+	assert.Equal(t, data, decryptData)
+
+	// Output:
+	// 256 x9vMmoKX9kxpJLfBRFTEC3a8E3Tx+sEUM48SbxKK5gl9/jJi3OjRYXhrIX7KWZQzepqloHBkXe5h5QpzFstLbWo9iPg34aGHwCM14IhJS3qAK/ZmDZbcNUB/OOxlAKI7hYXL85W/STAqjSHQD0JhtrOHY89MVhwbcPVFVO6+q5qIW4Ev8TICDvcOGP/lYFMXlCacoI9rVqEXFtC0IX2mO/u0+fZsMIdQvD/g965vxWTFwyBRKgTOvmByqcG6zNXCfTTWtaFGcMehnEnPX6MhvnyHB9E2yRoPxDVtS+iWxz7Um1d0wz1tUJxIosHyKtrM87tpgcQGx7YxysT7T8oAeA== <nil>
+	// 12 <nil> hello world.
 }
