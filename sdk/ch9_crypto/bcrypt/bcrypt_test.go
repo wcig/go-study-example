@@ -11,7 +11,7 @@ import (
 // bcrypt: 一种加密方式 (多次原密码加随机盐加密的加密方式)
 // 示例: $2a$10$YmNVMeRoiF0CvZdf/GUV9eDrGPfAazFDhA6q2DcKaV/3OSgiRL1Y.
 // 2a: 标识bcrypt加密
-// 10: 标识哈希成本因子(循环加密次数)
+// 10: 标识哈希成本因子(循环加密次数为2^10次)
 // YmNVMeRoiF0CvZdf/GUV9e: 16个字节(128bits)的salt经过base64编码得到的22长度的字符
 // DrGPfAazFDhA6q2DcKaV/3OSgiRL1Y.: 24个字节(192bits)的hash,经过bash64的编码得到的31长度的字符.
 
