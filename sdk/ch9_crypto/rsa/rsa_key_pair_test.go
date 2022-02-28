@@ -10,6 +10,8 @@ import (
 	"os"
 	"testing"
 
+	"golang.org/x/crypto/ssh"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -128,4 +130,38 @@ func GenRsaKeyPairFile(privateKeyFileName, publicKeyFileName string) error {
 		return err
 	}
 	return nil
+}
+
+func Test2(t *testing.T) {
+	privateBytes, err := ioutil.ReadFile("id_rsa_test")
+	if err != nil {
+		panic(err)
+	}
+	// privateBlock, _ := pem.Decode(privateBytes)
+	// privateKey, err := x509.ParsePKCS1PrivateKey(privateBlock.Bytes)
+	// privateKey, err := x509.ParsePKCS8PrivateKey(privateBlock.Bytes)
+	// privateKey, err := x509.ParseECPrivateKey(privateBlock.Bytes)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(privateKey)
+
+	privateKey, err := ssh.ParsePrivateKey(privateBytes)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(privateKey)
+}
+
+func Test3(t *testing.T) {
+	publicBytes, err := ioutil.ReadFile("id_rsa_test.pub")
+	if err != nil {
+		panic(err)
+	}
+
+	key, comment, options, rest, err := ssh.ParseAuthorizedKey(publicBytes)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(key, comment, options, rest)
 }
