@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// rsa公钥私钥队生成
+// RSA生成公钥私钥对
 
 const bits = 2048 // 当前已破解到768位秘钥, 所以建议秘钥长度最少1024位. 普遍建议秘钥长度为 2048~4096 位.
 
