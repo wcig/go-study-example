@@ -13,5 +13,5 @@ type LinearList interface {
 	Get(index int) (interface{}, bool)
 	Contain(v interface{}) bool
 	IndexOf(v interface{}) int
-	Iterator() *Iterator
+	Iterator() Iterator
 }

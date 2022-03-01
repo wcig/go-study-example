@@ -1,11 +1,13 @@
 package arraylist
 
+import "go-app/algorithm/linearlist"
+
 type ArrayIterator struct {
 	list   *ArrayList
 	cursor int
 }
 
-func NewIterator(list *ArrayList) *ArrayIterator {
+func NewIterator(list *ArrayList) linearlist.Iterator {
 	return &ArrayIterator{
 		list:   list,
 		cursor: 0,

@@ -1,5 +1,7 @@
 package arraylist
 
+import "go-app/algorithm/linearlist"
+
 const (
 	defaultCapacity = 10
 
@@ -111,7 +113,7 @@ func (l *ArrayList) IndexOf(v interface{}) int {
 	return -1
 }
 
-func (l *ArrayList) Iterator() *ArrayIterator {
+func (l *ArrayList) Iterator() linearlist.Iterator {
 	return NewIterator(l)
 }
 
