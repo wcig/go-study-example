@@ -105,14 +105,13 @@ func (list *SingleLinkList) Remove(index int) (interface{}, bool) {
 		return nil, false
 	}
 
-	var val interface{}
 	var beforeNode *Node
 	node := list.first
 	for i := 0; i < index; i++ {
 		beforeNode = node
 		node = node.next
 	}
-	val = node.value
+	val := node.value
 
 	if node == list.first {
 		list.first = node.next

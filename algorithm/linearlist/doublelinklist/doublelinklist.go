@@ -12,6 +12,12 @@ type DoubleLinkList struct {
 	size  int
 }
 
+type Node struct {
+	value interface{}
+	prev  *Node
+	next  *Node
+}
+
 func New() *DoubleLinkList {
 	return &DoubleLinkList{
 		first: nil,
@@ -83,12 +89,8 @@ func (list *DoubleLinkList) Insert(index int, v interface{}) bool {
 		node.prev = newNode
 		list.first = newNode
 	} else {
-		var beforeNode *Node
-		node := list.first
-		for i := 0; i < index; i++ {
-			beforeNode = node.next
-			node = node.next
-		}
+		node := list.getNodeByIndex(index)
+		beforeNode := node.prev
 		beforeNode.next = newNode
 		newNode.prev = beforeNode
 		newNode.next = node
@@ -99,41 +101,91 @@ func (list *DoubleLinkList) Insert(index int, v interface{}) bool {
 }
 
 func (list *DoubleLinkList) Remove(index int) (interface{}, bool) {
-	// TODO implement me
-	panic("implement me")
+	if !list.rangeCheck(index) {
+		return nil, false
+	}
+
+	node := list.getNodeByIndex(index)
+	val := node.value
+
+	if node == list.first {
+		list.first = node.next
+	}
+	if node == list.last {
+		list.last = node.prev
+	}
+	if node.prev != nil {
+		node.prev.next = node.next
+	}
+	if node.next != nil {
+		node.next.prev = node.prev
+	}
+	list.size--
+	return val, true
 }
 
 func (list *DoubleLinkList) Set(index int, v interface{}) bool {
-	// TODO implement me
-	panic("implement me")
+	if !list.rangeCheck(index) {
+		return false
+	}
+
+	node := list.getNodeByIndex(index)
+	node.value = v
+	return true
 }
 
 func (list *DoubleLinkList) Get(index int) (interface{}, bool) {
-	// TODO implement me
-	panic("implement me")
+	if !list.rangeCheck(index) {
+		return nil, false
+	}
+
+	node := list.getNodeByIndex(index)
+	return node.value, true
 }
 
 func (list *DoubleLinkList) Contain(v interface{}) bool {
-	// TODO implement me
-	panic("implement me")
+	return list.IndexOf(v) != -1
 }
 
 func (list *DoubleLinkList) IndexOf(v interface{}) int {
-	// TODO implement me
-	panic("implement me")
+	if list.size == 0 {
+		return -1
+	}
+
+	for i, node := 0, list.first; i < list.size; i, node = i+1, node.next {
+		if node.value == v {
+			return i
+		}
+	}
+	return -1
 }
 
 func (list *DoubleLinkList) Iterator() linearlist.Iterator {
-	// TODO implement me
-	panic("implement me")
-}
-
-type Node struct {
-	value interface{}
-	prev  *Node
-	next  *Node
+	return NewIterator(list)
 }
 
 func (list *DoubleLinkList) rangeCheck(index int) bool {
 	return index >= 0 && index < list.size
+}
+
+func (list *DoubleLinkList) getNodeByIndex(index int) *Node {
+	if !list.rangeCheck(index) {
+		return nil
+	}
+
+	var node *Node
+	if list.size-index < index {
+		// 正向遍历
+		node = list.first
+		for i := 0; i < index; i++ {
+			node = node.next
+		}
+	} else {
+		// 反向遍历
+		node = list.last
+		for i := 0; i < list.size-index-1; i++ {
+			node = node.prev
+		}
+	}
+	return node
 }
