@@ -112,10 +112,7 @@ func (l *ArrayList) IndexOf(v interface{}) int {
 }
 
 func (l *ArrayList) Iterator() *ArrayIterator {
-	return &ArrayIterator{
-		list:   l,
-		cursor: 0,
-	}
+	return NewIterator(l)
 }
 
 func (l *ArrayList) rangeCheck(index int) bool {

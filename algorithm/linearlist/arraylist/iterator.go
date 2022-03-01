@@ -5,6 +5,13 @@ type ArrayIterator struct {
 	cursor int
 }
 
+func NewIterator(list *ArrayList) *ArrayIterator {
+	return &ArrayIterator{
+		list:   list,
+		cursor: 0,
+	}
+}
+
 func (iterator *ArrayIterator) HasNext() bool {
 	if iterator.list.rangeCheck(iterator.cursor) {
 		return true
