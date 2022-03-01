@@ -83,10 +83,20 @@ func TestRemove(t *testing.T) {
 	assert.False(t, ok)
 	assert.Nil(t, val)
 
-	val, ok = list.Remove(2)
+	val, ok = list.Remove(0)
 	assert.True(t, ok)
-	assert.Equal(t, 2, 2)
-	assert.Equal(t, []interface{}{0, 1, 3, 4}, list.Values())
+	assert.Equal(t, 0, val)
+	assert.Equal(t, []interface{}{1, 2, 3, 4}, list.Values())
+
+	val, ok = list.Remove(3)
+	assert.True(t, ok)
+	assert.Equal(t, 4, val)
+	assert.Equal(t, []interface{}{1, 2, 3}, list.Values())
+
+	val, ok = list.Remove(1)
+	assert.True(t, ok)
+	assert.Equal(t, 2, val)
+	assert.Equal(t, []interface{}{1, 3}, list.Values())
 
 	for i := 0; i < 4; i++ {
 		val, ok = list.Remove(0)
@@ -189,4 +199,28 @@ func TestIterator(t *testing.T) {
 		result = append(result, v)
 	}
 	assert.Equal(t, result, list.Values())
+}
+
+func TestValues(t *testing.T) {
+	list := New()
+	assert.Equal(t, []interface{}{}, list.Values())
+
+	for i := 0; i < 5; i++ {
+		list.Add(i)
+	}
+	assert.Equal(t, []interface{}{0, 1, 2, 3, 4}, list.Values())
+}
+
+func TestClear(t *testing.T) {
+	list := New()
+	list.Clear()
+	assert.Equal(t, 0, list.Size())
+	assert.Equal(t, []interface{}{}, list.Values())
+
+	for i := 0; i < 5; i++ {
+		list.Add(i)
+	}
+	list.Clear()
+	assert.Equal(t, 0, list.Size())
+	assert.Equal(t, []interface{}{}, list.Values())
 }

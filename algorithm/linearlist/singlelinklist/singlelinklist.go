@@ -1,5 +1,7 @@
 package singlelinklist
 
+import "go-app/algorithm/linearlist"
+
 // 单链表
 type SingleLinkList struct {
 	first *Node
@@ -8,8 +10,8 @@ type SingleLinkList struct {
 }
 
 type Node struct {
-	data interface{}
-	next *Node
+	value interface{}
+	next  *Node
 }
 
 func New() *SingleLinkList {
@@ -25,7 +27,7 @@ func (list *SingleLinkList) Size() int {
 }
 
 func (list *SingleLinkList) IsEmpty() bool {
-	return list.Size() == 0
+	return list.size == 0
 }
 
 func (list *SingleLinkList) Clear() {
@@ -39,37 +41,26 @@ func (list *SingleLinkList) Values() []interface{} {
 		return []interface{}{}
 	}
 
-	values := make([]interface{}, 0, list.size)
-	node := list.first
-	for node != nil {
-		values = append(values, node.data)
-		node = node.next
+	values := make([]interface{}, list.size, list.size)
+	for i, node := 0, list.first; node != nil; i, node = i+1, node.next {
+		values[i] = node.value
 	}
 	return values
 }
 
 func (list *SingleLinkList) Add(v interface{}) {
 	newNode := &Node{
-		data: v,
-		next: nil,
+		value: v,
+		next:  nil,
 	}
 
-	if list.IsEmpty() {
+	if list.size == 0 {
 		list.first = newNode
 		list.last = newNode
-		list.size++
-		return
+	} else {
+		list.last.next = newNode
+		list.last = newNode
 	}
-	beforeNode := list.first
-	for {
-		if beforeNode.next != nil {
-			beforeNode = beforeNode.next
-		} else {
-			break
-		}
-	}
-	beforeNode.next = newNode
-	list.last = newNode
 	list.size++
 }
 
@@ -84,8 +75,8 @@ func (list *SingleLinkList) Insert(index int, v interface{}) bool {
 	}
 
 	newNode := &Node{
-		data: v,
-		next: nil,
+		value: v,
+		next:  nil,
 	}
 
 	if index == 0 {
@@ -106,7 +97,7 @@ func (list *SingleLinkList) Insert(index int, v interface{}) bool {
 
 // index从0开始 (index<0 || index>=size返回false)
 func (list *SingleLinkList) Remove(index int) (interface{}, bool) {
-	if list.IsEmpty() {
+	if list.size == 0 {
 		return nil, false
 	}
 
@@ -114,40 +105,32 @@ func (list *SingleLinkList) Remove(index int) (interface{}, bool) {
 		return nil, false
 	}
 
-	// 删除第一个元素
-	if index == 0 {
-		node := list.first
-		val := node.data
-		list.first = node.next
-		if list.first == nil {
-			list.last = nil
-		}
-		list.size--
-		return val, true
-	}
-
 	var val interface{}
-	beforeNode := list.first
-	for i := 0; i < index-1; i++ {
-		beforeNode = beforeNode.next
+	var beforeNode *Node
+	node := list.first
+	for i := 0; i < index; i++ {
+		beforeNode = node
+		node = node.next
 	}
-	node := beforeNode.next
-	val = node.data
+	val = node.value
+
+	if node == list.first {
+		list.first = node.next
+	}
 	if node == list.last {
-		// 删除最后一个元素
-		beforeNode.next = nil
 		list.last = beforeNode
-	} else {
-		// 删除中间元素
+	}
+	if beforeNode != nil {
 		beforeNode.next = node.next
 	}
+	node = nil
 	list.size--
 	return val, true
 }
 
 // index从0开始 (index<0 || index>=size返回false)
 func (list *SingleLinkList) Set(index int, v interface{}) bool {
-	if list.IsEmpty() {
+	if list.size == 0 {
 		return false
 	}
 
@@ -159,7 +142,7 @@ func (list *SingleLinkList) Set(index int, v interface{}) bool {
 	for i := 0; i < index; i++ {
 		node = node.next
 	}
-	node.data = v
+	node.value = v
 	return true
 }
 
@@ -177,7 +160,7 @@ func (list *SingleLinkList) Get(index int) (interface{}, bool) {
 	for i := 0; i < index; i++ {
 		node = node.next
 	}
-	return node.data, true
+	return node.value, true
 }
 
 // 返回list是否存在元素与v相等
@@ -187,24 +170,19 @@ func (list *SingleLinkList) Contain(v interface{}) bool {
 
 // 返回list元素红第一次出现v的索引index, index从0开始 (存在返回index,不存在返回-1)
 func (list *SingleLinkList) IndexOf(v interface{}) int {
-	if list.IsEmpty() {
+	if list.size == 0 {
 		return -1
 	}
 
-	node := list.first
-	if node.data == v {
-		return 0
-	}
-	for i := 0; i < list.size-1; i++ {
-		node = node.next
-		if node.data == v {
-			return i + 1
+	for i, node := 0, list.first; i < list.size; i, node = i+1, node.next {
+		if node.value == v {
+			return i
 		}
 	}
 	return -1
 }
 
-func (list *SingleLinkList) Iterator() *Iterator {
+func (list *SingleLinkList) Iterator() linearlist.Iterator {
 	return NewIterator(list)
 }
 
