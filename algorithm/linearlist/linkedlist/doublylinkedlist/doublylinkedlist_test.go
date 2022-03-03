@@ -211,6 +211,16 @@ func TestValues(t *testing.T) {
 	assert.Equal(t, []interface{}{0, 1, 2, 3, 4}, list.Values())
 }
 
+func TestValuesReverse(t *testing.T) {
+	list := New()
+	assert.Equal(t, []interface{}{}, list.ValuesReverse())
+
+	for i := 0; i < 5; i++ {
+		list.Add(i)
+	}
+	assert.Equal(t, []interface{}{4, 3, 2, 1, 0}, list.ValuesReverse())
+}
+
 func TestClear(t *testing.T) {
 	list := New()
 	list.Clear()

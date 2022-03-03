@@ -47,6 +47,15 @@ func (list *DoublyLinkedList) Values() []interface{} {
 	return values
 }
 
+// TODO
+func (list *DoublyLinkedList) ValuesReverse() []interface{} {
+	values := make([]interface{}, list.size, list.size)
+	for i, node := 0, list.last; i < list.size; i, node = i+1, node.prev {
+		values[i] = node.value
+	}
+	return values
+}
+
 func (list *DoublyLinkedList) Add(v interface{}) {
 	newNode := &Node{
 		value: v,
