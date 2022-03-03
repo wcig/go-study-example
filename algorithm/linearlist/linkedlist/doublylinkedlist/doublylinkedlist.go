@@ -82,7 +82,7 @@ func (list *DoublyLinkedList) Insert(index int, v interface{}) bool {
 		next:  nil,
 	}
 
-	node := list.getNodeByIndex(index)
+	node, _ := list.getNodeByIndex(index)
 	beforeNode := node.prev
 
 	node.prev = newNode
@@ -102,7 +102,7 @@ func (list *DoublyLinkedList) Remove(index int) (interface{}, bool) {
 		return nil, false
 	}
 
-	node := list.getNodeByIndex(index)
+	node, _ := list.getNodeByIndex(index)
 	val := node.value
 
 	if node == list.first {
@@ -123,22 +123,18 @@ func (list *DoublyLinkedList) Remove(index int) (interface{}, bool) {
 }
 
 func (list *DoublyLinkedList) Set(index int, v interface{}) bool {
-	if !list.rangeCheck(index) {
-		return false
+	if node, ok := list.getNodeByIndex(index); ok {
+		node.value = v
+		return true
 	}
-
-	node := list.getNodeByIndex(index)
-	node.value = v
-	return true
+	return false
 }
 
 func (list *DoublyLinkedList) Get(index int) (interface{}, bool) {
-	if !list.rangeCheck(index) {
-		return nil, false
+	if node, ok := list.getNodeByIndex(index); ok {
+		return node.value, true
 	}
-
-	node := list.getNodeByIndex(index)
-	return node.value, true
+	return nil, false
 }
 
 func (list *DoublyLinkedList) Contain(v interface{}) bool {
@@ -166,9 +162,9 @@ func (list *DoublyLinkedList) rangeCheck(index int) bool {
 	return index >= 0 && index < list.size
 }
 
-func (list *DoublyLinkedList) getNodeByIndex(index int) *Node {
+func (list *DoublyLinkedList) getNodeByIndex(index int) (*Node, bool) {
 	if !list.rangeCheck(index) {
-		return nil
+		return nil, false
 	}
 
 	var node *Node
@@ -185,5 +181,5 @@ func (list *DoublyLinkedList) getNodeByIndex(index int) *Node {
 			node = node.prev
 		}
 	}
-	return node
+	return node, true
 }
