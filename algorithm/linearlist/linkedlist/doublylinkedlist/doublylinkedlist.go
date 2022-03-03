@@ -82,18 +82,16 @@ func (list *DoublyLinkedList) Insert(index int, v interface{}) bool {
 		next:  nil,
 	}
 
-	if index == 0 {
-		node := list.first
-		newNode.next = node
-		node.prev = newNode
-		list.first = newNode
-	} else {
-		node := list.getNodeByIndex(index)
-		beforeNode := node.prev
+	node := list.getNodeByIndex(index)
+	beforeNode := node.prev
+
+	node.prev = newNode
+	newNode.next = node
+	newNode.prev = beforeNode
+	if beforeNode != nil {
 		beforeNode.next = newNode
-		newNode.prev = beforeNode
-		newNode.next = node
-		node.prev = newNode
+	} else {
+		list.first = newNode
 	}
 	list.size++
 	return true
@@ -173,7 +171,7 @@ func (list *DoublyLinkedList) getNodeByIndex(index int) *Node {
 	}
 
 	var node *Node
-	if list.size-index < index {
+	if 2*index < list.size {
 		// 正向遍历
 		node = list.first
 		for i := 0; i < index; i++ {
