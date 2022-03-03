@@ -37,7 +37,7 @@ func (list *SinglyLinkedList) Clear() {
 }
 
 func (list *SinglyLinkedList) Values() []interface{} {
-	if list.IsEmpty() {
+	if list.size == 0 {
 		return []interface{}{}
 	}
 
