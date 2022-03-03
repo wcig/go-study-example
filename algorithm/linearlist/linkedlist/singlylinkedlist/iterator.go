@@ -1,14 +1,14 @@
-package singlelinklist
+package singlylinkedlist
 
 import "go-app/algorithm/linearlist"
 
 type Iterator struct {
-	list      *SingleLinkList
+	list      *SinglyLinkedList
 	next      *Node
 	nextIndex int
 }
 
-func NewIterator(list *SingleLinkList) linearlist.Iterator {
+func NewIterator(list *SinglyLinkedList) linearlist.Iterator {
 	return &Iterator{
 		list:      list,
 		next:      list.first,

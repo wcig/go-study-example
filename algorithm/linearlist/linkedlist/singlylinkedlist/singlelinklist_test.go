@@ -1,4 +1,4 @@
-package singlelinklist
+package singlylinkedlist
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func TestSimple(t *testing.T) {
 	printList(list)
 }
 
-func printList(list *SingleLinkList) {
+func printList(list *SinglyLinkedList) {
 	fmt.Printf("list size: %d, empty: %t, value: %v\n", list.Size(), list.IsEmpty(), list.Values())
 }
 
