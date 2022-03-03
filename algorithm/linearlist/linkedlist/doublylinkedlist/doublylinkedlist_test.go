@@ -1,4 +1,4 @@
-package doublelinklist
+package doublylinkedlist
 
 import (
 	"fmt"
@@ -6,6 +6,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
+func printList(list *DoublyLinkedList) {
+	fmt.Printf("list size: %d, empty: %t, value: %v\n", list.Size(), list.IsEmpty(), list.Values())
+}
 
 func TestSimple(t *testing.T) {
 	list := New()
@@ -15,10 +19,6 @@ func TestSimple(t *testing.T) {
 		list.Add(i)
 	}
 	printList(list)
-}
-
-func printList(list *DoubleLinkList) {
-	fmt.Printf("list size: %d, empty: %t, value: %v\n", list.Size(), list.IsEmpty(), list.Values())
 }
 
 func TestInsert(t *testing.T) {

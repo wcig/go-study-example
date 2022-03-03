@@ -1,4 +1,4 @@
-package doublelinklist
+package doublylinkedlist
 
 import (
 	"go-app/algorithm/linearlist"
@@ -6,7 +6,7 @@ import (
 
 // 双向链表
 // 单链表
-type DoubleLinkList struct {
+type DoublyLinkedList struct {
 	first *Node
 	last  *Node
 	size  int
@@ -18,29 +18,29 @@ type Node struct {
 	next  *Node
 }
 
-func New() *DoubleLinkList {
-	return &DoubleLinkList{
+func New() *DoublyLinkedList {
+	return &DoublyLinkedList{
 		first: nil,
 		last:  nil,
 		size:  0,
 	}
 }
 
-func (list *DoubleLinkList) Size() int {
+func (list *DoublyLinkedList) Size() int {
 	return list.size
 }
 
-func (list *DoubleLinkList) IsEmpty() bool {
+func (list *DoublyLinkedList) IsEmpty() bool {
 	return list.size == 0
 }
 
-func (list *DoubleLinkList) Clear() {
+func (list *DoublyLinkedList) Clear() {
 	list.first = nil
 	list.last = nil
 	list.size = 0
 }
 
-func (list *DoubleLinkList) Values() []interface{} {
+func (list *DoublyLinkedList) Values() []interface{} {
 	values := make([]interface{}, list.size, list.size)
 	for i, node := 0, list.first; i < list.size; i, node = i+1, node.next {
 		values[i] = node.value
@@ -48,7 +48,7 @@ func (list *DoubleLinkList) Values() []interface{} {
 	return values
 }
 
-func (list *DoubleLinkList) Add(v interface{}) {
+func (list *DoublyLinkedList) Add(v interface{}) {
 	newNode := &Node{
 		value: v,
 		prev:  nil,
@@ -68,7 +68,7 @@ func (list *DoubleLinkList) Add(v interface{}) {
 }
 
 // index从0开始, 当index为列表size时,直接添加到末尾 (index<0 || index>size返回false)
-func (list *DoubleLinkList) Insert(index int, v interface{}) bool {
+func (list *DoublyLinkedList) Insert(index int, v interface{}) bool {
 	if !list.rangeCheck(index) {
 		if index == list.size {
 			list.Add(v)
@@ -100,7 +100,7 @@ func (list *DoubleLinkList) Insert(index int, v interface{}) bool {
 	return true
 }
 
-func (list *DoubleLinkList) Remove(index int) (interface{}, bool) {
+func (list *DoublyLinkedList) Remove(index int) (interface{}, bool) {
 	if !list.rangeCheck(index) {
 		return nil, false
 	}
@@ -124,7 +124,7 @@ func (list *DoubleLinkList) Remove(index int) (interface{}, bool) {
 	return val, true
 }
 
-func (list *DoubleLinkList) Set(index int, v interface{}) bool {
+func (list *DoublyLinkedList) Set(index int, v interface{}) bool {
 	if !list.rangeCheck(index) {
 		return false
 	}
@@ -134,7 +134,7 @@ func (list *DoubleLinkList) Set(index int, v interface{}) bool {
 	return true
 }
 
-func (list *DoubleLinkList) Get(index int) (interface{}, bool) {
+func (list *DoublyLinkedList) Get(index int) (interface{}, bool) {
 	if !list.rangeCheck(index) {
 		return nil, false
 	}
@@ -143,11 +143,11 @@ func (list *DoubleLinkList) Get(index int) (interface{}, bool) {
 	return node.value, true
 }
 
-func (list *DoubleLinkList) Contain(v interface{}) bool {
+func (list *DoublyLinkedList) Contain(v interface{}) bool {
 	return list.IndexOf(v) != -1
 }
 
-func (list *DoubleLinkList) IndexOf(v interface{}) int {
+func (list *DoublyLinkedList) IndexOf(v interface{}) int {
 	if list.size == 0 {
 		return -1
 	}
@@ -160,15 +160,15 @@ func (list *DoubleLinkList) IndexOf(v interface{}) int {
 	return -1
 }
 
-func (list *DoubleLinkList) Iterator() linearlist.Iterator {
+func (list *DoublyLinkedList) Iterator() linearlist.Iterator {
 	return NewIterator(list)
 }
 
-func (list *DoubleLinkList) rangeCheck(index int) bool {
+func (list *DoublyLinkedList) rangeCheck(index int) bool {
 	return index >= 0 && index < list.size
 }
 
-func (list *DoubleLinkList) getNodeByIndex(index int) *Node {
+func (list *DoublyLinkedList) getNodeByIndex(index int) *Node {
 	if !list.rangeCheck(index) {
 		return nil
 	}

@@ -1,14 +1,14 @@
-package doublelinklist
+package doublylinkedlist
 
 import "go-app/algorithm/linearlist"
 
 type Iterator struct {
-	list      *DoubleLinkList
+	list      *DoublyLinkedList
 	next      *Node
 	nextIndex int
 }
 
-func NewIterator(list *DoubleLinkList) linearlist.Iterator {
+func NewIterator(list *DoublyLinkedList) linearlist.Iterator {
 	return &Iterator{
 		list:      list,
 		next:      list.first,
