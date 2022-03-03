@@ -79,17 +79,18 @@ func (list *SinglyLinkedList) Insert(index int, v interface{}) bool {
 		next:  nil,
 	}
 
-	if index == 0 {
-		newNode.next = list.first
-		list.first = newNode
-	} else {
-		beforeNode := list.first
-		for i := 0; i < index-1; i++ {
-			beforeNode = beforeNode.next
-		}
-		node := beforeNode.next
+	var beforeNode *Node
+	node := list.first
+	for i := 0; i < index; i++ {
+		beforeNode = node
+		node = node.next
+	}
+
+	newNode.next = node
+	if beforeNode != nil {
 		beforeNode.next = newNode
-		newNode.next = node
+	} else {
+		list.first = newNode
 	}
 	list.size++
 	return true
