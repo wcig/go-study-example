@@ -117,6 +117,7 @@ func (list *DoublyLinkedList) Remove(index int) (interface{}, bool) {
 	if node.next != nil {
 		node.next.prev = node.prev
 	}
+	node = nil
 	list.size--
 	return val, true
 }
