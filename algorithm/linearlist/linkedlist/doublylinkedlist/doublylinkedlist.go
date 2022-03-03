@@ -5,7 +5,6 @@ import (
 )
 
 // 双向链表
-// 单链表
 type DoublyLinkedList struct {
 	first *Node
 	last  *Node
