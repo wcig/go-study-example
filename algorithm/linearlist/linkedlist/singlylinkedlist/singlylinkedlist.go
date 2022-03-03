@@ -42,7 +42,7 @@ func (list *SinglyLinkedList) Values() []interface{} {
 	}
 
 	values := make([]interface{}, list.size, list.size)
-	for i, node := 0, list.first; node != nil; i, node = i+1, node.next {
+	for i, node := 0, list.first; i < list.size; i, node = i+1, node.next {
 		values[i] = node.value
 	}
 	return values
