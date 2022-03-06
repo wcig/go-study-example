@@ -4,6 +4,7 @@ import (
 	"go-app/algorithm/linearlist"
 )
 
+// 数组堆栈
 type ArrayStack struct {
 	elements []interface{}
 }

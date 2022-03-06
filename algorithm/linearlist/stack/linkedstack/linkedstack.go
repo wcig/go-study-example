@@ -32,7 +32,7 @@ func (s *LinkedStack) Push(value interface{}) {
 	s.size++
 }
 
-// 从栈顶弹出元素 (底层从链表表尾弹出元素)
+// 从栈顶弹出元素 (底层从链表表头弹出元素)
 func (s *LinkedStack) Pop() (value interface{}, ok bool) {
 	if s.size == 0 {
 		return nil, false
