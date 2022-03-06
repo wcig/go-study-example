@@ -22,15 +22,15 @@ type Element struct {
 	next  *Element
 }
 
-func New(size int) (*BlockingQueue, error) {
-	if size <= 0 {
+func New(capacity int) (*BlockingQueue, error) {
+	if capacity <= 0 {
 		return nil, InvalidSizeError
 	}
 	return &BlockingQueue{
 		first: nil,
 		last:  nil,
 		size:  0,
-		cap:   size,
+		cap:   capacity,
 	}, nil
 }
 
