@@ -1,8 +1,8 @@
 package simplehashtable
 
 const (
-	defaultCapacity = 1 << 4
-	loadFactor      = 0.75
+	defaultCapacity   = 1 << 4
+	defaultLoadFactor = 0.75
 )
 
 type SimpleHashTable struct {
@@ -29,7 +29,6 @@ func New(hashFunc HashFunc) *SimpleHashTable {
 	}
 }
 
-// todo resize
 func (t *SimpleHashTable) Add(v interface{}) {
 	hash := t.hashFunc(v)
 	newElement := &Element{
@@ -56,6 +55,9 @@ func (t *SimpleHashTable) Add(v interface{}) {
 	}
 	e.next = newElement
 	t.size++
+	if t.size > t.getThreshold() {
+		t.resize()
+	}
 }
 
 func (t *SimpleHashTable) Contain(v interface{}) bool {
@@ -132,4 +134,37 @@ func (t *SimpleHashTable) hash(v interface{}) int {
 
 func (t *SimpleHashTable) getKeyTableIndex(hash int) int {
 	return (t.cap - 1) & hash // 等价于: hash%t.cap
+}
+
+func (t *SimpleHashTable) getThreshold() int {
+	return int(float64(t.cap) * defaultLoadFactor)
+}
+
+func (t *SimpleHashTable) resize() {
+	newCap := t.cap << 1
+	t.cap = newCap
+	newTable := make([]*Element, newCap, newCap)
+	t.transfer(newTable)
+	t.table = newTable
+}
+
+func (t *SimpleHashTable) transfer(newTable []*Element) {
+	src := t.table
+	oldLength := len(src)
+	for i := 0; i < oldLength; i++ {
+		if e := src[i]; e != nil {
+			for e != nil {
+				newElement := &Element{
+					hash:  e.hash,
+					value: e.value,
+					next:  nil,
+				}
+				index := t.getKeyTableIndex(newElement.hash)
+				newElement.next = newTable[index] // 头插法
+				newTable[index] = newElement
+				e = e.next
+			}
+			src[i] = nil
+		}
+	}
 }

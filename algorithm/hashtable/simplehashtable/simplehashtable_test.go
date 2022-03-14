@@ -82,3 +82,12 @@ func TestRemove(t *testing.T) {
 	ht.Remove(u3)
 	fmt.Printf("remove u3, size: %d, empty: %t, contain: %t\n", ht.size, ht.IsEmpty(), ht.Contain(u3))
 }
+
+func TestResize(t *testing.T) {
+	ht := New(userHash)
+	for i := 1; i <= 16; i++ {
+		u := user{i, fmt.Sprintf("tom-%d", i)}
+		ht.Add(u)
+	}
+	fmt.Printf("size: %d, empty: %t\n", ht.size, ht.IsEmpty())
+}
