@@ -19,6 +19,7 @@ type Node struct {
 // 先序遍历
 func (t *Tree) PreOrderTraverse() {
 	preOrderTraverse(t.root)
+	fmt.Println()
 }
 
 func preOrderTraverse(n *Node) {
@@ -33,6 +34,7 @@ func preOrderTraverse(n *Node) {
 // 中序遍历
 func (t *Tree) InOrderTraverse() {
 	inOrderTraverse(t.root)
+	fmt.Println()
 }
 
 func inOrderTraverse(n *Node) {
@@ -47,6 +49,7 @@ func inOrderTraverse(n *Node) {
 // 后序遍历
 func (t *Tree) PostOrderTraverse() {
 	postOrderTraverse(t.root)
+	fmt.Println()
 }
 
 func postOrderTraverse(n *Node) {
@@ -62,15 +65,12 @@ func TestTraverse(t *testing.T) {
 	fmt.Println("先序遍历")
 	tree := genBinaryTree()
 	tree.PreOrderTraverse()
-	fmt.Println()
 
 	fmt.Println("中序遍历")
 	tree.InOrderTraverse()
-	fmt.Println()
 
 	fmt.Println("后序遍历")
 	tree.PostOrderTraverse()
-	fmt.Println()
 	// Output:
 	// 先序遍历
 	// ABDGHCEIF
