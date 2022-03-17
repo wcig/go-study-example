@@ -55,16 +55,16 @@ func (at *AVLTree) Contains(e interface{}) bool {
 	return at.containsElement(at.root, e)
 }
 
-func (at *AVLTree) containsElement(t *Node, e interface{}) bool {
+func (at *AVLTree) containsElement(t *Node, v interface{}) bool {
 	if t == nil {
 		return false
 	}
 
-	compareResult := at.comparator(e, t.value)
+	compareResult := at.comparator(v, t.value)
 	if compareResult < 0 {
-		return at.containsElement(t.left, e)
+		return at.containsElement(t.left, v)
 	} else if compareResult > 0 {
-		return at.containsElement(t.right, e)
+		return at.containsElement(t.right, v)
 	} else {
 		return true
 	}
@@ -159,17 +159,18 @@ func (at *AVLTree) balance(t *Node) *Node {
 		return t
 	}
 
-	if (height(t.left) - height(t.right)) > allowedImbalance {
+	imbalance := height(t.left) - height(t.right)
+	if imbalance > allowedImbalance {
 		if height(t.left.left) >= height(t.left.right) {
-			t = at.rotateWithLeftChild(t)
+			t = at.rightRotation(t)
 		} else {
-			t = at.doubleWithLeftChild(t)
+			t = at.leftRightRotation(t)
 		}
-	} else if (height(t.right) - height(t.left)) > allowedImbalance {
+	} else if -imbalance > allowedImbalance {
 		if height(t.right.right) >= height(t.right.left) {
-			t = at.rotateWithRightChild(t)
+			t = at.leftRotation(t)
 		} else {
-			t = at.doubleWithRightChild(t)
+			t = at.rightLeftRotation(t)
 		}
 	}
 
@@ -177,32 +178,32 @@ func (at *AVLTree) balance(t *Node) *Node {
 	return t
 }
 
-func (at *AVLTree) rotateWithLeftChild(k2 *Node) *Node {
-	k1 := k2.left
-	k2.left = k1.right
-	k1.right = k2
-	k2.height = utils.MaxInt(height(k2.left), height(k2.right)) + 1
-	k1.height = utils.MaxInt(height(k1.left), k2.height) + 1
-	return k1
+func (at *AVLTree) rightRotation(k *Node) *Node {
+	kl := k.left
+	k.left = kl.right
+	kl.right = k
+	k.height = utils.MaxInt(height(k.left), height(k.right)) + 1
+	kl.height = utils.MaxInt(height(kl.left), k.height) + 1
+	return kl
 }
 
-func (at *AVLTree) rotateWithRightChild(k2 *Node) *Node {
-	k1 := k2.right
-	k2.right = k1.left
-	k1.left = k2
-	k2.height = utils.MaxInt(height(k2.left), height(k2.right)) + 1
-	k1.height = utils.MaxInt(k2.height, height(k1.right)) + 1
-	return k1
+func (at *AVLTree) leftRotation(k *Node) *Node {
+	kr := k.right
+	k.right = kr.left
+	kr.left = k
+	k.height = utils.MaxInt(height(k.left), height(k.right)) + 1
+	kr.height = utils.MaxInt(k.height, height(kr.right)) + 1
+	return kr
 }
 
-func (at *AVLTree) doubleWithLeftChild(k3 *Node) *Node {
-	k3.left = at.rotateWithRightChild(k3.left)
-	return at.rotateWithLeftChild(k3)
+func (at *AVLTree) leftRightRotation(k3 *Node) *Node {
+	k3.left = at.leftRotation(k3.left)
+	return at.rightRotation(k3)
 }
 
-func (at *AVLTree) doubleWithRightChild(k3 *Node) *Node {
-	k3.right = at.rotateWithLeftChild(k3.right)
-	return at.rotateWithRightChild(k3)
+func (at *AVLTree) rightLeftRotation(k3 *Node) *Node {
+	k3.right = at.rightRotation(k3.right)
+	return at.leftRotation(k3)
 }
 
 // ------------------------------------------------------------------------ //
