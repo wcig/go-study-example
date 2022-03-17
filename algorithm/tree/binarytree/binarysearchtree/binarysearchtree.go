@@ -122,10 +122,10 @@ func (bst *BinarySearchTree) removeElement(t *Node, v interface{}) *Node {
 		return nil
 	}
 
-	compareResult := bst.comparator(v, t.value)
-	if compareResult < 0 {
+	comp := bst.comparator(v, t.value)
+	if comp < 0 {
 		t.left = bst.removeElement(t.left, v)
-	} else if compareResult > 0 {
+	} else if comp > 0 {
 		t.right = bst.removeElement(t.right, v)
 	} else if t.left != nil && t.right != nil {
 		minNode, _ := bst.findMinNode(t.right)
