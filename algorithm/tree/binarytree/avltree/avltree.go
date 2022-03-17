@@ -110,6 +110,7 @@ func (at *AVLTree) Add(v interface{}) {
 
 func (at *AVLTree) addElement(t *Node, v interface{}) *Node {
 	if t == nil {
+		at.size++
 		return &Node{v, nil, nil, 0}
 	}
 
@@ -123,8 +124,9 @@ func (at *AVLTree) addElement(t *Node, v interface{}) *Node {
 }
 
 func (at *AVLTree) Remove(v interface{}) {
-	at.root = at.removeElement(at.root, v)
-	at.size--
+	if !at.IsEmpty() {
+		at.root = at.removeElement(at.root, v)
+	}
 }
 
 func (at *AVLTree) removeElement(t *Node, v interface{}) *Node {
@@ -137,13 +139,14 @@ func (at *AVLTree) removeElement(t *Node, v interface{}) *Node {
 		t.left = at.removeElement(t.left, v)
 	} else if cmp > 0 {
 		t.right = at.removeElement(t.right, v)
+	} else if t.left != nil && t.right != nil {
+		minNode, _ := at.findMinNode(t.right)
+		min := minNode.value
+		t.value = min
+		t.right = at.removeElement(t.right, min)
 	} else {
-		if t.left != nil && t.right != nil {
-			minNode, _ := at.findMinNode(t.right)
-			min := minNode.value
-			t.value = min
-			t.right = at.removeElement(t.right, min)
-		} else if t.left != nil {
+		at.size--
+		if t.left != nil {
 			t = t.left
 		} else if t.right != nil {
 			t = t.right
