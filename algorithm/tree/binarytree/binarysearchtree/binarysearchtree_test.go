@@ -70,6 +70,8 @@ func TestContains(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	tree := New(utils.IntComparator)
+	assert.Equal(t, 0, tree.Size())
+	tree.InOrderTraverse(utils.IntPrinter)
 
 	// root
 	tree.Add(5)
@@ -86,11 +88,7 @@ func TestAdd(t *testing.T) {
 	tree.Add(7)
 	tree.Add(6)
 
-	tree.InOrderTraverse(utils.IntPrinter)
-}
-
-func TestRemove(t *testing.T) {
-	tree := genTree()
+	assert.Equal(t, 9, tree.Size())
 	tree.InOrderTraverse(utils.IntPrinter)
 
 	m := map[int]int{
@@ -106,10 +104,80 @@ func TestRemove(t *testing.T) {
 	}
 	for i := 0; i < 10000; i++ {
 		for k := range m {
+			tree.Add(k)
+		}
+		assert.Equal(t, 9, tree.size)
+	}
+
+	for i := -9; i <= -1; i++ {
+		tree.Add(i)
+	}
+	assert.Equal(t, 18, tree.size)
+	tree.InOrderTraverse(utils.IntPrinter)
+
+	// Output:
+	// inorder:
+	// inorder: 123456789
+	// inorder: -9-8-7-6-5-4-3-2-1123456789
+}
+
+func TestRemove(t *testing.T) {
+	tree := genTree()
+	assert.Equal(t, 9, tree.Size())
+	tree.InOrderTraverse(utils.IntPrinter)
+
+	tree.Remove(10)
+	assert.Equal(t, 9, tree.Size())
+	tree.InOrderTraverse(utils.IntPrinter)
+
+	for i := -9; i <= -1; i++ {
+		tree.Remove(i)
+	}
+	assert.Equal(t, 9, tree.Size())
+	tree.InOrderTraverse(utils.IntPrinter)
+
+	for i := 9; i >= 1; i-- {
+		tree.Remove(i)
+		assert.Equal(t, i-1, tree.Size())
+		tree.InOrderTraverse(utils.IntPrinter)
+	}
+
+	tree.Remove(11)
+	assert.Equal(t, 0, tree.Size())
+	tree.InOrderTraverse(utils.IntPrinter)
+
+	m := map[int]int{
+		1: 1,
+		2: 2,
+		3: 3,
+		4: 4,
+		5: 5,
+		6: 6,
+		7: 7,
+		8: 8,
+		9: 9,
+	}
+	for i := 0; i < 10000; i++ {
+		tree = genTree()
+		for k := range m {
 			tree.Remove(k)
 		}
 		assert.Equal(t, 0, tree.size)
 	}
+
+	// Output:
+	// inorder: 123456789
+	// inorder: 123456789
+	// inorder: 12345678
+	// inorder: 1234567
+	// inorder: 123456
+	// inorder: 12345
+	// inorder: 1234
+	// inorder: 123
+	// inorder: 12
+	// inorder: 1
+	// inorder:
+	// inorder:
 }
 
 func TestTraverse(t *testing.T) {
