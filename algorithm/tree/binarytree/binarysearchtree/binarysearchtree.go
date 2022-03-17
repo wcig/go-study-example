@@ -31,7 +31,7 @@ func (bst *BinarySearchTree) Size() int {
 }
 
 func (bst *BinarySearchTree) IsEmpty() bool {
-	return bst.root == nil || bst.size == 0
+	return bst.size == 0
 }
 
 func (bst *BinarySearchTree) Clear() {
@@ -41,37 +41,6 @@ func (bst *BinarySearchTree) Clear() {
 
 func (bst *BinarySearchTree) Contains(e interface{}) bool {
 	return bst.containsElement(bst.root, e)
-}
-
-func (bst *BinarySearchTree) FindMin() (interface{}, bool) {
-	if node, exist := bst.findMinNode(bst.root); exist {
-		return node.value, true
-	}
-	return nil, false
-}
-
-func (bst *BinarySearchTree) FindMax() (interface{}, bool) {
-	if node, exist := bst.findMaxNode(bst.root); exist {
-		return node.value, true
-	}
-	return nil, false
-}
-
-func (bst *BinarySearchTree) Add(e interface{}) {
-	newNode := &Node{e, nil, nil}
-	if bst.IsEmpty() {
-		bst.root = newNode
-	} else {
-		bst.addNode(bst.root, newNode)
-	}
-	bst.size++
-}
-
-func (bst *BinarySearchTree) Remove(e interface{}) {
-	if !bst.IsEmpty() {
-		bst.root = bst.removeElement(bst.root, e)
-		bst.size--
-	}
 }
 
 func (bst *BinarySearchTree) containsElement(t *Node, e interface{}) bool {
@@ -89,6 +58,13 @@ func (bst *BinarySearchTree) containsElement(t *Node, e interface{}) bool {
 	}
 }
 
+func (bst *BinarySearchTree) FindMin() (interface{}, bool) {
+	if node, exist := bst.findMinNode(bst.root); exist {
+		return node.value, true
+	}
+	return nil, false
+}
+
 func (bst *BinarySearchTree) findMinNode(e *Node) (*Node, bool) {
 	if e == nil {
 		return nil, false
@@ -99,6 +75,13 @@ func (bst *BinarySearchTree) findMinNode(e *Node) (*Node, bool) {
 	return bst.findMinNode(e.left)
 }
 
+func (bst *BinarySearchTree) FindMax() (interface{}, bool) {
+	if node, exist := bst.findMaxNode(bst.root); exist {
+		return node.value, true
+	}
+	return nil, false
+}
+
 func (bst *BinarySearchTree) findMaxNode(e *Node) (*Node, bool) {
 	if e == nil {
 		return nil, false
@@ -107,6 +90,16 @@ func (bst *BinarySearchTree) findMaxNode(e *Node) (*Node, bool) {
 		return e, true
 	}
 	return bst.findMaxNode(e.right)
+}
+
+func (bst *BinarySearchTree) Add(e interface{}) {
+	newNode := &Node{e, nil, nil}
+	if bst.IsEmpty() {
+		bst.root = newNode
+	} else {
+		bst.addNode(bst.root, newNode)
+	}
+	bst.size++
 }
 
 func (bst *BinarySearchTree) addNode(t *Node, e *Node) {
@@ -123,6 +116,13 @@ func (bst *BinarySearchTree) addNode(t *Node, e *Node) {
 		} else {
 			bst.addNode(t.right, e)
 		}
+	}
+}
+
+func (bst *BinarySearchTree) Remove(e interface{}) {
+	if !bst.IsEmpty() {
+		bst.root = bst.removeElement(bst.root, e)
+		bst.size--
 	}
 }
 
