@@ -1,15 +1,14 @@
 package binarysearchtree
 
-import "fmt"
+import (
+	"fmt"
+	"go-app/algorithm/utils"
+)
 
 // 二叉搜索树
-type Comparator func(a, b interface{}) int
-
-type PrintFunc func(v interface{})
-
 type BinarySearchTree struct {
 	root       *Node
-	comparator Comparator
+	comparator utils.Comparator
 	size       int
 }
 
@@ -19,7 +18,7 @@ type Node struct {
 	right *Node
 }
 
-func New(c Comparator) *BinarySearchTree {
+func New(c utils.Comparator) *BinarySearchTree {
 	return &BinarySearchTree{
 		root:       nil,
 		comparator: c,
@@ -152,13 +151,13 @@ func (bst *BinarySearchTree) removeElement(t *Node, e interface{}) *Node {
 
 // ------------------------------------------------------------------------ //
 
-func (bst *BinarySearchTree) PreOrderTraverse(printFunc PrintFunc) {
+func (bst *BinarySearchTree) PreOrderTraverse(printFunc utils.Printer) {
 	fmt.Print("preorder: ")
 	bst.preOrderTraverseNode(bst.root, printFunc)
 	fmt.Println()
 }
 
-func (bst *BinarySearchTree) preOrderTraverseNode(t *Node, printFunc PrintFunc) {
+func (bst *BinarySearchTree) preOrderTraverseNode(t *Node, printFunc utils.Printer) {
 	if t != nil {
 		printFunc(t.value)
 		bst.preOrderTraverseNode(t.left, printFunc)
@@ -166,13 +165,13 @@ func (bst *BinarySearchTree) preOrderTraverseNode(t *Node, printFunc PrintFunc) 
 	}
 }
 
-func (bst *BinarySearchTree) InOrderTraverse(printFunc PrintFunc) {
+func (bst *BinarySearchTree) InOrderTraverse(printFunc utils.Printer) {
 	fmt.Print("inorder: ")
 	bst.inOrderTraverseNode(bst.root, printFunc)
 	fmt.Println()
 }
 
-func (bst *BinarySearchTree) inOrderTraverseNode(t *Node, printFunc PrintFunc) {
+func (bst *BinarySearchTree) inOrderTraverseNode(t *Node, printFunc utils.Printer) {
 	if t != nil {
 		bst.inOrderTraverseNode(t.left, printFunc)
 		printFunc(t.value)
@@ -180,13 +179,13 @@ func (bst *BinarySearchTree) inOrderTraverseNode(t *Node, printFunc PrintFunc) {
 	}
 }
 
-func (bst *BinarySearchTree) PostOrderTraverse(printFunc PrintFunc) {
+func (bst *BinarySearchTree) PostOrderTraverse(printFunc utils.Printer) {
 	fmt.Print("postorder: ")
 	bst.postOrderTraverseNode(bst.root, printFunc)
 	fmt.Println()
 }
 
-func (bst *BinarySearchTree) postOrderTraverseNode(t *Node, printFunc PrintFunc) {
+func (bst *BinarySearchTree) postOrderTraverseNode(t *Node, printFunc utils.Printer) {
 	if t != nil {
 		bst.postOrderTraverseNode(t.left, printFunc)
 		bst.postOrderTraverseNode(t.right, printFunc)

@@ -1,30 +1,14 @@
 package binarysearchtree
 
 import (
-	"fmt"
+	"go-app/algorithm/utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func intComparator(a, b interface{}) int {
-	aVal := a.(int)
-	bVal := b.(int)
-	if aVal > bVal {
-		return 1
-	} else if aVal < bVal {
-		return -1
-	} else {
-		return 0
-	}
-}
-
-func intPrint(v interface{}) {
-	fmt.Print(v.(int))
-}
-
 func genTree() *BinarySearchTree {
-	tree := New(intComparator)
+	tree := New(utils.IntComparator)
 
 	// left
 	n2 := &Node{2, nil, nil}
@@ -46,8 +30,8 @@ func genTree() *BinarySearchTree {
 }
 
 func TestFindMinMax(t *testing.T) {
-	tree := New(intComparator)
-	tree.InOrderTraverse(intPrint)
+	tree := New(utils.IntComparator)
+	tree.InOrderTraverse(utils.IntPrinter)
 	val, ok := tree.FindMin()
 	assert.False(t, ok)
 	assert.Nil(t, val)
@@ -56,7 +40,7 @@ func TestFindMinMax(t *testing.T) {
 	assert.Nil(t, val)
 
 	tree = genTree()
-	tree.InOrderTraverse(intPrint)
+	tree.InOrderTraverse(utils.IntPrinter)
 	val, ok = tree.FindMin()
 	assert.True(t, ok)
 	assert.Equal(t, 1, val)
@@ -67,7 +51,7 @@ func TestFindMinMax(t *testing.T) {
 
 func TestContains(t *testing.T) {
 	var arr []int
-	tree := New(intComparator)
+	tree := New(utils.IntComparator)
 	for i := -16; i <= 16; i++ {
 		if tree.Contains(i) {
 			arr = append(arr, i)
@@ -85,7 +69,7 @@ func TestContains(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	tree := New(intComparator)
+	tree := New(utils.IntComparator)
 
 	// root
 	tree.Add(5)
@@ -102,12 +86,12 @@ func TestAdd(t *testing.T) {
 	tree.Add(7)
 	tree.Add(6)
 
-	tree.InOrderTraverse(intPrint)
+	tree.InOrderTraverse(utils.IntPrinter)
 }
 
 func TestRemove(t *testing.T) {
 	tree := genTree()
-	tree.InOrderTraverse(intPrint)
+	tree.InOrderTraverse(utils.IntPrinter)
 
 	m := map[int]int{
 		1: 1,
@@ -129,13 +113,13 @@ func TestRemove(t *testing.T) {
 }
 
 func TestTraverse(t *testing.T) {
-	tree := New(intComparator)
-	tree.PreOrderTraverse(intPrint)
-	tree.InOrderTraverse(intPrint)
-	tree.PostOrderTraverse(intPrint)
+	tree := New(utils.IntComparator)
+	tree.PreOrderTraverse(utils.IntPrinter)
+	tree.InOrderTraverse(utils.IntPrinter)
+	tree.PostOrderTraverse(utils.IntPrinter)
 
 	tree = genTree()
-	tree.PreOrderTraverse(intPrint)
-	tree.InOrderTraverse(intPrint)
-	tree.PostOrderTraverse(intPrint)
+	tree.PreOrderTraverse(utils.IntPrinter)
+	tree.InOrderTraverse(utils.IntPrinter)
+	tree.PostOrderTraverse(utils.IntPrinter)
 }
