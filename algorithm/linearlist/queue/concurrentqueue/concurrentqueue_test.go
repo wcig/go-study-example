@@ -1,4 +1,4 @@
-package simplequeue
+package concurrentqueue
 
 import (
 	"fmt"
