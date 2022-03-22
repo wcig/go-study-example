@@ -185,11 +185,13 @@ func TestTraverse(t *testing.T) {
 	tree.PreOrderTraverse(utils.IntPrinter)
 	tree.InOrderTraverse(utils.IntPrinter)
 	tree.PostOrderTraverse(utils.IntPrinter)
+	tree.LevelOrderTraverse(utils.IntPrinter)
 
 	tree = genTree()
 	tree.PreOrderTraverse(utils.IntPrinter)
 	tree.InOrderTraverse(utils.IntPrinter)
 	tree.PostOrderTraverse(utils.IntPrinter)
+	tree.LevelOrderTraverse(utils.IntPrinter)
 }
 
 func TestDepth(t *testing.T) {

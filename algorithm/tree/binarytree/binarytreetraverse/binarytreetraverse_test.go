@@ -2,6 +2,7 @@ package binarytreetraverse
 
 import (
 	"fmt"
+	"go-app/algorithm/linearlist/queue/simplequeue"
 	"testing"
 )
 
@@ -61,6 +62,35 @@ func postOrderTraverse(n *Node) {
 	fmt.Print(n.value)
 }
 
+// 层序遍历
+func (t *Tree) LevelOrderTraverse() {
+	levelOrderTraverse(t.root)
+	fmt.Println()
+}
+
+func levelOrderTraverse(n *Node) {
+	if n == nil {
+		return
+	}
+
+	queue := simplequeue.New()
+	queue.Push(n)
+	for {
+		val, ok := queue.Pop()
+		if !ok {
+			break
+		}
+		e := val.(*Node)
+		fmt.Print(e.value)
+		if e.leftChild != nil {
+			queue.Push(e.leftChild)
+		}
+		if e.rightChild != nil {
+			queue.Push(e.rightChild)
+		}
+	}
+}
+
 func TestTraverse(t *testing.T) {
 	fmt.Println("先序遍历")
 	tree := genBinaryTree()
@@ -71,6 +101,9 @@ func TestTraverse(t *testing.T) {
 
 	fmt.Println("后序遍历")
 	tree.PostOrderTraverse()
+
+	fmt.Println("层序遍历")
+	tree.LevelOrderTraverse()
 	// Output:
 	// 先序遍历
 	// ABDGHCEIF
@@ -78,6 +111,8 @@ func TestTraverse(t *testing.T) {
 	// GDHBAEICF
 	// 后序遍历
 	// GHDBIEFCA
+	// 层序遍历
+	// ABCDEFGHI
 }
 
 //             A

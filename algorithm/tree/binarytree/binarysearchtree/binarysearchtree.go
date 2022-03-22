@@ -2,6 +2,7 @@ package binarysearchtree
 
 import (
 	"fmt"
+	"go-app/algorithm/linearlist/queue/simplequeue"
 	"go-app/algorithm/utils"
 )
 
@@ -200,4 +201,30 @@ func (bst *BinarySearchTree) postOrderTraverseNode(t *Node, printFunc utils.Prin
 		bst.postOrderTraverseNode(t.right, printFunc)
 		printFunc(t.value)
 	}
+}
+
+func (bst *BinarySearchTree) LevelOrderTraverse(printFunc utils.Printer) {
+	fmt.Print("levelorder: ")
+	if bst.IsEmpty() {
+		fmt.Println()
+		return
+	}
+
+	queue := simplequeue.New()
+	queue.Push(bst.root)
+	for {
+		val, ok := queue.Pop()
+		if !ok {
+			break
+		}
+		e := val.(*Node)
+		printFunc(e.value)
+		if e.left != nil {
+			queue.Push(e.left)
+		}
+		if e.right != nil {
+			queue.Push(e.right)
+		}
+	}
+	fmt.Println()
 }
