@@ -145,6 +145,19 @@ func (bst *BinarySearchTree) removeElement(t *Node, v interface{}) *Node {
 	return t
 }
 
+func (bst *BinarySearchTree) Depth() int {
+	return bst.getDepth(bst.root)
+}
+
+func (bst *BinarySearchTree) getDepth(t *Node) int {
+	if t == nil {
+		return 0
+	}
+	l := bst.getDepth(t.left)
+	r := bst.getDepth(t.right)
+	return utils.MaxInt(l, r) + 1
+}
+
 // ------------------------------------------------------------------------ //
 
 func (bst *BinarySearchTree) PreOrderTraverse(printFunc utils.Printer) {

@@ -191,3 +191,8 @@ func TestTraverse(t *testing.T) {
 	tree.InOrderTraverse(utils.IntPrinter)
 	tree.PostOrderTraverse(utils.IntPrinter)
 }
+
+func TestDepth(t *testing.T) {
+	tree := genTree()
+	assert.Equal(t, 4, tree.Depth())
+}
