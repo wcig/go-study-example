@@ -139,3 +139,10 @@ func modify3(u *user) {
 	u = &user{4, "modify false"}
 	fmt.Printf("modify3 after: %p, %v\n", u, u)
 }
+
+func TestNewPointer(t *testing.T) {
+	u := new(*user)
+	fmt.Println(u, *u)     // 0xc000010060 <nil>
+	fmt.Println(u == nil)  // false
+	fmt.Println(*u == nil) // true
+}
