@@ -153,7 +153,7 @@ func modify1(arr [3]int) {
 // before modify, arr= [1 2 3]
 // after  modify, arr= [1 2 3]
 
-// 指针数组为值类型：作为参数传递，值不会改变
+// 指针数组为值类型：作为参数传递，直接修改地址值不会改变，取值后可修改
 func TestArrayAsFuncParam2(t *testing.T) {
 	a, b, c := 1, 2, 3
 	arr := [3]*int{&a, &b, &c}
@@ -162,27 +162,40 @@ func TestArrayAsFuncParam2(t *testing.T) {
 		fmt.Println(*value)
 	}
 
-	modify2(arr)
-	fmt.Println("after  modify, arr=", arr)
+	modify21(arr)
+	fmt.Println("after  modify21, arr=", arr)
 	for _, value := range arr {
 		fmt.Println(*value)
 	}
+
+	modify22(arr)
+	fmt.Println("after  modify22, arr=", arr)
+	for _, value := range arr {
+		fmt.Println(*value)
+	}
+	// Output：
+	// before modify, arr= [0xc00001c348 0xc00001c350 0xc00001c358]
+	// 1
+	// 2
+	// 3
+	// after  modify21, arr= [0xc00001c348 0xc00001c350 0xc00001c358]
+	// 1
+	// 2
+	// 3
+	// after  modify22, arr= [0xc00001c348 0xc00001c350 0xc00001c358]
+	// 0
+	// 2
+	// 3
 }
 
-func modify2(arr [3]*int) {
+func modify21(arr [3]*int) {
 	d := 0
 	arr[0] = &d
 }
 
-// output：
-// before modify, arr= [0xc00000a0b8 0xc00000a0d0 0xc00000a0d8]
-// 1
-// 2
-// 3
-// after  modify, arr= [0xc00000a0b8 0xc00000a0d0 0xc00000a0d8]
-// 1
-// 2
-// 3
+func modify22(arr [3]*int) {
+	*arr[0] = 0
+}
 
 // 数组指针为引用类型：作为参数传递，值会改变
 func TestArrayAsFuncParam3(t *testing.T) {
