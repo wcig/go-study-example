@@ -26,7 +26,7 @@ func TestMethodDeclare(t *testing.T) {
 
 	u2 := &user{Id: 20, Name: "jerry"}
 	u2.print1()
-	u2.print2()
+	u2.print2() // 等价于: (*u2).print2(), go语言做了自动处理, 不需要像c语言那样处理
 }
 
 // output:
@@ -118,3 +118,29 @@ func TestNestedStructMethod(t *testing.T) {
 // output:
 // Sending user email to Tom<xx@gmail.com>
 // Sending admin email to Tom<xx@gmail.com>
+
+// 接口区别
+type printer1 interface {
+	print1()
+}
+
+type printer2 interface {
+	print2()
+}
+
+func TestMethodInterface(t *testing.T) {
+	var p11 printer1 = &user{1, "tom"}
+	p11.print1()
+	// var p12 printer1 = user{1, "tom"} // 错误
+	// p12.print1()
+
+	var p21 printer2 = user{2, "jerry"}
+	p21.print2()
+	var p22 printer2 = &user{2, "jerry"} // 允许
+	p22.print2()
+
+	// Output:
+	// 1-user: &{1 tom}
+	// 2-user: {2 jerry}
+	// 2-user: {2 jerry}
+}
