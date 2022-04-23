@@ -32,6 +32,7 @@ require (
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/oschwald/geoip2-golang v1.5.0
 	github.com/pelletier/go-toml v1.9.1 // indirect
+	github.com/petermattis/goid v0.0.0-20220331194723-8ee3e6ded87a // indirect
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
