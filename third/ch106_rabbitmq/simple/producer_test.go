@@ -1,13 +1,15 @@
-package main
+package simple
 
 import (
 	"fmt"
 	"log"
+	"testing"
 
 	"github.com/streadway/amqp"
 )
 
-func main() {
+// 简单队列工作模式
+func TestProducer(t *testing.T) {
 	// 创建连接
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672")
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -20,17 +22,17 @@ func main() {
 
 	// 声明队列
 	q, err := ch.QueueDeclare(
-		"hello", // 队列名称
-		false,   // 持久化
-		false,   // 自动删除delete when unused
-		false,   // 排他性
-		false,   // 不等待
-		nil,     // 其他参数
+		"queue_simple", // 队列名称
+		false,          // 持久化
+		false,          // 自动删除delete when unused
+		false,          // 排他性
+		false,          // 不等待
+		nil,            // 其他参数
 	)
 	failOnError(err, "Failed to declare a queue")
 
 	// 发送消息
-	body := "Hello World! 20220506-1526"
+	body := "Hello World!"
 	err = ch.Publish(
 		"",     // 交换机名称
 		q.Name, // 路由key
