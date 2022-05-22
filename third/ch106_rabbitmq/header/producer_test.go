@@ -52,17 +52,20 @@ func TestProducer(t *testing.T) {
 	// 发送消息
 	args := amqp.Table{"x": 1}
 	sendMsg(ch, args)
+	time.Sleep(time.Second)
 
 	args = amqp.Table{"y": 1}
 	sendMsg(ch, args)
+	time.Sleep(time.Second)
 
 	args = amqp.Table{"x": 1, "y": 1}
 	sendMsg(ch, args)
+	time.Sleep(time.Second)
 
 	// Output:
-	// >> producer send message success: msg-{"x":1}-2022-05-15 22:24:29
-	// >> producer send message success: msg-{"y":1}-2022-05-15 22:24:29
-	// >> producer send message success: msg-{"x":1,"y":1}-2022-05-15 22:24:29
+	// >> producer send message success: msg-{"x":1}-2022-05-22 17:00:14
+	// >> producer send message success: msg-{"y":1}-2022-05-22 17:00:15
+	// >> producer send message success: msg-{"x":1,"y":1}-2022-05-22 17:00:16
 }
 
 func sendMsg(ch *amqp.Channel, args amqp.Table) {

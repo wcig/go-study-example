@@ -42,11 +42,11 @@ func TestConsumer(t *testing.T) {
 
 	// Output:
 	// 2022/05/15 22:24:25  [*] Waiting for messages. To exit press CTRL+C
-	// 2022/05/15 22:24:29 >> queue [queue_header_1] consumer received a message: msg-{"x":1}-2022-05-15 22:24:29
-	// 2022/05/15 22:24:29 >> queue [queue_header_3] consumer received a message: msg-{"x":1,"y":1}-2022-05-15 22:24:29
-	// 2022/05/15 22:24:29 >> queue [queue_header_2] consumer received a message: msg-{"y":1}-2022-05-15 22:24:29
-	// 2022/05/15 22:24:29 >> queue [queue_header_2] consumer received a message: msg-{"x":1,"y":1}-2022-05-15 22:24:29
-	// 2022/05/15 22:24:29 >> queue [queue_header_1] consumer received a message: msg-{"x":1,"y":1}-2022-05-15 22:24:29
+	// 2022/05/22 17:00:14 >> queue [queue_header_1] consumer received a message: msg-{"x":1}-2022-05-22 17:00:14
+	// 2022/05/22 17:00:15 >> queue [queue_header_2] consumer received a message: msg-{"y":1}-2022-05-22 17:00:15
+	// 2022/05/22 17:00:16 >> queue [queue_header_2] consumer received a message: msg-{"x":1,"y":1}-2022-05-22 17:00:16
+	// 2022/05/22 17:00:16 >> queue [queue_header_1] consumer received a message: msg-{"x":1,"y":1}-2022-05-22 17:00:16
+	// 2022/05/22 17:00:16 >> queue [queue_header_3] consumer received a message: msg-{"x":1,"y":1}-2022-05-22 17:00:16
 }
 
 func startConsumer1(ch *amqp.Channel) {
