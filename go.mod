@@ -17,7 +17,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gographics/gmagick v1.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/protobuf v1.5.2
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/julienschmidt/httprouter v1.3.0
@@ -46,7 +46,7 @@ require (
 	github.com/tealeg/xlsx/v3 v3.2.3
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/wumansgy/goEncrypt v1.0.0
-	github.com/xuri/excelize/v2 v2.6.0 // indirect
+	github.com/xuri/excelize/v2 v2.6.0
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921
@@ -54,6 +54,7 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/gographics/imagick.v2 v2.6.0
 	gopkg.in/ini.v1 v1.62.0 // indirect
