@@ -9,7 +9,7 @@ import (
 func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(3)
-	count := 100
+	count := 3
 
 	catChan := make(chan struct{}, 1)
 	dogChan := make(chan struct{}, 1)
