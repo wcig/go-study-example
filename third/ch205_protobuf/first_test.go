@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// .proto生成go文件命令: protoc --go_out=. proto/first.proto
 func TestFirst(t *testing.T) {
 	first := &FirstMsg{
 		Id:   1,

@@ -54,7 +54,8 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
-	google.golang.org/protobuf v1.26.0
+	google.golang.org/grpc v1.47.0 // indirect
+	google.golang.org/protobuf v1.27.1
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/gographics/imagick.v2 v2.6.0
 	gopkg.in/ini.v1 v1.62.0 // indirect
