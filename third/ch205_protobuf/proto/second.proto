@@ -1,0 +1,14 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "./;ch205_protobuf";
+
+package ch205_protobuf;
+
+message SecondMsg {
+  int32 id = 1;
+  string name = 2;
+  google.protobuf.Int32Value number = 3;
+  google.protobuf.StringValue address = 4;
+  google.protobuf.BytesValue cell = 5;
+}
