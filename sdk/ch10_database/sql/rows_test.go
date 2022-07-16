@@ -9,7 +9,7 @@ import (
 )
 
 func TestQueryRows(t *testing.T) {
-	db, err := sql.Open("mysql", "bang:bang@tcp(127.0.0.1:3306)/test")
+	db, err := sql.Open("mysql", "root:123456@tcp(localhost:3306)/test")
 	assert.Nil(t, err)
 	defer db.Close()
 
@@ -20,7 +20,7 @@ func TestQueryRows(t *testing.T) {
 }
 
 func TestQueryRowsColumn(t *testing.T) {
-	db, err := sql.Open("mysql", "bang:bang@tcp(127.0.0.1:3306)/test")
+	db, err := sql.Open("mysql", "root:123456@tcp(localhost:3306)/test")
 	assert.Nil(t, err)
 	defer db.Close()
 
@@ -43,7 +43,7 @@ func TestQueryRowsColumn(t *testing.T) {
 }
 
 func TestQueryRowsColumnType(t *testing.T) {
-	db, err := sql.Open("mysql", "bang:bang@tcp(127.0.0.1:3306)/test")
+	db, err := sql.Open("mysql", "root:123456@tcp(localhost:3306)/test")
 	assert.Nil(t, err)
 	defer db.Close()
 
