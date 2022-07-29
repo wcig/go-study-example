@@ -35,7 +35,7 @@ require (
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
@@ -48,14 +48,12 @@ require (
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/wumansgy/goEncrypt v1.0.0
 	github.com/xuri/excelize/v2 v2.6.0
-	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.16.0
+	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921
 	golang.org/x/net v0.0.0-20220407224826-aac1ed45d8e3
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
-	golang.org/x/tools v0.0.0-20201009032223-96877f285f7e // indirect
-	google.golang.org/grpc v1.47.0 // indirect
+	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/gographics/imagick.v2 v2.6.0
