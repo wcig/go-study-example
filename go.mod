@@ -30,6 +30,7 @@ require (
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/oschwald/geoip2-golang v1.5.0
+	github.com/pebbe/zmq4 v1.2.9 // indirect
 	github.com/pelletier/go-toml v1.9.1 // indirect
 	github.com/petermattis/goid v0.0.0-20220331194723-8ee3e6ded87a
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
