@@ -52,10 +52,10 @@ func TestDBOptions(t *testing.T) {
 	}
 	defer db.Close()
 
-	db.SetMaxOpenConns(2)
-	db.SetMaxIdleConns(10)
-	db.SetConnMaxLifetime(time.Minute)
-	db.SetConnMaxIdleTime(time.Minute * 5)
+	db.SetMaxOpenConns(2)                  // 最大连接数
+	db.SetMaxIdleConns(10)                 // 最大空闲连接数
+	db.SetConnMaxLifetime(time.Minute)     // 连接可以复用的最大时间
+	db.SetConnMaxIdleTime(time.Minute * 5) // 连接处于空闲的最大时间
 }
 
 // 创建Conn连接
