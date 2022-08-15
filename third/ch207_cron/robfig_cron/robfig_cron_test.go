@@ -30,4 +30,23 @@ func TestFirst(t *testing.T) {
 	// >> run Aug 14 22:33:39.001
 	// >> run Aug 14 22:33:40.001
 	// >> run Aug 14 22:33:41.001
+	// ...
+}
+
+func TestTicker(t *testing.T) {
+	c := cron.New(cron.WithSeconds())
+	entryID, err := c.AddJob("*/1 * * * * *", &TickerJob{})
+	fmt.Printf("entryID: %d, err: %v\n", entryID, err)
+	c.Start()
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	fmt.Printf("quit (%v)\n", <-sig)
+
+	// Output:
+	// entryID: 1, err: <nil>
+	// >> run Aug 15 10:45:41.001
+	// >> run Aug 15 10:45:42.001
+	// >> run Aug 15 10:45:43.001
+	// ...
 }
