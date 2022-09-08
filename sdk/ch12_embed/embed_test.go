@@ -123,24 +123,24 @@ func TestQuote(t *testing.T) {
 }
 
 // 支持目录
-//go:embed tmp
+//go:embed testdata
 var f8 embed.FS
 
 func TestDir(t *testing.T) {
-	b1, _ := f8.ReadFile("tmp/hello.txt")
-	fmt.Println(string(b1))
+	b1, _ := f8.ReadFile("testdata/hello.txt")
+	fmt.Println(string(b1)) // hello world!
 
-	b2, _ := f8.ReadFile("tmp/hello2.txt")
-	fmt.Println(string(b2))
+	b2, _ := f8.ReadFile("testdata/hello2.txt")
+	fmt.Println(string(b2)) // hello world!2
 }
 
 // func (f FS) ReadDir(name string) ([]fs.DirEntry, error)
 // 读取目录方法
-//go:embed tmp
+//go:embed testdata
 var f9 embed.FS
 
 func TestReadDir(t *testing.T) {
-	dirs, err := f9.ReadDir("tmp")
+	dirs, err := f9.ReadDir("testdata")
 	assert.Nil(t, err)
 
 	for _, dir := range dirs {
@@ -148,8 +148,8 @@ func TestReadDir(t *testing.T) {
 		fmt.Printf("%s, %t, %+v, %+v, %s\n", dir.Name(), dir.IsDir(), dir.Type(), fileInfo, err)
 	}
 	// output:
-	// hello.txt, false, ----------, &{name:tmp/hello.txt data:hello world! hash:[117 9 229 189 160 199 98 210 186 199 249 13 117 139 91 34]}, %!s(<nil>)
-	// hello2.txt, false, ----------, &{name:tmp/hello2.txt data:hello world!2 hash:[141 156 121 6 142 89 84 140 113 253 171 22 140 214 122 115]}, %!s(<nil>)
+	// hello.txt, false, ----------, &{name:testdata/hello.txt data:hello world! hash:[117 9 229 189 160 199 98 210 186 199 249 13 117 139 91 34]}, %!s(<nil>)
+	// hello2.txt, false, ----------, &{name:testdata/hello2.txt data:hello world!2 hash:[141 156 121 6 142 89 84 140 113 253 171 22 140 214 122 115]}, %!s(<nil>)
 }
 
 // func (f FS) Open(name string) (fs.File, error)
@@ -170,7 +170,7 @@ func TestOpen(t *testing.T) {
 }
 
 // net/http (http://localhost:28080/)
-//go:embed tmp
+//go:embed testdata
 var f11 embed.FS
 
 func TestHttp(t *testing.T) {
