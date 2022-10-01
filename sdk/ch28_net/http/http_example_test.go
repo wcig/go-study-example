@@ -136,3 +136,31 @@ func TestClientSettingWithTimeout3(t *testing.T) {
 
 	time.Sleep(time.Minute)
 }
+
+// 注意:
+// 1.go的http.client自带连接池功能,默认连接数没有限制,可以通过设置transport生效.
+// 2.resp.Body记得关闭资源, 并且只有读取了resp.Body数据才生效.
+func TestClientSettingWithTransport(t *testing.T) {
+	// 方式一
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.MaxConnsPerHost = 10
+	transport.MaxIdleConns = 10
+	transport.MaxIdleConnsPerHost = 10
+
+	// 方式二
+	// transport := &http.Transport{
+	// 	MaxConnsPerHost:     10,
+	// 	MaxIdleConns:        10,
+	// 	MaxIdleConnsPerHost: 10,
+	// }
+	client := http.Client{
+		Transport: transport,
+	}
+
+	resp, err := client.Get("https://baidu.com")
+	assert.Nil(t, err)
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	fmt.Println("response:", string(data))
+}
