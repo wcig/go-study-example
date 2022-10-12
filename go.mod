@@ -35,6 +35,7 @@ require (
 	github.com/pelletier/go-toml v1.9.1 // indirect
 	github.com/petermattis/goid v0.0.0-20220331194723-8ee3e6ded87a
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
+	github.com/pquerna/otp v1.3.0 // indirect
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
 	github.com/robfig/cron/v3 v3.0.0 // indirect
