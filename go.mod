@@ -10,12 +10,12 @@ require (
 	github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/emirpasic/gods v1.12.0
-	github.com/gin-gonic/gin v1.7.2
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
 	github.com/go-redis/redis v6.15.8+incompatible
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/go-zeromq/zmq4 v0.15.0 // indirect
+	github.com/go-zeromq/zmq4 v0.15.0
 	github.com/gographics/gmagick v1.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.2
@@ -31,14 +31,14 @@ require (
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/oschwald/geoip2-golang v1.5.0
-	github.com/pebbe/zmq4 v1.2.9 // indirect
+	github.com/pebbe/zmq4 v1.2.9
 	github.com/pelletier/go-toml v1.9.1 // indirect
 	github.com/petermattis/goid v0.0.0-20220331194723-8ee3e6ded87a
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
-	github.com/pquerna/otp v1.3.0 // indirect
+	github.com/pquerna/otp v1.3.0
 	github.com/prometheus/client_golang v0.9.3
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a // indirect
-	github.com/robfig/cron/v3 v3.0.0 // indirect
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/afero v1.6.0 // indirect
