@@ -53,11 +53,11 @@ func main() {
 
 	// visit
 	flag.Visit(func(f *flag.Flag) {
-		fmt.Printf("flag-vskit: name:%s, defaultValue:%v, usage:%s, value:%v\n",
+		fmt.Printf("flag-visit: name:%s, defaultValue:%v, usage:%s, value:%v\n",
 			f.Name, f.DefValue, f.Usage, f.Value)
 	})
 	flag.VisitAll(func(f *flag.Flag) {
-		fmt.Printf("flag-vskitAll: name:%s, defaultValue:%v, usage:%s, value:%v\n",
+		fmt.Printf("flag-visitAll: name:%s, defaultValue:%v, usage:%s, value:%v\n",
 			f.Name, f.DefValue, f.Usage, f.Value)
 	})
 
@@ -72,10 +72,10 @@ func main() {
 	// remain arg num after flag: 3
 	// flag num: 3
 	// after set name: jerry
-	// flag-vskit: name:age, defaultValue:10, usage:年龄, value:20
-	// flag-vskit: name:name, defaultValue:default-name, usage:名称, value:jerry
-	// flag-vskit: name:percent, defaultValue:0, usage:百分比, value:30
-	// flag-vskitAll: name:age, defaultValue:10, usage:年龄, value:20
-	// flag-vskitAll: name:name, defaultValue:default-name, usage:名称, value:jerry
-	// flag-vskitAll: name:percent, defaultValue:0, usage:百分比, value:30
+	// flag-visit: name:age, defaultValue:10, usage:年龄, value:20
+	// flag-visit: name:name, defaultValue:default-name, usage:名称, value:jerry
+	// flag-visit: name:percent, defaultValue:0, usage:百分比, value:30
+	// flag-visitAll: name:age, defaultValue:10, usage:年龄, value:20
+	// flag-visitAll: name:name, defaultValue:default-name, usage:名称, value:jerry
+	// flag-visitAll: name:percent, defaultValue:0, usage:百分比, value:30
 }
