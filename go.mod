@@ -38,6 +38,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.2.0
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -46,6 +47,7 @@ require (
 	github.com/streadway/amqp v1.0.0
 	github.com/stretchr/testify v1.8.1
 	github.com/tealeg/xlsx/v3 v3.2.3
+	github.com/tuotoo/qrcode v0.0.0-20220425170535-52ccc2bebf5d // indirect
 	github.com/wumansgy/goEncrypt v1.0.0
 	github.com/xuri/excelize/v2 v2.6.0
 	go.uber.org/zap v1.17.0
