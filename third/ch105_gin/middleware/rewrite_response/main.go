@@ -1,3 +1,4 @@
+// refer: https://github.com/gin-gonic/gin/issues/572
 package main
 
 import (
