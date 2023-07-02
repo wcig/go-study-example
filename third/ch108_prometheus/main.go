@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"net/http"
 	"runtime"
 	"strconv"
@@ -21,6 +22,11 @@ func runServer() {
 	router.Use(MetricHandleFunc)
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong"})
+	})
+	router.GET("/user", func(c *gin.Context) {
+		rand.Seed(time.Now().UnixNano())
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(101)+50))
+		c.JSON(200, gin.H{"id": 123, "name": "tom"})
 	})
 	if err := router.Run(":28080"); err != nil {
 		panic(err)
