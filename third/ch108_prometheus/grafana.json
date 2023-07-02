@@ -22,7 +22,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1688297217854,
+  "iteration": 1688297217906,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1012,7 +1012,7 @@
           "expr": "sum(rate(http_requests_total{job=\"$job\",status=~\"2..\"} [$interval])) by (method, path)",
           "hide": false,
           "interval": "",
-          "legendFormat": "4xx {{method}} {{path}}",
+          "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
       ],
@@ -1661,13 +1661,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Go服务监控",
   "uid": "YcvZ_Fr4z",
-  "version": 21,
+  "version": 24,
   "weekStart": ""
 }
