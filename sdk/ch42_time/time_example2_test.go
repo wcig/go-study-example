@@ -219,6 +219,11 @@ func TestTime2String(t *testing.T) {
 	fmt.Println(time.Now().Format(time.RFC3339Nano))   // 2021-03-04T16:54:35.185979712+08:00
 	fmt.Println(time.Now().Format(time.StampMicro))    // Mar  4 16:54:35.185982
 	fmt.Println(now.Format("2006-01-02 15:04:05.999")) // 2021-03-04 16:54:35.185
+
+	const RFC3339Milli = "2006-01-02T15:04:05.000Z07:00"
+	fmt.Println(now.Format(time.RFC3339))     // 2021-03-04T16:54:35+08:00
+	fmt.Println(now.Format(RFC3339Milli))     // 2021-03-04T16:54:35.185+08:00
+	fmt.Println(now.Format(time.RFC3339Nano)) // 2021-03-04T16:54:35.185059463+08:00
 }
 
 // string -> Time
