@@ -10,6 +10,10 @@ import (
 	"github.com/oschwald/geoip2-golang"
 )
 
+// 参考:
+// https://github.com/wp-statistics/GeoLite2-City
+// https://github.com/wp-statistics/GeoLite2-Country
+
 // geoip2解析
 func TestGeoIpQuickStart(t *testing.T) {
 	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
