@@ -35,6 +35,7 @@ func TestGeoIpQuickStart(t *testing.T) {
 
 // 根据ip查询国家信息
 func TestGetCountryByIP(t *testing.T) {
+	// 数据源: https://cdn.jsdelivr.net/npm/geolite2-country@1.0.2/GeoLite2-Country.mmdb.gz
 	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
 	if err != nil {
 		log.Fatal(err)
@@ -61,7 +62,7 @@ func TestGetCountryByIP(t *testing.T) {
 
 // 根据ip查询国家信息+城市信息
 func TestGetCityByIP(t *testing.T) {
-	// mmdb数据来源: https://cdn.jsdelivr.net/npm/geolite2-city@1.0.0/GeoLite2-City.mmdb.gz
+	// 数据源: https://cdn.jsdelivr.net/npm/geolite2-city@1.0.0/GeoLite2-City.mmdb.gz
 	reader, err := geoip2.Open("./GeoLite2-City.mmdb")
 	if err != nil {
 		log.Fatal(err)
