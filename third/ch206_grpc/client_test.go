@@ -7,9 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"google.golang.org/grpc/credentials/insecure"
-
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func TestClient(t *testing.T) {
