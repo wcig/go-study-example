@@ -11,7 +11,7 @@ type FooBar interface {
 	Bar(n int)
 }
 
-// go1.18支持泛型前, interface可以为类型集合
+// go1.18支持泛型后, interface可以为类型集合
 type Numeric interface {
 	int | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | float32 | float64
 }
