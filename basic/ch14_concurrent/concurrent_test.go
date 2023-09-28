@@ -52,6 +52,44 @@ func TestWaitGroup(t *testing.T) {
 	wg.Wait()
 }
 
+func TestWaitGroupMultiWait(t *testing.T) {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		fmt.Println(">> goroutine-1 wait start")
+		wg.Wait()
+		fmt.Println(">> goroutine-1 wait end")
+	}()
+	go func() {
+		fmt.Println(">> goroutine-2 wait start")
+		wg.Wait()
+		fmt.Println(">> goroutine-2 wait end")
+	}()
+	go func() {
+		fmt.Println(">> goroutine-2 task start")
+		time.Sleep(time.Second)
+		fmt.Println(">> task...")
+		wg.Done()
+		fmt.Println(">> goroutine-2 task end")
+	}()
+
+	fmt.Println(">> main-routine wait start")
+	wg.Wait()
+	fmt.Println(">> main-routine wait end")
+
+	// Output:
+	// >> main-routine wait start
+	// >> goroutine-2 task start
+	// >> goroutine-1 wait start
+	// >> goroutine-2 wait start
+	// >> task...
+	// >> goroutine-2 task end
+	// >> goroutine-2 wait end
+	// >> goroutine-1 wait end
+	// >> main-routine wait end
+}
+
 // 共享资源没有加锁
 type unsafeCounter struct {
 	counter int
