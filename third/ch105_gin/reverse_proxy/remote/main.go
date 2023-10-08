@@ -1,9 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +33,11 @@ func runUserServer() {
 func runVideoServer() {
 	e := gin.Default()
 	e.Any("/*path", func(c *gin.Context) {
-		c.JSON(200, map[string]interface{}{"code": 0, "server": "video"})
+		if strings.Contains(c.Request.URL.Path, "/err") {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("test bad request"))
+		} else {
+			c.JSON(200, map[string]interface{}{"code": 0, "server": "video"})
+		}
 	})
 	_ = e.Run(":28082")
 }
