@@ -11,6 +11,7 @@ import (
 
 var rs *redsync.Redsync
 
+// 注意: 这里只有初始化多个client, pool并传入pool列表时,才会按redlock算法往往多个示例写入锁
 func initRedsync() {
 	pool := goredis.NewPool(client)
 	rs = redsync.New(pool)
