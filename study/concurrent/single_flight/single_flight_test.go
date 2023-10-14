@@ -11,6 +11,9 @@ import (
 )
 
 // golang.org/x/sync: singleflight 工具包
+// 参考:
+// 1.https://www.liwenzhou.com/posts/Go/singleflight/
+// 2.https://lailin.xyz/post/go-training-week5-singleflight.html
 
 // func (g *Group) Do(key string, fn func() (interface{}, error)) (v interface{}, err error, shared bool)
 // 并发调用时, 只有第一次真正调用, 其他阻塞等待第一次调用结果
