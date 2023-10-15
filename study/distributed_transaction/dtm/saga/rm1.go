@@ -71,7 +71,7 @@ func transOut(c *gin.Context) error {
 		sqlFormat := "update dtm_busi.user_account set balance = balance - ? where user_id = ?"
 		affected, err2 := dtmimp.DBExec(common.BasicDBConf.Driver, rm1DB, sqlFormat, req.Amount, req.TransOutUserID)
 		if err2 != nil {
-			return err
+			return err2
 		}
 		log.Printf(">> rm1-server transout db success, result: %d", affected)
 		return nil

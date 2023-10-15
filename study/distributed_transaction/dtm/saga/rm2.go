@@ -71,7 +71,7 @@ func transIn(c *gin.Context) error {
 		sqlFormat := "update dtm_busi.user_account set balance = balance + ? where user_id = ?"
 		affected, err2 := dtmimp.DBExec(common.BasicDBConf.Driver, rm2DB, sqlFormat, req.Amount, req.TransInUserID)
 		if err2 != nil {
-			return err
+			return err2
 		}
 		log.Printf(">> rm2-server transin db success, result: %d", affected)
 		return nil
