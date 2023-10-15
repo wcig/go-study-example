@@ -25,7 +25,6 @@ func RunAPTx() {
 
 	xaFunc := func(xa *dtmcli.Xa) (*resty.Response, error) {
 		resp, err := xa.CallBranch(rm1TransOutReq, rm1TransOutUrl)
-		// return resp, err
 		if err != nil {
 			return resp, err
 		}

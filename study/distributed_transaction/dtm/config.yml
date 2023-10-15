@@ -1,0 +1,7 @@
+Store:
+  Driver: 'mysql'
+  Host: 'localhost'
+  User: 'root'
+  Password: '123456'
+  Port: 3306
+  Db: 'dtm'
