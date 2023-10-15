@@ -2,12 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"go-app/study/distributed_transaction/dtm/common"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/dtm-labs/client/dtmcli"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func RunRM2Server() {
@@ -24,17 +26,17 @@ func RunRM2Server() {
 func transInHandler(c *gin.Context) {
 	if err := transIn(c); err != nil {
 		log.Printf(">> rm2-server transin handler failed, err: %v", err)
-		c.JSON(http.StatusConflict, &ResHTTP{Result: false, Err: err})
+		c.JSON(http.StatusConflict, &common.ResHTTP{Result: false, Err: err})
 		return
 	}
 	log.Println(">> rm2-server transin handler success")
-	c.JSON(http.StatusOK, &ResHTTP{Result: true})
+	c.JSON(http.StatusOK, &common.ResHTTP{Result: true})
 }
 
 func transIn(c *gin.Context) error {
 	qs := c.Request.URL.Query()
 	xaFunc := func(db *sql.DB, xa *dtmcli.Xa) error {
-		var req ReqHTTP
+		var req common.ReqHTTP
 		if err := c.ShouldBindJSON(&req); err != nil {
 			return err
 		}
@@ -46,7 +48,7 @@ func transIn(c *gin.Context) error {
 		log.Printf(">> rm2-server transin db success, result: %d, %v", affected, err)
 		return nil
 	}
-	if err := dtmcli.XaLocalTransaction(qs, BasicDBConf, xaFunc); err != nil {
+	if err := dtmcli.XaLocalTransaction(qs, common.BasicDBConf, xaFunc); err != nil {
 		return err
 	}
 	log.Println(">> rm2-server exec local transaction success")
