@@ -15,35 +15,65 @@ import (
 )
 
 var (
-	proxyMap map[string]*Proxy
+	proxyHub  map[string]*url.URL
+	transport *http.Transport
 )
 
-type Proxy struct {
-	host  *url.URL
-	proxy *httputil.ReverseProxy
+func main() {
+	initProxyResource()
+	e := gin.Default()
+	e.Any("/:server/*path", reverseProxyHandler)
+	_ = e.Run(":28080")
 }
 
-func init() {
+func initProxyResource() {
 	hostMap := map[string]string{
 		"user":  "http://localhost:28081",
 		"video": "http://localhost:28082",
 	}
-	proxyMap = make(map[string]*Proxy)
+	proxyHub = make(map[string]*url.URL)
 	for key, host := range hostMap {
 		remote, err := url.Parse(host)
 		if err != nil {
 			panic(err)
 		}
-		proxy := &Proxy{
-			host:  remote,
-			proxy: newReverseProxy(remote),
-		}
-		proxyMap[key] = proxy
+		proxyHub[key] = remote
 	}
+
+	transport = http.DefaultTransport.(*http.Transport).Clone()
+	transport.MaxConnsPerHost = 100
+	transport.MaxIdleConns = 30
+	transport.MaxIdleConnsPerHost = 30
+}
+
+func reverseProxyHandler(c *gin.Context) {
+	key := c.Param("server")
+	path := c.Param("path")
+	if key == "" {
+		c.JSON(404, map[string]interface{}{"error": "not found"})
+		return
+	}
+
+	if u, ok := proxyHub[key]; ok {
+		py := newReverseProxy(u)
+		py.Director = func(req *http.Request) {
+			req.Header = c.Request.Header
+			req.Host = u.Host
+			req.URL.Scheme = u.Scheme
+			req.URL.Host = u.Host
+			req.URL.Path = path
+		}
+		py.ServeHTTP(c.Writer, c.Request)
+		return
+	}
+
+	c.JSON(200, map[string]interface{}{"code": 0, "key": key, "path": path})
+	return
 }
 
 func newReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	p := httputil.NewSingleHostReverseProxy(target)
+	p.Transport = transport
 	p.ModifyResponse = func(r *http.Response) error {
 		if strings.Contains(r.Request.RequestURI, "/user") {
 			return nil
@@ -91,34 +121,4 @@ func newReverseProxy(target *url.URL) *httputil.ReverseProxy {
 		}
 	}
 	return p
-}
-
-func main() {
-	e := gin.Default()
-	e.Any("/:server/*path", reverseProxyHandler)
-	_ = e.Run(":28080")
-}
-
-func reverseProxyHandler(c *gin.Context) {
-	key := c.Param("server")
-	path := c.Param("path")
-	if key == "" {
-		c.JSON(404, map[string]interface{}{"error": "not found"})
-		return
-	}
-
-	if proxy, ok := proxyMap[key]; ok {
-		proxy.proxy.Director = func(req *http.Request) {
-			req.Header = c.Request.Header
-			req.Host = proxy.host.Host
-			req.URL.Scheme = proxy.host.Scheme
-			req.URL.Host = proxy.host.Host
-			req.URL.Path = path
-		}
-		proxy.proxy.ServeHTTP(c.Writer, c.Request)
-		return
-	}
-
-	c.JSON(200, map[string]interface{}{"code": 0, "key": key, "path": path})
-	return
 }
