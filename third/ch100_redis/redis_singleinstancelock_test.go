@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -42,7 +42,7 @@ func NewSingleInstanceMutex(name string, client *redis.Client) *SingleInstanceMu
 }
 
 func (m *SingleInstanceMutex) Lock(expiry time.Duration) error {
-	result, err := m.c.SetNX(m.Key, m.Val, expiry).Result()
+	result, err := m.c.SetNX(ctx, m.Key, m.Val, expiry).Result()
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (m *SingleInstanceMutex) Unlock() (bool, error) {
 	    return 0
 	end`
 
-	result, err := m.c.Eval(luaScript, []string{m.Key}, []string{m.Val}).Result()
+	result, err := m.c.Eval(ctx, luaScript, []string{m.Key}, []string{m.Val}).Result()
 	if err != nil {
 		return false, err
 	}

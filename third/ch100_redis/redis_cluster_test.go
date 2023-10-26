@@ -1,24 +1,27 @@
 package ch100_redis
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"testing"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 )
 
 var clusterClient *redis.ClusterClient
 
-func init() {
+func initClusterClient() {
+	// redis 7.x
 	addrs := []string{
-		"10.200.50.49:7001",
-		"10.200.50.49:7002",
-		"10.200.50.49:7003",
-		"10.200.50.49:7004",
-		"10.200.50.49:7005",
-		"10.200.50.49:7006",
+		"moss:7001",
+		"moss:7002",
+		"moss:7003",
+		"moss:7004",
+		"moss:7005",
+		"moss:7006",
 	}
 	clusterClient = redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs:           addrs,
@@ -32,11 +35,13 @@ func init() {
 		MaxRetryBackoff: -1,
 	})
 
-	pong, err := clusterClient.Ping().Result()
+	pong, err := clusterClient.Ping(context.Background()).Result()
 	fmt.Println(pong, err)
 }
 
 func TestClusterMGet(t *testing.T) {
+	initClusterClient()
+
 	keys := []string{"one", "two", "three", "four", "five"}
 	vals := []interface{}{"1", "2", "3", "4", "5"}
 
@@ -47,6 +52,8 @@ func TestClusterMGet(t *testing.T) {
 }
 
 func TestClusterMSet(t *testing.T) {
+	initClusterClient()
+
 	keys := []string{"one", "two", "three", "four", "five"}
 	vals := []interface{}{"1", "2", "3", "4", "5"}
 
@@ -58,6 +65,8 @@ func TestClusterMSet(t *testing.T) {
 }
 
 func BenchmarkMGet(b *testing.B) {
+	initClusterClient()
+
 	keys := []string{"one", "two", "three", "four", "five"}
 	for i := 0; i < b.N; i++ {
 		multiGet(keys...)
@@ -65,15 +74,19 @@ func BenchmarkMGet(b *testing.B) {
 }
 
 func BenchmarkGet(b *testing.B) {
+	initClusterClient()
+
 	keys := []string{"one", "two", "three", "four", "five"}
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
-			clusterClient.Get(key)
+			clusterClient.Get(ctx, key)
 		}
 	}
 }
 
 func BenchmarkMSet(b *testing.B) {
+	initClusterClient()
+
 	keys := []string{"one", "two", "three", "four", "five"}
 	vals := []interface{}{"1", "2", "3", "4", "5"}
 
@@ -98,7 +111,7 @@ func BenchmarkSet(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		for i := range keys {
-			clusterClient.Set(keys[i], vals[i], -1)
+			clusterClient.Set(ctx, keys[i], vals[i], -1)
 		}
 	}
 }
@@ -175,12 +188,12 @@ type multiTask struct {
 }
 
 func handleGetTask(task *multiTask) {
-	task.reply, task.err = clusterClient.Get(task.key).Result()
+	task.reply, task.err = clusterClient.Get(ctx, task.key).Result()
 	task.done <- 1
 }
 
 func handleSetTask(task *multiTask) {
-	task.reply, task.err = clusterClient.Set(task.key, task.val, task.expiration).Result()
+	task.reply, task.err = clusterClient.Set(ctx, task.key, task.val, task.expiration).Result()
 	task.done <- 1
 }
 
@@ -232,4 +245,59 @@ func TestSlotCalculate(t *testing.T) {
 	key := "hello"
 	slot := int(crc16sum(key)) % slotNumber
 	fmt.Println(">> slot:", slot)
+}
+
+func TestClusterPipeline(t *testing.T) {
+	initClusterClient()
+
+	// set
+	{
+		ctx := context.Background()
+		p := clusterClient.Pipeline()
+		p.Set(ctx, "aaa", 111, -1)
+		p.Set(ctx, "bbb", 222, -1)
+		p.Set(ctx, "ccc", 333, -1)
+		cmds, err := p.Exec(context.Background())
+		if err != nil {
+			log.Fatalf(">> set: pipeline exec err: %v", err)
+		}
+		for i, v := range cmds {
+			val, err2 := v.(*redis.StatusCmd).Result()
+			log.Printf(">> set: pipeline exec %d result: %s, %v", i+1, val, err2)
+		}
+	}
+
+	// get
+	{
+		ctx := context.Background()
+		p := clusterClient.Pipeline()
+		p.Get(ctx, "aaa")
+		p.Get(ctx, "bbb")
+		p.Get(ctx, "ccc")
+		cmds, err := p.Exec(context.Background())
+		if err != nil {
+			log.Fatalf(">> get: pipeline exec err: %v", err)
+		}
+		for i, v := range cmds {
+			val, err2 := v.(*redis.StringCmd).Result()
+			log.Printf(">> get: pipeline exec %d result: %s, %v", i+1, val, err2)
+		}
+	}
+
+	// del
+	{
+		ctx := context.Background()
+		p := clusterClient.Pipeline()
+		p.Del(ctx, "aaa")
+		p.Del(ctx, "bbb")
+		p.Del(ctx, "ccc")
+		cmds, err := p.Exec(context.Background())
+		if err != nil {
+			log.Fatalf(">> get: pipeline exec err: %v", err)
+		}
+		for i, v := range cmds {
+			val, err2 := v.(*redis.IntCmd).Result()
+			log.Printf(">> get: pipeline exec %d result: %d, %v", i+1, val, err2)
+		}
+	}
 }

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redsync/redsync/v4"
-	"github.com/go-redsync/redsync/v4/redis/goredis"
+	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
 )
 
 var rs *redsync.Redsync
