@@ -247,6 +247,7 @@ func TestSlotCalculate(t *testing.T) {
 	fmt.Println(">> slot:", slot)
 }
 
+// "github.com/redis/go-redis/v9" 实现了redis cluster对pipeline支持
 func TestClusterPipeline(t *testing.T) {
 	initClusterClient()
 
