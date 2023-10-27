@@ -37,6 +37,19 @@ func initClusterClient() {
 
 	pong, err := clusterClient.Ping(context.Background()).Result()
 	fmt.Println(pong, err)
+
+	nodesResult, err := clusterClient.ClusterNodes(context.Background()).Result()
+	fmt.Println(nodesResult, err)
+
+	// Output:
+	// PONG <nil>
+	// 93ac0e30276bcf6c4c539151dd8d44c47dab9d55 192.168.100.254:7002@17002 myself,master - 0 1698374812000 10 connected 5461-10922
+	// 521c5afb196fb3cc57dca9bcf4d27ba507895036 192.168.100.254:7001@17001 slave 5215a0dae794f6f031138350ee1a47c9946eabaf 0 1698374813309 8 connected
+	// 45999feab9118d11baceb973f13ccf81eb43b82f 192.168.100.254:7006@17006 master - 0 1698374813007 9 connected 10923-16383
+	// 5215a0dae794f6f031138350ee1a47c9946eabaf 192.168.100.254:7004@17004 master - 0 1698374813108 8 connected 0-5460
+	// abbd1de6b3dd0ada65095f891f7e55cf62d44a72 192.168.100.254:7003@17003 slave 45999feab9118d11baceb973f13ccf81eb43b82f 0 1698374813309 9 connected
+	// d1041ab792a240ac3815fd809cb5526b1b3dfef1 192.168.100.254:7005@17005 slave 93ac0e30276bcf6c4c539151dd8d44c47dab9d55 0 1698374813108 10 connected
+	// <nil>
 }
 
 func TestClusterMGet(t *testing.T) {
