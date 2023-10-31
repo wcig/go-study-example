@@ -6,6 +6,7 @@ require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.4.0
 	github.com/RoaringBitmap/roaring v1.5.0
 	github.com/Shopify/sarama v1.19.0
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/dtm-labs/client v1.17.3
 	github.com/emirpasic/gods v1.12.0
 	github.com/gin-gonic/gin v1.9.1
@@ -46,6 +47,9 @@ require (
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/gographics/imagick.v2 v2.6.0
 	gopkg.in/yaml.v2 v2.4.0
+	gorm.io/driver/mysql v1.5.2
+	gorm.io/gorm v1.25.5
+	gorm.io/sharding v0.6.0
 	xorm.io/xorm v1.0.7
 )
 
@@ -54,7 +58,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.8.0 // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
-	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -94,7 +97,7 @@ require (
 	github.com/longbridgeapp/sqlparser v0.3.1 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/maruel/rs v1.1.0 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -140,9 +143,6 @@ require (
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/mysql v1.5.2 // indirect
-	gorm.io/gorm v1.25.5 // indirect
-	gorm.io/sharding v0.6.0 // indirect
 	rsc.io/qr v0.2.0 // indirect
 	xorm.io/builder v0.3.7 // indirect
 )
