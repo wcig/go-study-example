@@ -18,8 +18,7 @@ var (
 	password = "123456"
 	dbname   = "test"
 
-	// dsn           = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
-	dsn           = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True", username, password, host, port, dbname)
+	dsn           = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
 	defaultLogger = logger.Default.LogMode(logger.Info)
 
 	DB *gorm.DB
