@@ -13,7 +13,7 @@ import (
 // errors：实现操作错误的函数
 
 // 函数
-// func As(err error, target interface{}) bool // err的错误链是否有与target匹配的，如果是则将target设置为err值并返回true
+// func As(err error, target interface{}) bool // err的错误链是否是target类型，如果是则将target设置为err值并返回true
 // func Is(err, target error) bool             // 报告err错误链中任何错误是否与target匹配
 // func New(text string) error                 // 返回给定文本的错误（每一次调用都会返回一不同的错误值）
 // func Unwrap(err error) error                // 如果err的类型包含返回错误的Unwrap方法，则Unwrap返回对err调用Unwrap方法的结果。否则Unwrap返回nil。
