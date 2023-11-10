@@ -2,6 +2,7 @@ package ch38_sync
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"sync"
 	"testing"
@@ -79,6 +80,35 @@ func TestPool(t *testing.T) {
 		result = append(result, val.(int))
 	}
 	fmt.Println("result:", result) // result: [1 10 9 8 7 6 5 4 3 2]
+}
+
+func TestPoolWithNew(t *testing.T) {
+	const num = 10
+	p := &sync.Pool{
+		New: func() any {
+			return -rand.Intn(10)
+		},
+	}
+	wg := &sync.WaitGroup{}
+	for i := 0; i < num; i++ {
+		wg.Add(1)
+		v := i
+		go func() {
+			p.Put(v)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+	var result []int
+	for {
+		val := p.Get()
+		if val == nil || len(result) == 20 {
+			break
+		}
+		result = append(result, val.(int))
+	}
+	fmt.Println("result:", result) // result: [0 4 3 1 2 8 7 6 5 9 -2 -8 -7 -4 -7 -8 -1 -3 -3 -5]
 }
 
 type counter struct {
