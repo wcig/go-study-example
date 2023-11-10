@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestAutomic(t *testing.T) {
+func TestAtomic(t *testing.T) {
 	var (
 		counter int64
 		wg      sync.WaitGroup
