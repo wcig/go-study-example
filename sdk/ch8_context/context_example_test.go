@@ -45,7 +45,8 @@ func handleWithCancel(ctx context.Context) {
 
 // DeadlineContext
 func TestDeadlineContext(t *testing.T) {
-	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
+	defer cancel()
 	go handleWithDeadline(ctx)
 
 	select {
