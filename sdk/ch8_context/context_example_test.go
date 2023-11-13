@@ -3,6 +3,7 @@ package ch8_context
 import (
 	"context"
 	"fmt"
+	"log"
 	"testing"
 	"time"
 )
@@ -119,3 +120,37 @@ func handleWithValue(ctx context.Context) {
 // output:
 // process request over: valueContext
 // main ctx over
+
+func Test31(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	go func() {
+		for {
+			select {
+			case val, ok := <-ctx.Done():
+				log.Println(">>1 ctx done", val, ok)
+				return
+			case <-time.After(2 * time.Second):
+				log.Println(">>1 time after done")
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case val, ok := <-ctx.Done():
+				log.Println(">>2 ctx done", val, ok)
+				return
+			case <-time.After(2 * time.Second):
+				log.Println(">>2 time after done")
+			}
+		}
+	}()
+
+	time.Sleep(1500 * time.Millisecond)
+	// Output:
+	// 2023/11/13 21:40:03 >>2 ctx done {} false
+	// 2023/11/13 21:40:03 >>1 ctx done {} false
+}
