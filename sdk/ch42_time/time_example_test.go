@@ -11,6 +11,7 @@ var c chan int
 
 func handle(int) {}
 
+// 注意: time.After在计时器到达前不会GC
 func TestAfter(t *testing.T) {
 	select {
 	case m := <-c:
@@ -20,6 +21,18 @@ func TestAfter(t *testing.T) {
 	}
 	// output:
 	// timed out
+}
+
+func TestAfterFunc(t *testing.T) {
+	timer := time.AfterFunc(time.Second, func() {
+		log.Println(">> timer fire")
+	})
+	time.Sleep(time.Second * 2)
+	timer.Stop()
+	log.Println(">> over")
+	// Output:
+	// 2023/11/13 19:34:37 >> timer fire
+	// 2023/11/13 19:34:38 >> over
 }
 
 func TestSleep(t *testing.T) {
