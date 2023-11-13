@@ -2,6 +2,7 @@ package ch42_time
 
 import (
 	"fmt"
+	"log"
 	"testing"
 	"time"
 )
@@ -231,6 +232,7 @@ func TestTimer(t *testing.T) {
 		select {
 		case <-timer.C:
 			fmt.Println("Done!")
+			timer.Stop()
 			return
 		case t := <-ticker.C:
 			fmt.Println("Current time: ", t)
@@ -248,6 +250,38 @@ func TestTimer(t *testing.T) {
 	// Current time:  2021-07-04 22:10:37.609684 +0800 CST m=+9.003866342
 	// Current time:  2021-07-04 22:10:38.609597 +0800 CST m=+10.003770316
 	// Done!
+}
+
+func TestTimer2(t *testing.T) {
+	timer := time.NewTimer(time.Second)
+	done := make(chan bool, 1)
+	go func() {
+		for {
+			timer.Reset(time.Second)
+			select {
+			case <-done:
+				log.Println(">> done event")
+				timer.Stop()
+				return
+			case <-timer.C:
+				log.Println(">> timer event")
+			}
+		}
+	}()
+	time.Sleep(time.Second * 10)
+	done <- true
+	log.Println(">> over")
+	// Output:
+	// 2023/11/13 19:20:59 >> timer event
+	// 2023/11/13 19:21:00 >> timer event
+	// 2023/11/13 19:21:01 >> timer event
+	// 2023/11/13 19:21:02 >> timer event
+	// 2023/11/13 19:21:03 >> timer event
+	// 2023/11/13 19:21:04 >> timer event
+	// 2023/11/13 19:21:05 >> timer event
+	// 2023/11/13 19:21:06 >> timer event
+	// 2023/11/13 19:21:07 >> timer event
+	// 2023/11/13 19:21:08 >> over
 }
 
 func TestTypeWeekDay(t *testing.T) {
