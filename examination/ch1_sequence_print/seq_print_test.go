@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"testing"
+	"time"
 )
 
 // another solution
@@ -32,4 +34,24 @@ func printAnimal(wg *sync.WaitGroup, count int, animal string, c1 chan struct{},
 		fmt.Println(i, animal)
 		c2 <- struct{}{}
 	}
+}
+
+func TestSeqPrint1234(t *testing.T) {
+	const num = 4
+	chanList := []chan struct{}{make(chan struct{}, 1), make(chan struct{}, 1),
+		make(chan struct{}, 1), make(chan struct{}, 1)}
+	printNum := func(id int, recv chan struct{}, send chan struct{}) {
+		for {
+			token := <-recv
+			log.Println(">>", id)
+			time.Sleep(time.Second)
+			send <- token
+		}
+	}
+	for i := 0; i < num; i++ {
+		id := i + 1
+		go printNum(id, chanList[i], chanList[(i+1)%num])
+	}
+	chanList[0] <- struct{}{}
+	select {}
 }
