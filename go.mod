@@ -98,6 +98,7 @@ require (
 	github.com/longbridgeapp/sqlparser v0.3.1 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/maruel/rs v1.1.0 // indirect
+	github.com/marusama/cyclicbarrier v1.1.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
