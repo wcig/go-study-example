@@ -16,6 +16,7 @@ func TestCyclicBarrierDemo(t *testing.T) {
 		id := i
 		go func() {
 			log.Printf(">> %d start", id)
+			time.Sleep(time.Second)
 			if err := barrier.Await(context.Background()); err != nil {
 				log.Fatalf(">> %d err: %v", id, err)
 			}
@@ -25,11 +26,11 @@ func TestCyclicBarrierDemo(t *testing.T) {
 	time.Sleep(3 * time.Second)
 	log.Println(">> over")
 	// Output:
-	// 2023/11/14 17:46:15 >> 2 start
-	// 2023/11/14 17:46:15 >> 0 start
-	// 2023/11/14 17:46:15 >> 1 start
-	// 2023/11/14 17:46:15 >> 1 end
-	// 2023/11/14 17:46:15 >> 2 end
-	// 2023/11/14 17:46:15 >> 0 end
-	// 2023/11/14 17:46:18 >> over
+	// 2023/11/14 17:48:19 >> 2 start
+	// 2023/11/14 17:48:19 >> 0 start
+	// 2023/11/14 17:48:19 >> 1 start
+	// 2023/11/14 17:48:20 >> 2 end
+	// 2023/11/14 17:48:20 >> 1 end
+	// 2023/11/14 17:48:20 >> 0 end
+	// 2023/11/14 17:48:22 >> over
 }
