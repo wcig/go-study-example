@@ -63,10 +63,10 @@ func TestInitGorm(t *testing.T) {
 
 type GormUser struct {
 	ID         int64  `json:"id" gorm:"id"`
-	Name       string `json:"name" gorm:"age"`
+	Name       string `json:"name" gorm:"name"`
 	Age        int    `json:"age" gorm:"age"`
 	CreateTime int64  `json:"create_time" gorm:"create_time"`
-	UpdateTime int64  `json:"updateTime" gorm:"updateTime"`
+	UpdateTime int64  `json:"update_time" gorm:"update_time"`
 }
 
 func (gu *GormUser) TableName() string {
