@@ -207,34 +207,29 @@ func TestTypeMonth(t *testing.T) {
 }
 
 func TestTypeTicker(t *testing.T) {
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
+	ticker := time.NewTicker(500 * time.Millisecond)
 	done := make(chan bool)
+
 	go func() {
-		time.Sleep(10 * time.Second)
-		done <- true
-	}()
-	for {
-		select {
-		case <-done:
-			fmt.Println("Done!")
-			return
-		case t := <-ticker.C:
-			fmt.Println("Current time: ", t)
+		for {
+			select {
+			case <-done:
+				return
+			case t := <-ticker.C:
+				fmt.Println("Tick at", t)
+			}
 		}
-	}
+	}()
+
+	time.Sleep(1600 * time.Millisecond)
+	ticker.Stop()
+	done <- true
+	fmt.Println("Ticker stopped")
 	// output:
-	// Current time:  2021-07-04 22:01:05.485374 +0800 CST m=+1.003103486
-	// Current time:  2021-07-04 22:01:06.485025 +0800 CST m=+2.002746356
-	// Current time:  2021-07-04 22:01:07.485018 +0800 CST m=+3.002731133
-	// Current time:  2021-07-04 22:01:08.487606 +0800 CST m=+4.005310505
-	// Current time:  2021-07-04 22:01:09.486623 +0800 CST m=+5.004318398
-	// Current time:  2021-07-04 22:01:10.486134 +0800 CST m=+6.003820585
-	// Current time:  2021-07-04 22:01:11.485212 +0800 CST m=+7.002890629
-	// Current time:  2021-07-04 22:01:12.486298 +0800 CST m=+8.003967329
-	// Current time:  2021-07-04 22:01:13.483397 +0800 CST m=+9.001057507
-	// Current time:  2021-07-04 22:01:14.484739 +0800 CST m=+10.002390834
-	// Done!
+	// Tick at 2023-11-21 21:25:13.593731 +0800 CST m=+0.503626334
+	// Tick at 2023-11-21 21:25:14.093741 +0800 CST m=+1.003652376
+	// Tick at 2023-11-21 21:25:14.593721 +0800 CST m=+1.503648418
+	// Ticker stopped
 }
 
 func TestTimer(t *testing.T) {
