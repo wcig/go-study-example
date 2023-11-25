@@ -18,6 +18,14 @@ import (
 // func New(text string) error                 // 返回给定文本的错误（每一次调用都会返回一不同的错误值）
 // func Unwrap(err error) error                // 如果err的类型包含返回错误的Unwrap方法，则Unwrap返回对err调用Unwrap方法的结果。否则Unwrap返回nil。
 
+type FileNotExistsError struct {
+	Path string
+}
+
+func (e *FileNotExistsError) Error() string {
+	return fmt.Sprintf("file not exists: %s", e.Path)
+}
+
 func TestAs(t *testing.T) {
 	if _, err := os.Open("non-existing"); err != nil {
 		var pathError *fs.PathError
@@ -28,14 +36,15 @@ func TestAs(t *testing.T) {
 		}
 	}
 
-	err1 := errors.New("file not exists")
+	err1 := &FileNotExistsError{Path: "/root/non-existing"}
 	err2 := fmt.Errorf("wrap %w", err1)
-	fmt.Println(errors.As(err2, &err1))
-	fmt.Printf("err1: %s, err2: %s\n", err1, err2)
+	var err3 *FileNotExistsError
+	fmt.Println(errors.As(err2, &err3))
+	fmt.Printf("err1: %s, err2: %s, err3: %s\n", err1, err2, err3)
 	// output:
 	// Failed at path: non-existing
 	// true
-	// err1: wrap file not exists, err2: wrap file not exists
+	// err1: file not exists: /root/non-existing, err2: wrap file not exists: /root/non-existing, err3: file not exists: /root/non-existing
 }
 
 func TestIs(t *testing.T) {
@@ -47,14 +56,14 @@ func TestIs(t *testing.T) {
 		}
 	}
 
-	err1 := errors.New("file not exists")
+	err1 := &FileNotExistsError{Path: "/root/non-existing"}
 	err2 := fmt.Errorf("wrap %w", err1)
 	fmt.Println(errors.Is(err2, err1))
 	fmt.Printf("err1: %s, err2: %s\n", err1, err2)
 	// output:
 	// file does not exist
 	// true
-	// err1: file not exists, err2: wrap file not exists
+	// err1: file not exists: /root/non-existing, err2: wrap file not exists: /root/non-existing
 }
 
 func TestNew(t *testing.T) {
