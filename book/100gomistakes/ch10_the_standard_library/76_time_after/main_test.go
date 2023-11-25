@@ -1,4 +1,4 @@
-package ch10_the_standard_library
+package main
 
 import (
 	"context"
