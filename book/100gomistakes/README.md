@@ -1339,7 +1339,7 @@ HTTP 请求包括以下步骤：
 
 相关的超时参数如下图：
 
-![image-20231125205203353](https://yangbo-blog.oss-cn-shenzhen.aliyuncs.com/blog/image-20231125205203353.png)
+![image-20231125205203353](img/image-20231125205203353.png)
 
 示例：
 
@@ -1373,7 +1373,7 @@ func main() {
 
 相关的超时参数如下图：
 
-![image-20231125210009089](https://yangbo-blog.oss-cn-shenzhen.aliyuncs.com/blog/image-20231125210009089.png)
+![image-20231125210009089](img/image-20231125210009089.png)
 
 示例：
 
@@ -1557,9 +1557,9 @@ type Foo2 struct {
 }
 ```
 
-![image-20231125220217587](https://yangbo-blog.oss-cn-shenzhen.aliyuncs.com/blog/image-20231125220217587.png)
+![image-20231125220217587](img/image-20231125220217587.png)
 
-![image-20231125220224532](https://yangbo-blog.oss-cn-shenzhen.aliyuncs.com/blog/image-20231125220224532.png)
+![image-20231125220224532](img/image-20231125220224532.png)
 
 **建议：**数据对齐保证更好的空间局部性。
 
