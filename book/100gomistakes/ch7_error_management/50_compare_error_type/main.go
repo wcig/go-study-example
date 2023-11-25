@@ -7,7 +7,7 @@ import (
 
 func main() {
 	{
-		// errors.As(): err的错误链是否是target类型，如果是则将target设置为err值并返回true
+		// func As(err error, target interface{}) bool: err的错误链是否是target类型，如果是则将target设置为err值并返回true
 		err1 := &FileNotExistsError{Path: "/root/non-existing"}
 		err2 := fmt.Errorf("wrap %w", err1)
 		var err3 *FileNotExistsError
@@ -19,7 +19,7 @@ func main() {
 	}
 
 	{
-		// errors.Is(): 报告err错误链中任何错误是否与target匹配
+		// func Is(err, target error) bool: 报告err错误链中任何错误是否与target匹配
 		err1 := &FileNotExistsError{Path: "/root/non-existing"}
 		err2 := fmt.Errorf("wrap %w", err1)
 		fmt.Println(errors.Is(err2, err1))
