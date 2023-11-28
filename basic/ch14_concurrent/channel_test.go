@@ -2,8 +2,12 @@ package ch14_concurrent
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"testing"
 	"time"
 )
@@ -86,9 +90,8 @@ func TestChannelType(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 }
 
-//
 func TestChannelError1(t *testing.T) {
-	// 错误
+	// 错误: 原因是使用的非缓冲channel,channel发送和接收数据同时完成 (这里改成缓冲channel就不会报错)
 	// c1 := make(chan int)
 	// c1 <- 1
 	// fmt.Println(<-c1) // fatal error: all goroutines are asleep - deadlock!
@@ -362,3 +365,170 @@ func TestSelectContinue(t *testing.T) {
 // 21:31:45
 // 21:31:46
 // ...
+
+// good
+func TestReceiveWithFor1(t *testing.T) {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c := make(chan int, 3)
+
+	// receiver
+	go func() {
+		for {
+			val, ok := <-c
+			log.Println("receive chan:", val, ok)
+			if !ok {
+				break
+			}
+		}
+		log.Println("done..")
+		wg.Done()
+	}()
+
+	// sender
+	for i := 0; i < 3; i++ {
+		c <- i
+	}
+	close(c) // 没有关闭channel将报错: fatal error: all goroutines are asleep - deadlock!
+
+	wg.Wait()
+	log.Println("over..")
+
+	// Output:
+	// 2023/11/28 17:27:05 receive chan: 0 true
+	// 2023/11/28 17:27:05 receive chan: 1 true
+	// 2023/11/28 17:27:05 receive chan: 2 true
+	// 2023/11/28 17:27:05 receive chan: 0 false
+	// 2023/11/28 17:27:05 done..
+	// 2023/11/28 17:27:05 over..
+}
+
+// bad: sender端channel数据发送完成后, 记得关闭channel, 否则将导致receiver协程阻塞不能关闭
+func TestReceiveWithFor2(t *testing.T) {
+	c := make(chan int, 3)
+
+	// receiver
+	go func() {
+		for {
+			val, ok := <-c
+			log.Println("receive chan:", val, ok)
+			if !ok {
+				break
+			}
+		}
+		log.Println("done..")
+	}()
+
+	// sender
+	for i := 0; i < 3; i++ {
+		c <- i
+	}
+	// close(c)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
+
+	// Output:
+	// 2023/11/28 17:29:51 receive chan: 0 true
+	// 2023/11/28 17:29:51 receive chan: 1 true
+	// 2023/11/28 17:29:51 receive chan: 2 true
+}
+
+// bad: 收到channel关闭信号, 记得退出协程
+func TestReceiveWithFor3(t *testing.T) {
+	c := make(chan int, 3)
+
+	// receiver
+	go func() {
+		for {
+			val, ok := <-c
+			log.Println("receive chan:", val, ok)
+
+			// channel关闭后ok值为false, 如果不退出循环将导致receiver协程一直执行得不到关闭
+			// if !ok {
+			// 	break
+			// }
+			time.Sleep(time.Second)
+		}
+		// Unreachable code
+		log.Println("done..")
+	}()
+
+	// sender
+	for i := 0; i < 3; i++ {
+		c <- i
+	}
+	close(c)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
+
+	// Output:
+	// 2023/11/28 17:32:15 receive chan: 0 true
+	// 2023/11/28 17:32:16 receive chan: 1 true
+	// 2023/11/28 17:32:17 receive chan: 2 true
+	// 2023/11/28 17:32:18 receive chan: 0 false
+	// 2023/11/28 17:32:19 receive chan: 0 false
+	// 2023/11/28 17:32:20 receive chan: 0 false
+	// ...
+}
+
+// good
+func TestReceiveWithForRange1(t *testing.T) {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	c := make(chan int, 3)
+	go func() {
+		for v := range c {
+			log.Println("receive chan:", v)
+		}
+		log.Println("done..")
+		wg.Done()
+	}()
+
+	// sender
+	for i := 0; i < 3; i++ {
+		c <- i
+	}
+	close(c) // 没有关闭channel将报错: fatal error: all goroutines are asleep - deadlock!
+
+	wg.Wait()
+	log.Println("over..")
+
+	// Output:
+	// 2023/11/28 17:37:38 receive chan: 0
+	// 2023/11/28 17:37:38 receive chan: 1
+	// 2023/11/28 17:37:38 receive chan: 2
+	// 2023/11/28 17:37:38 done..
+	// 2023/11/28 17:37:38 over..
+}
+
+// bad: sender端channel数据发送完成后, 记得关闭channel, 否则将导致receiver协程阻塞不能关闭
+func TestReceiveWithForRange2(t *testing.T) {
+	c := make(chan int, 3)
+	go func() {
+		for v := range c {
+			log.Println("receive chan:", v)
+		}
+		log.Println("done..")
+	}()
+
+	// sender
+	for i := 0; i < 3; i++ {
+		c <- i
+	}
+	// close(c)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
+
+	// Output:
+	// 2023/11/28 17:39:43 receive chan: 0
+	// 2023/11/28 17:39:43 receive chan: 1
+	// 2023/11/28 17:39:43 receive chan: 2
+}
