@@ -1,8 +1,16 @@
 package pyroscope
 
-import "github.com/grafana/pyroscope-go"
+import (
+	"os"
+
+	"github.com/grafana/pyroscope-go"
+)
 
 func StartPyroscope() {
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown"
+	}
 	profiler, err := pyroscope.Start(pyroscope.Config{
 		ApplicationName: "simple.golang.app",
 		ServerAddress:   "http://localhost:4040",
@@ -22,6 +30,9 @@ func StartPyroscope() {
 			pyroscope.ProfileMutexDuration,
 			pyroscope.ProfileBlockCount,
 			pyroscope.ProfileBlockDuration,
+		},
+		Tags: map[string]string{
+			"hostname": hostname,
 		},
 	})
 	if err != nil {
