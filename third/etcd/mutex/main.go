@@ -17,6 +17,9 @@ var (
 )
 
 func main() {
+	// 解析命令行参数
+	flag.Parse()
+
 	// 创建client
 	ec, err := clientv3.New(clientv3.Config{Endpoints: []string{*addr}})
 	if err != nil {
