@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"testing"
 )
@@ -19,21 +18,16 @@ func levelOrder(root *TreeNode, s *[]int) {
 		return
 	}
 
-	queue := list.New()
-	queue.PushBack(root)
-
-	for queue.Len() > 0 {
-		front := queue.Front()
-		queue.Remove(front)
-
-		node := front.Value.(*TreeNode)
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
 		*s = append(*s, node.Val)
-
 		if node.Left != nil {
-			queue.PushBack(node.Left)
+			queue = append(queue, node.Left)
 		}
 		if node.Right != nil {
-			queue.PushBack(node.Right)
+			queue = append(queue, node.Right)
 		}
 	}
 }

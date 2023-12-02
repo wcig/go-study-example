@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"testing"
 )
@@ -36,21 +35,18 @@ func preorderWithStack(root *TreeNode, s *[]int) {
 		return
 	}
 
-	stack := list.New()
-	stack.PushBack(root)
+	stack := []*TreeNode{root}
+	for len(stack) > 0 {
+		node := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
 
-	for stack.Len() > 0 {
-		back := stack.Back()
-		stack.Remove(back)
-
-		node := back.Value.(*TreeNode)
 		*s = append(*s, node.Val)
 
 		if node.Right != nil {
-			stack.PushBack(node.Right)
+			stack = append(stack, node.Right)
 		}
 		if node.Left != nil {
-			stack.PushBack(node.Left)
+			stack = append(stack, node.Left)
 		}
 	}
 }
