@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// 中序遍历 (递归实现,DFS深度优先遍历)
+// 中序遍历 (递归实现,DFS深度优先遍历) 左根右
 func TestInorderTraversal(t *testing.T) {
 	root := getRoot()
 	var s []int
