@@ -21,3 +21,30 @@ func inorder(node *TreeNode, s *[]int) {
 	*s = append(*s, node.Val)
 	inorder(node.Right, s)
 }
+
+// 中序遍历 (辅助栈实现)
+func TestInorderTraversalWithStack(t *testing.T) {
+	root := getRoot()
+	var s []int
+	inorderWithStack(root, &s)
+	fmt.Println(">> inorderWithStack:", s) // >> inorderWithStack: [4 2 5 1 6 3 7]
+}
+
+func inorderWithStack(root *TreeNode, s *[]int) {
+	if root == nil {
+		return
+	}
+	cur := root
+	stack := []*TreeNode{}
+	for cur != nil || len(stack) != 0 {
+		if cur != nil {
+			stack = append(stack, cur)
+			cur = cur.Left
+		} else {
+			cur = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			*s = append(*s, cur.Val)
+			cur = cur.Right
+		}
+	}
+}
