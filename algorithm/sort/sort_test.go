@@ -80,6 +80,14 @@ func TestBubbleSort(t *testing.T) {
 	sortCheck(t, BubbleSort)
 }
 
+func TestBubbleSortWithFlag(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 5, 9, 0, 7, 6, 8}
+	BubbleSortWithFlag(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, BubbleSortWithFlag)
+}
+
 func TestInsertionSort(t *testing.T) {
 	arr := []int{2, 4, 3, 1, 5, 9, 0, 7, 6, 8}
 	InsertionSort(arr)
@@ -118,6 +126,22 @@ func TestQuickSort(t *testing.T) {
 	fmt.Println(arr)
 
 	sortCheck(t, QuickSort)
+}
+
+func TestQuickMedianSort(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
+	quickMedianSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, quickMedianSort)
+}
+
+func TestQuickTailSort(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
+	quickTailSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, quickTailSort)
 }
 
 func TestCountSort(t *testing.T) {

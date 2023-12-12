@@ -4,54 +4,6 @@ import (
 	"math"
 )
 
-// 选择排序
-func SelectionSort(arr []int) {
-	size := len(arr)
-	if size == 0 {
-		return
-	}
-
-	for i := 0; i < size-1; i++ {
-		minPos := i
-		for j := i + 1; j < size; j++ {
-			if arr[j] < arr[minPos] {
-				minPos = j
-			}
-		}
-		arr[i], arr[minPos] = arr[minPos], arr[i]
-	}
-}
-
-// 冒泡排序
-func BubbleSort(arr []int) {
-	size := len(arr)
-	if size == 0 {
-		return
-	}
-
-	for i := size - 1; i > 0; i-- {
-		for j := 0; j < i; j++ {
-			if arr[j] > arr[j+1] {
-				arr[j], arr[j+1] = arr[j+1], arr[j]
-			}
-		}
-	}
-}
-
-// 插入排序
-func InsertionSort(arr []int) {
-	size := len(arr)
-	if size == 0 {
-		return
-	}
-
-	for i := 1; i < size; i++ {
-		for j := i; j > 0 && arr[j] < arr[j-1]; j-- {
-			arr[j], arr[j-1] = arr[j-1], arr[j]
-		}
-	}
-}
-
 // 希尔排序 (间隔为2h)
 func ShellSortSimple(arr []int) {
 	size := len(arr)
@@ -144,46 +96,6 @@ func mergeSortMerge(arr []int, leftPtr, rightPtr, rightBound int) {
 	for m := 0; m < tmpSize; m++ {
 		arr[leftPtr+m] = tmpArr[m]
 	}
-}
-
-// 快速排序
-func QuickSort(arr []int) {
-	size := len(arr)
-	if size == 0 {
-		return
-	}
-
-	quickSortSub(arr, 0, len(arr)-1)
-}
-
-func quickSortSub(arr []int, left, right int) {
-	if left >= right {
-		return
-	}
-
-	mid := partition(arr, left, right)
-	quickSortSub(arr, left, mid-1)
-	quickSortSub(arr, mid+1, right)
-}
-
-func partition(arr []int, left, right int) int {
-	pivot := right
-	i := left
-	j := right - 1
-
-	for i <= j {
-		for i <= j && arr[i] <= arr[pivot] {
-			i++
-		}
-		for i <= j && arr[j] > arr[pivot] {
-			j--
-		}
-		if i < j {
-			arr[i], arr[j] = arr[j], arr[i]
-		}
-	}
-	arr[i], arr[pivot] = arr[pivot], arr[i]
-	return i
 }
 
 // 计数排序
