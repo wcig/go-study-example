@@ -43,7 +43,7 @@ func partition(arr []int, left, right int) int {
 // 1.时间复杂度: O(n*logn)
 // 2.空间复杂度: O(n)
 // 3.稳定性: 不稳定排序
-func quickMedianSort(arr []int) {
+func QuickMedianSort(arr []int) {
 	size := len(arr)
 	if size == 0 {
 		return
@@ -94,7 +94,7 @@ func medianThree(left, mid, right int) int {
 // 1.时间复杂度: O(n*logn)
 // 2.空间复杂度: O(logn)
 // 3.稳定性: 不稳定排序
-func quickTailSort(arr []int) {
+func QuickTailSort(arr []int) {
 	size := len(arr)
 	if size == 0 {
 		return

@@ -130,18 +130,26 @@ func TestQuickSort(t *testing.T) {
 
 func TestQuickMedianSort(t *testing.T) {
 	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
-	quickMedianSort(arr)
+	QuickMedianSort(arr)
 	fmt.Println(arr)
 
-	sortCheck(t, quickMedianSort)
+	sortCheck(t, QuickMedianSort)
 }
 
 func TestQuickTailSort(t *testing.T) {
 	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
-	quickTailSort(arr)
+	QuickTailSort(arr)
 	fmt.Println(arr)
 
-	sortCheck(t, quickTailSort)
+	sortCheck(t, QuickTailSort)
+}
+
+func TestHeapSort(t *testing.T) {
+	arr := []int{2, 4, 3, 1, 8, 9, 0, 7, 6, 5}
+	HeapSort(arr)
+	fmt.Println(arr)
+
+	sortCheck(t, HeapSort)
 }
 
 func TestCountSort(t *testing.T) {
