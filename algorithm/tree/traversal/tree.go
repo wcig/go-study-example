@@ -1,5 +1,9 @@
 package main
 
+import (
+	"math"
+)
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -30,4 +34,36 @@ func getRoot() *TreeNode {
 	node3.Left = node6
 	node3.Right = node7
 	return node1
+}
+
+func SliceToTree(s []int) *TreeNode {
+	return sliceToTreeDFS(s, 0)
+}
+
+func sliceToTreeDFS(s []int, i int) *TreeNode {
+	if i >= len(s) {
+		return nil
+	}
+	root := &TreeNode{Val: s[i]}
+	root.Left = sliceToTreeDFS(s, 2*i+1)
+	root.Right = sliceToTreeDFS(s, 2*i+2)
+	return root
+}
+
+func TreeToSlice(root *TreeNode) []int {
+	var s []int
+	treeToSliceDFS(root, &s, 0)
+	return s
+}
+
+func treeToSliceDFS(node *TreeNode, s *[]int, i int) {
+	if node == nil {
+		return
+	}
+	for i >= len(*s) {
+		*s = append(*s, math.MinInt)
+	}
+	(*s)[i] = node.Val
+	treeToSliceDFS(node.Left, s, 2*i+1)
+	treeToSliceDFS(node.Right, s, 2*i+2)
 }
