@@ -1,4 +1,4 @@
-package hanota
+package question
 
 import (
 	"container/list"
