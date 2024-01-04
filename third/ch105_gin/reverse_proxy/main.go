@@ -85,7 +85,6 @@ func newReverseProxy(target *url.URL) *httputil.ReverseProxy {
 			log.Printf(">> reverse proxy modify response, read err: %v", err)
 			return err
 		}
-		defer r.Body.Close()
 		log.Printf(">> reverse proxy modify response, body: %s", string(body))
 
 		// modify response body
