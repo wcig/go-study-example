@@ -1,0 +1,101 @@
+fetch: Get "https://microsoftonline.com": dial tcp: lookup microsoftonline.com: no such host
+fetch: Get "https://pornhub.com": dial tcp 66.254.114.41:443: connect: connection refused
+fetch: Get "https://pinterest.com": dial tcp 179.60.193.16:443: connect: connection refused
+fetch: Get "https://Instagram.com": dial tcp 31.13.69.245:443: connect: connection refused
+fetch: Get "https://sm.cn": tls: failed to verify certificate: x509: certificate has expired or is not yet valid: “*.sm.cn” certificate is expired
+fetch: Get "https://wordpress.com": read tcp 192.168.100.16:54087->192.0.78.9:443: read: connection reset by peer
+fetch: Get "https://fc2.com": read tcp 192.168.100.16:54106->199.48.210.152:443: read: connection reset by peer
+0.69s       9411    https://yidianzixun.com
+0.70s      12415    https://10086.cn
+0.71s          9    https://docomo.ne.jp
+0.74s        173    https://Baidu.com
+0.74s      13976    https://sogou.com
+0.77s      20404    https://tmall.com
+0.79s     184336    https://jd.com
+0.79s       1444    https://crptgate.com
+0.83s         13    https://netflix.com
+0.83s        327    https://qq.com
+0.87s       3630    https://aliexpress.com
+0.90s     192737    https://sohu.com
+0.90s      96082    https://taobao.com
+0.91s     243703    https://apple.com
+0.95s       1334    https://bilibili.com
+1.00s     313763    https://iqiyi.com
+1.00s      72914    https://toutiao.com
+1.01s     144771    https://news.yahoo.co.jp
+1.04s          0    https://tsyndicate.com
+1.04s      34788    https://yahoo.co.jp
+1.07s       3369    https://Yahoo.com
+1.18s     216344    https://office.com
+fetch: Get "https://accuweather.com": stream error: stream ID 1; INTERNAL_ERROR; received from peer
+1.33s        249    https://craigslist.org
+fetch: Get "https://redtube.com": read tcp 192.168.100.16:54072->66.254.114.238:443: read: connection reset by peer
+1.43s     112483    https://fandom.com
+1.53s     390744    https://youporn.com
+1.59s    1256472    https://youku.com
+1.64s       9027    https://bing.com
+1.69s        350    https://adobe.com
+1.81s        118    https://imdb.com
+1.98s     279097    https://amazon.co.uk
+2.18s      70184    https://bit.ly
+2.22s       6591    https://amazon.com
+2.36s     117212    https://live.com
+2.39s     339297    https://xhamster.com
+2.60s     139267    https://cricbuzz.com
+2.61s    1174794    https://weather.com
+2.62s     389098    https://mail.ru
+2.69s     233440    https://vk.com
+2.71s     110521    https://paypal.com
+2.73s     280761    https://tribunnews.com
+2.79s      41729    https://msn.com
+2.92s     162493    https://Microsoft.com
+2.99s      66247    https://taboola.com
+2.99s       7090    https://amazon.de
+3.01s       7027    https://amazon.in
+3.16s     246990    https://naver.com
+3.70s     120156    https://linkedin.com
+3.95s     503277    https://booking.com
+4.25s      72059    https://outbrain.com
+4.26s     853386    https://samsung.com
+4.37s       1994    https://news.yandex.ru
+4.45s      12748    https://yandex.ru
+4.50s     608647    https://foxnews.com
+4.69s    1595778    https://globo.com
+5.07s     397406    https://ebay.com
+5.52s     819055    https://uol.com.br
+fetch: cnn.com timeout
+fetch: Twitter.com timeout
+fetch: google.it timeout
+fetch: duckduckgo.com timeout
+fetch: Facebook.com timeout
+fetch: Wikipedia.org timeout
+fetch: amazon.co.jp timeout
+fetch: news.google.com timeout
+fetch: google.fr timeout
+fetch: ampproject.org timeout
+fetch: xvideos.com timeout
+fetch: github.com timeout
+fetch: Youtube.com timeout
+fetch: Google.com timeout
+fetch: quora.com timeout
+fetch: bbc.co.uk timeout
+fetch: Get "https://google.co.jp": dial tcp 104.244.43.136:443: i/o timeout
+fetch: google.co.uk timeout
+fetch: Get "https://xnxx.com": dial tcp 31.13.73.169:443: i/o timeout
+fetch: google.de timeout
+fetch: rakuten.co.jp timeout
+fetch: livejasmin.com timeout
+fetch: imgur.com timeout
+fetch: google.es timeout
+fetch: youtu.be timeout
+fetch: google.com.br timeout
+fetch: Get "https://bbc.com": dial tcp 103.252.115.221:443: i/o timeout
+fetch: discordapp.com timeout
+fetch: whatsapp.com timeout
+fetch: ok.ru timeout
+fetch: Get "https://Reddit.com": dial tcp 108.160.165.48:443: i/o timeout
+fetch: chaturbate.com timeout
+fetch: google.co.in timeout
+fetch: Get "https://tumblr.com": dial tcp 74.86.12.173:443: i/o timeout
+fetch: Get "https://twitch.tv": dial tcp 173.244.209.150:443: i/o timeout
+30.01s elapsed
