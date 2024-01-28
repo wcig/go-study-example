@@ -211,10 +211,12 @@ func worker(tasks chan int, id int, wg *sync.WaitGroup) {
 // range
 func TestRange(t *testing.T) {
 	c := make(chan int, 5)
-	for i := 0; i < 5; i++ {
-		c <- i
-	}
-	close(c)
+	go func() {
+		for i := 0; i < 5; i++ {
+			c <- i
+		}
+		close(c)
+	}()
 	for val := range c { // 如果channel没有关闭，在取完所有数据后会产生panic错误：fatal error: all goroutines are asleep - deadlock!
 		fmt.Println(val)
 	}
