@@ -1,0 +1,33 @@
+syntax = "proto3";
+//
+option go_package = "./hello";
+//option java_multiple_files = true;
+//option java_package = "io.grpc.examples.helloworld";
+//option java_outer_classname = "HelloWorldProto";
+
+package hello;
+
+// 导入google/api/annotations.proto
+import "google/api/annotations.proto";
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+//    // 这里添加了google.api.http注释
+    option (google.api.http) = {
+      post: "/v1/sayhello"
+      body: "*"
+    };
+  }
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
