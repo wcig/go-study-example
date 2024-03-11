@@ -1,8 +1,10 @@
 package ch203_jwt
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -129,4 +131,43 @@ func PrettyPrintJson(v interface{}) {
 		fmt.Println(err)
 	}
 	fmt.Println(string(b))
+}
+
+// JWT header/payload base64url 编码算法，会默认删除末尾的 “=” 符号
+func TestJWTBase64URL(t *testing.T) {
+	rawHeader := `{"alg":"HS256","typ":"JWT"}`
+	rawPayload := `{"sub":"1234567890","name":"John Doe","iat":1516239022}`
+
+	header := EncodeBase64URLWithJWT([]byte(rawHeader))
+	payload := EncodeBase64URLWithJWT([]byte(rawPayload))
+	fmt.Println("base64url encode header:", header)
+	fmt.Println("base64url encode payload:", payload)
+
+	decodeHeader, _ := DecodeBase64URLWithJWT(header)
+	decodePayload, _ := DecodeBase64URLWithJWT(payload)
+	assert.Equal(t, rawHeader, string(decodeHeader))
+	assert.Equal(t, rawPayload, string(decodePayload))
+}
+
+// 解码 Base64 URL 编码的字符串，补全可能缺少的 "=" 符号
+func DecodeBase64URLWithJWT(encoded string) ([]byte, error) {
+	// 补全缺少的 "=" 符号
+	missingPadding := len(encoded) % 4
+	if missingPadding > 0 {
+		encoded += strings.Repeat("=", 4-missingPadding)
+	}
+
+	// Base64 URL 解码
+	return base64.URLEncoding.DecodeString(encoded)
+}
+
+// 编码字符串为 Base64 URL 编码格式，并去除末尾可能多余的 "=" 符号
+func EncodeBase64URLWithJWT(data []byte) string {
+	// Base64 URL 编码
+	encoded := base64.URLEncoding.EncodeToString(data)
+
+	// 去除末尾可能多余的 "=" 符号
+	encoded = strings.TrimRight(encoded, "=")
+
+	return encoded
 }
