@@ -1,0 +1,22 @@
+{
+    "server": {
+        "address": ":28080",
+        "mode": "debug"
+    },
+    "data": {
+        "database": {
+            "drive_name": "mysql",
+            "dsn": "root:123456@tcp(127.0.0.1:3306)/test",
+            "max_idle": 1,
+            "max_open": 1,
+            "show_sql": true
+        },
+        "redis": {
+            "address": "localhost:6379"
+        }
+    },
+    "logger": {
+        "path": "tmp/log",
+        "level": "debug"
+    }
+}
