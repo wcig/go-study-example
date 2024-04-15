@@ -6,6 +6,10 @@ import (
 )
 
 func PrintStr(v interface{}) {
+	fmt.Println(ToStr(v))
+}
+
+func ToStr(v interface{}) string {
 	data, _ := json.MarshalIndent(v, "", "  ")
-	fmt.Println(string(data))
+	return string(data)
 }

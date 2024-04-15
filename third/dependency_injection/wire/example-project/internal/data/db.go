@@ -1,4 +1,4 @@
-package db
+package data
 
 import (
 	"context"
@@ -12,17 +12,19 @@ import (
 	gormLogger "gorm.io/gorm/logger"
 )
 
-var ProviderSet = wire.NewSet(NewDatabase, NewRedis, NewData)
+var ProviderSet = wire.NewSet(NewDatabase, NewRedis, NewData, NewUserRepo)
 
 type Data struct {
-	DB       *gorm.DB
-	RedisCli *redis.Client
+	DB     *gorm.DB
+	RC     *redis.Client
+	logger *zap.SugaredLogger
 }
 
-func NewData(c *config.Data, logger *zap.SugaredLogger, db *gorm.DB, redisCli *redis.Client) *Data {
+func NewData(c *config.Data, logger *zap.SugaredLogger, db *gorm.DB, rc *redis.Client) *Data {
 	return &Data{
-		DB:       db,
-		RedisCli: redisCli,
+		DB:     db,
+		RC:     rc,
+		logger: logger,
 	}
 }
 

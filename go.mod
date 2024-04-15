@@ -1,6 +1,6 @@
 module go-app
 
-go 1.21
+go 1.20
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.4.0
@@ -19,6 +19,7 @@ require (
 	github.com/gographics/gmagick v1.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.4
+	github.com/google/wire v0.6.0
 	github.com/grafana/pyroscope-go v1.0.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/hibiken/asynq v0.24.1
@@ -30,6 +31,7 @@ require (
 	github.com/panjf2000/ants v1.3.0
 	github.com/pebbe/zmq4 v1.2.9
 	github.com/petermattis/goid v0.0.0-20220331194723-8ee3e6ded87a
+	github.com/pkg/errors v0.9.1
 	github.com/pquerna/otp v1.3.0
 	github.com/prometheus/client_golang v1.11.1
 	github.com/redis/go-redis/v9 v9.5.1
@@ -47,6 +49,7 @@ require (
 	github.com/xuri/excelize/v2 v2.6.0
 	go.etcd.io/etcd/client/v3 v3.5.10
 	go.mongodb.org/mongo-driver v1.12.1
+	go.uber.org/dig v1.17.1
 	go.uber.org/ratelimit v0.3.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.18.0
@@ -97,7 +100,6 @@ require (
 	github.com/google/btree v1.0.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/google/wire v0.6.0 // indirect
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -154,7 +156,6 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.10 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.10 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/dig v1.17.1 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
