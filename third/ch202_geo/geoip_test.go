@@ -16,7 +16,7 @@ import (
 
 // geoip2解析
 func TestGeoIpQuickStart(t *testing.T) {
-	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
+	reader, err := geoip2.Open("../mmdb/GeoLite2-Country.mmdb")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,12 +35,83 @@ func TestGeoIpQuickStart(t *testing.T) {
 
 // output:
 // record:
-// {"City":{"GeoNameID":0,"Names":null},"Continent":{"Code":"EU","GeoNameID":6255148,"Names":{"de":"Europa","en":"Europe","es":"Europa","fr":"Europe","ja":"ヨーロッパ","pt-BR":"Europa","ru":"Европа","zh-CN":"欧洲"}},"Country":{"GeoNameID":2635167,"IsInEuropeanUnion":true,"IsoCode":"GB","Names":{"de":"Vereinigtes Königreich","en":"United Kingdom","es":"Reino Unido","fr":"Royaume-Uni","ja":"イギリス","pt-BR":"Reino Unido","ru":"Великобритания","zh-CN":"英国"}},"Location":{"AccuracyRadius":0,"Latitude":0,"Longitude":0,"MetroCode":0,"TimeZone":""},"Postal":{"Code":""},"RegisteredCountry":{"GeoNameID":2635167,"IsInEuropeanUnion":true,"IsoCode":"GB","Names":{"de":"Vereinigtes Königreich","en":"United Kingdom","es":"Reino Unido","fr":"Royaume-Uni","ja":"イギリス","pt-BR":"Reino Unido","ru":"Великобритания","zh-CN":"英国"}},"RepresentedCountry":{"GeoNameID":0,"IsInEuropeanUnion":false,"IsoCode":"","Names":null,"Type":""},"Subdivisions":null,"Traits":{"IsAnonymousProxy":false,"IsSatelliteProvider":false}}
+// {
+//    "City": {
+//        "GeoNameID": 0,
+//        "Names": null
+//    },
+//    "Continent": {
+//        "Code": "EU",
+//        "GeoNameID": 6255148,
+//        "Names": {
+//            "de": "Europa",
+//            "en": "Europe",
+//            "es": "Europa",
+//            "fr": "Europe",
+//            "ja": "ヨーロッパ",
+//            "pt-BR": "Europa",
+//            "ru": "Европа",
+//            "zh-CN": "欧洲"
+//        }
+//    },
+//    "Country": {
+//        "GeoNameID": 2635167,
+//        "IsInEuropeanUnion": true,
+//        "IsoCode": "GB",
+//        "Names": {
+//            "de": "Vereinigtes Königreich",
+//            "en": "United Kingdom",
+//            "es": "Reino Unido",
+//            "fr": "Royaume-Uni",
+//            "ja": "イギリス",
+//            "pt-BR": "Reino Unido",
+//            "ru": "Великобритания",
+//            "zh-CN": "英国"
+//        }
+//    },
+//    "Location": {
+//        "AccuracyRadius": 0,
+//        "Latitude": 0,
+//        "Longitude": 0,
+//        "MetroCode": 0,
+//        "TimeZone": ""
+//    },
+//    "Postal": {
+//        "Code": ""
+//    },
+//    "RegisteredCountry": {
+//        "GeoNameID": 2635167,
+//        "IsInEuropeanUnion": true,
+//        "IsoCode": "GB",
+//        "Names": {
+//            "de": "Vereinigtes Königreich",
+//            "en": "United Kingdom",
+//            "es": "Reino Unido",
+//            "fr": "Royaume-Uni",
+//            "ja": "イギリス",
+//            "pt-BR": "Reino Unido",
+//            "ru": "Великобритания",
+//            "zh-CN": "英国"
+//        }
+//    },
+//    "RepresentedCountry": {
+//        "GeoNameID": 0,
+//        "IsInEuropeanUnion": false,
+//        "IsoCode": "",
+//        "Names": null,
+//        "Type": ""
+//    },
+//    "Subdivisions": null,
+//    "Traits": {
+//        "IsAnonymousProxy": false,
+//        "IsSatelliteProvider": false
+//    }
+// }
 
 // 根据ip查询国家信息
 func TestGetCountryByIP(t *testing.T) {
 	// 数据源: https://cdn.jsdelivr.net/npm/geolite2-country@1.0.2/GeoLite2-Country.mmdb.gz
-	reader, err := geoip2.Open("./GeoIP2-Country.mmdb")
+	reader, err := geoip2.Open("../mmdb/GeoLite2-Country.mmdb")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +138,7 @@ func TestGetCountryByIP(t *testing.T) {
 // 根据ip查询国家信息+城市信息
 func TestGetCityByIP(t *testing.T) {
 	// 数据源: https://cdn.jsdelivr.net/npm/geolite2-city@1.0.0/GeoLite2-City.mmdb.gz
-	reader, err := geoip2.Open("./GeoLite2-City.mmdb")
+	reader, err := geoip2.Open("../mmdb/GeoLite2-City.mmdb")
 	if err != nil {
 		log.Fatal(err)
 	}
