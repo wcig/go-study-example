@@ -54,8 +54,8 @@ require (
 	go.uber.org/dig v1.17.1
 	go.uber.org/ratelimit v0.3.0
 	go.uber.org/zap v1.21.0
-	golang.org/x/crypto v0.18.0
-	golang.org/x/net v0.20.0
+	golang.org/x/crypto v0.23.0
+	golang.org/x/net v0.21.0
 	golang.org/x/sync v0.7.0
 	golang.org/x/time v0.5.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
