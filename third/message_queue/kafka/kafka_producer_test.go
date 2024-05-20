@@ -1,4 +1,4 @@
-package ch101_kafka
+package kafka
 
 import (
 	"fmt"

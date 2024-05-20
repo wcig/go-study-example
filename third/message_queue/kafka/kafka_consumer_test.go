@@ -1,4 +1,4 @@
-package ch101_kafka
+package kafka
 
 import (
 	"context"
@@ -21,7 +21,7 @@ var (
 
 func TestKafkaConsumer2(t *testing.T) {
 	config := sarama.NewConfig()
-	config.Version = sarama.V2_6_0_0 // specify appropriate version
+	config.Version = sarama.V2_0_0_0 // specify appropriate version
 	config.Consumer.Return.Errors = true
 
 	group, err := sarama.NewConsumerGroup([]string{brokerServer}, group, config)
@@ -73,7 +73,7 @@ func TestKafkaConsumer(t *testing.T) {
 
 	config := sarama.NewConfig()
 	config.Consumer.Offsets.Initial = sarama.OffsetNewest
-	config.Version = sarama.V2_6_0_0
+	config.Version = sarama.V2_0_0_0
 
 	consumer := Consumer{
 		ready: make(chan bool),
