@@ -1,4 +1,4 @@
-package ch100_redis
+package redis
 
 import (
 	"log"
