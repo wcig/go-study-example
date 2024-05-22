@@ -1,0 +1,52 @@
+2024/05/22 17:15:16.742068 main.go:69: >> summary: POST | HTTP/1.1 | 0694-183-240-253-203.ngrok-free.app | /shopify/webhook | 210.79.155.31
+2024/05/22 17:15:16.743271 main.go:73: >> header: {
+	"Accept": [
+		"*/*"
+	],
+	"Accept-Encoding": [
+		"gzip, deflate, br"
+	],
+	"Cache-Control": [
+		"no-cache"
+	],
+	"Content-Length": [
+		"3453"
+	],
+	"Content-Type": [
+		"application/json"
+	],
+	"Postman-Token": [
+		"48d02c82-c9f3-43f7-987e-1eaa49cdccb6"
+	],
+	"User-Agent": [
+		"PostmanRuntime/7.37.3"
+	],
+	"X-Forwarded-For": [
+		"210.79.155.31"
+	],
+	"X-Forwarded-Host": [
+		"0694-183-240-253-203.ngrok-free.app"
+	],
+	"X-Forwarded-Proto": [
+		"https"
+	],
+	"X-Shopify-Api-Version": [
+		"2024-04"
+	],
+	"X-Shopify-Hmac-Sha256": [
+		"kImYiGcmtRANhMOAKOdo28wmB3lChQrBvmpOQKXdMUg="
+	],
+	"X-Shopify-Shop-Domain": [
+		"test20240319.myshopify.com"
+	],
+	"X-Shopify-Topic": [
+		"checkouts/update"
+	],
+	"X-Shopify-Triggered-At": [
+		"2024-05-22T09:11:00.020206942Z"
+	],
+	"X-Shopify-Webhook-Id": [
+		"96fe5619-34b1-419e-9b25-ec65f9bdb67a"
+	]
+}
+2024/05/22 17:15:16.744665 main.go:82: >> body: {"id":34633494626529,"token":"057fc9140a607fde82f7d5acb9697db7","cart_token":"Z2NwLWFzaWEtc291dGhlYXN0MTowMUhZRlI5MFYxNVdDVDE0WDJNS0I5WjlSNA","gateway":null,"buyer_accepts_marketing":false,"buyer_accepts_sms_marketing":false,"created_at":"2024-05-22T08:56:53+00:00","updated_at":"2024-05-22T05:11:00-04:00","landing_site":"/password","note":null,"note_attributes":[],"referring_site":"","shipping_lines":[{"code":"Standard","price":"4.95","original_shop_price":"0.68","original_shop_markup":"0.00","source":"shopify","title":"Standard","presentment_title":"Standard","phone":null,"tax_lines":[],"custom_tax_lines":null,"markup":"0.00","carrier_identifier":null,"carrier_service_id":null,"api_client_id":"580111","delivery_option_group":{"token":"963ae3e1922471d4f5b01e68135b9acb","type":"one_time_purchase"},"delivery_expectation_range":null,"delivery_expectation_type":null,"id":null,"requested_fulfillment_service_id":null,"delivery_category":null,"validation_context":null,"applied_discounts":[]}],"shipping_address":{"province":"Guangdong","country":"China","country_code":"CN","province_code":"GD"},"taxes_included":false,"total_weight":0,"currency":"USD","completed_at":null,"customer_locale":"en-CN","line_items":[{"key":"44678104154337","fulfillment_service":"manual","gift_card":false,"grams":0,"presentment_title":"The Collection Snowboard: Liquid","presentment_variant_title":"","product_id":8301721911521,"quantity":1,"requires_shipping":true,"sku":"","tax_lines":[{"position":1,"price":"719.81","rate":0.13,"title":"VAT","source":"Shopify","compare_at":null,"zone":"country","channel_liable":false,"identifier":null}],"taxable":true,"title":"The Collection Snowboard: Liquid","variant_id":44678104154337,"variant_title":"","variant_price":"5537.00","vendor":"Hydrogen Vendor","unit_price_measurement":{"measured_type":null,"quantity_value":null,"quantity_unit":null,"reference_value":null,"reference_unit":null},"compare_at_price":null,"line_price":"5537.00","price":"5537.00","applied_discounts":[],"destination_location_id":null,"user_id":null,"rank":null,"origin_location_id":null,"properties":{}}],"name":"#34633494626529","abandoned_checkout_url":"https://test20240319.myshopify.com/69357207777/checkouts/ac/Z2NwLWFzaWEtc291dGhlYXN0MTowMUhZRlI5MFYxNVdDVDE0WDJNS0I5WjlSNA/recover?key=d6c55eeb49f11e0125ccbe7d5538212a","discount_codes":[],"tax_lines":[{"price":"719.81","rate":0.13,"title":"VAT"}],"presentment_currency":"CNY","source_name":"web","total_line_items_price":"5537.00","total_tax":"719.81","total_discounts":"0.00","subtotal_price":"5537.00","total_price":"6261.76","total_duties":"0.00","device_id":null,"user_id":null,"location_id":null,"source_identifier":null,"source_url":null,"source":null,"closed_at":null,"billing_address":{"province":"Guangdong","country":"China","country_code":"CN","province_code":"GD"},"customer":{"id":7340158255329,"accepts_marketing":false,"created_at":null,"updated_at":null,"orders_count":0,"state":"disabled","total_spent":"0.00","last_order_id":null,"note":null,"verified_email":true,"multipass_identifier":null,"tax_exempt":false,"tags":"","currency":"CNY","accepts_marketing_updated_at":null,"admin_graphql_api_id":"gid://shopify/Customer/7340158255329","default_address":{"id":null,"customer_id":7340158255329,"province":"Guangdong","country":"China","province_code":"GD","country_code":"CN","country_name":"China","default":true},"last_order_name":null,"marketing_opt_in_level":null}}
