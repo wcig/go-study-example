@@ -16,9 +16,8 @@ func TestInformer(t *testing.T) {
 	// create clientSet
 	clientSet, err := kubernetes.NewForConfig(RestConfig())
 	checkErr(err)
-	_ = clientSet
 
-	// create informer factory (set full resync duration is 30 seconds)
+	// create informer factory (重同步周期)
 	informerFactory := informers.NewSharedInformerFactory(clientSet, time.Second*30)
 
 	deployInformer := informerFactory.Apps().V1().Deployments()
