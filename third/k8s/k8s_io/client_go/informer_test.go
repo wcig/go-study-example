@@ -53,17 +53,29 @@ func TestInformer(t *testing.T) {
 }
 
 func addDeployment(obj interface{}) {
-	deploy := obj.(*v1.Deployment)
+	deploy, ok := obj.(*v1.Deployment)
+	if !ok {
+		return
+	}
 	fmt.Println("add deployment:", deploy.Name)
 }
 
 func updateDeployment(old, new interface{}) {
-	oldDeploy := old.(*v1.Deployment)
-	newDeploy := new.(*v1.Deployment)
+	oldDeploy, ok := old.(*v1.Deployment)
+	if !ok {
+		return
+	}
+	newDeploy, ok := new.(*v1.Deployment)
+	if !ok {
+		return
+	}
 	fmt.Println("update deployment:", oldDeploy.Name, newDeploy.Name)
 }
 
 func deleteDeployment(obj interface{}) {
-	deploy := obj.(*v1.Deployment)
+	deploy, ok := obj.(*v1.Deployment)
+	if !ok {
+		return
+	}
 	fmt.Println("delete deployment:", deploy.Name)
 }
