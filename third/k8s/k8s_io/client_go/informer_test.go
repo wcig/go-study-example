@@ -52,6 +52,29 @@ func TestInformer(t *testing.T) {
 	// index 2, namespace: local-path-storage, name: local-path-provisioner, replicas: 1
 }
 
+func TestSimpleInformer(t *testing.T) {
+	clientSet, err := kubernetes.NewForConfig(RestConfig())
+	checkErr(err)
+
+	factory := informers.NewSharedInformerFactory(clientSet, time.Second*30)
+	informer := factory.Apps().V1().Deployments().Informer()
+	_, err = informer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    addDeployment,
+		UpdateFunc: updateDeployment,
+		DeleteFunc: deleteDeployment,
+	})
+	checkErr(err)
+
+	stopCh := make(chan struct{})
+	defer close(stopCh)
+
+	factory.Start(stopCh)
+	if !cache.WaitForCacheSync(stopCh, informer.HasSynced) {
+		panic("Timed out waiting for caches to sync")
+	}
+	stopCh <- struct{}{}
+}
+
 func addDeployment(obj interface{}) {
 	deploy, ok := obj.(*v1.Deployment)
 	if !ok {
