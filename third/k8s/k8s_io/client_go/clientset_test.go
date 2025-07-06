@@ -2,8 +2,16 @@ package client_go
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
 	"testing"
+	"time"
+
+	"k8s.io/apimachinery/pkg/types"
+
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -65,4 +73,91 @@ func TestClientSet(t *testing.T) {
 	// [podList] namespace: kube-system, name: node-local-dns-admission-controller-858d7bb84d-jfzbs, status: Running
 	// [podList] namespace: kube-system, name: node-problem-controller-7466df6b9-rrrhv, status: Running
 	// [podList] namespace: kube-system, name: node-problem-controller-7466df6b9-wb425, status: Pending
+}
+
+func TestCRUD(t *testing.T) {
+	clientSet, err := kubernetes.NewForConfig(RestConfig())
+	checkErr(err)
+
+	// create deploy
+	log.Println("create deploy start")
+	ctx := context.Background()
+	namespace, name, appKey := "default", fmt.Sprintf("nginx-%s", time.Now().Format(time.DateOnly)), "app"
+	deploy := newDeployment(namespace, name, appKey)
+	createDeploy, err := clientSet.AppsV1().Deployments(namespace).Create(ctx, deploy, metav1.CreateOptions{})
+	checkErr(err)
+	log.Println("create deploy end")
+
+	// update deploy
+	log.Println("update deploy start")
+	updateDeploy := createDeploy.DeepCopy()
+	updateDeploy.Spec.Replicas = int32Ptr(2)
+	updateDeploy, err = clientSet.AppsV1().Deployments(namespace).Update(ctx, updateDeploy, metav1.UpdateOptions{})
+	checkErr(err)
+	log.Println("update deploy end")
+
+	// update deploy with patch
+	log.Println("update deploy with patch start")
+	patchBody := map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"annotations": map[string]string{
+				"app": name,
+			},
+		},
+	}
+	patchBytes, err := json.Marshal(patchBody)
+	checkErr(err)
+	updateDeploy, err = clientSet.AppsV1().Deployments(namespace).Patch(ctx, name, types.MergePatchType, patchBytes, metav1.PatchOptions{})
+	checkErr(err)
+	log.Println("update deploy with patch end")
+
+	// query deploy
+	log.Println("query deploy start")
+	getDeploy, err := clientSet.AppsV1().Deployments(namespace).Get(ctx, name, metav1.GetOptions{})
+	checkErr(err)
+	log.Printf("query deploy end, body:\n%s\n", toJsonStr(getDeploy))
+
+	// delete deploy
+	log.Println("delete deploy start")
+	err = clientSet.AppsV1().Deployments(namespace).Delete(ctx, name, metav1.DeleteOptions{})
+	checkErr(err)
+	log.Println("delete deploy end")
+}
+
+func newDeployment(namespace, name, appKey string) *appsv1.Deployment {
+	deployLabels := map[string]string{
+		appKey: name,
+	}
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+			Labels:    deployLabels,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: int32Ptr(1),
+			Selector: &metav1.LabelSelector{
+				MatchLabels: deployLabels,
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: deployLabels,
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  "nginx",
+							Image: "nginx:latest",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func toJsonStr(v interface{}) string {
+	data, err := json.MarshalIndent(v, "", "  ")
+	checkErr(err)
+	return string(data)
 }
