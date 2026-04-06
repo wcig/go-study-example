@@ -14,7 +14,11 @@ import (
 // RESTClient 示例
 func TestRestClient(t *testing.T) {
 	// 加载Config
+	// 手动方式
 	config := RestConfig()
+	// // 简单方式
+	// config, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+	// checkErr(err)
 
 	// 设置API路径 (这里查询的pod为无组名资源组使用/api而不是/apis)
 	config.APIPath = "api"
